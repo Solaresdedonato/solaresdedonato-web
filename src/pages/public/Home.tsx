@@ -1,6 +1,8 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useDesarrollosPublicados } from '@/features/desarrollo/hooks/useDesarrollo'
+import { useHeroSlides } from '@/features/hero/hooks/useHeroSlides'
 import { useReveal } from '@/shared/hooks/useReveal'
+import { mediaUrl } from '@/shared/utils/mediaUrl'
 import { DesarrollosCarousel } from '@/components/DesarrollosCarousel'
 import { MetricasDestacadas } from '@/components/MetricasDestacadas'
 import { ProximamenteGrid } from '@/components/ProximamenteGrid'
@@ -21,15 +23,6 @@ const PALABRAS = [
   'Vanguardista',
   'Distinguido',
   'Auténtico',
-]
-
-const HERO_SLIDES = [
-  'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=1800&q=80',
-  'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1800&q=80',
-  'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1800&q=80',
-  'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1800&q=80',
-  'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1800&q=80',
-  'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=80',
 ]
 
 const HERO_STATS = [
@@ -86,19 +79,22 @@ function useRotatingWord() {
   return PALABRAS[index]
 }
 
-function useHeroSlideshow() {
+function useHeroSlideshow(total: number) {
   const [index, setIndex] = useState(0)
   useEffect(() => {
-    const id = setInterval(() => setIndex((i) => (i + 1) % HERO_SLIDES.length), 5000)
+    if (total < 2) return
+    const id = setInterval(() => setIndex((i) => (i + 1) % total), 5000)
     return () => clearInterval(id)
-  }, [])
-  return index
+  }, [total])
+  return total > 0 ? index % total : 0
 }
 
 export function Home() {
   const { data, isLoading } = useDesarrollosPublicados()
+  const { data: heroSlides } = useHeroSlides()
   const palabra = useRotatingWord()
-  const heroSlideIndex = useHeroSlideshow()
+  const heroImages = (heroSlides ?? []).map((s) => mediaUrl(s.archivoUrl)).filter((url): url is string => !!url)
+  const heroSlideIndex = useHeroSlideshow(heroImages.length)
 
   const desarrollos = data?.content ?? []
   const proximos = desarrollos.filter((d) => d.estado === 'proximamente')
@@ -110,7 +106,7 @@ export function Home() {
       <section className="hero">
         <div className="hero-bg" />
         <div className="hero-slider">
-          {HERO_SLIDES.map((src, i) => (
+          {heroImages.map((src, i) => (
             <div key={src} className={`hero-slide ${i === heroSlideIndex ? 'active' : ''}`} style={{ backgroundImage: `url(${src})` }} />
           ))}
         </div>

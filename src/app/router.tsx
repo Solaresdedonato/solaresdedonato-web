@@ -9,6 +9,7 @@ import { BackofficeHomePage } from '@/features/home/pages/BackofficeHomePage'
 import { DesarrollosListPage } from '@/features/desarrollo/pages/DesarrollosListPage'
 import { DesarrolloFormPage } from '@/features/desarrollo/pages/DesarrolloFormPage'
 import { ContenidoPage } from '@/features/contenido/pages/ContenidoPage'
+import { WebPage } from '@/features/hero/pages/WebPage'
 import { ConsultasPage } from '@/features/consultas/pages/ConsultasPage'
 import { ROUTES } from '@/shared/router/routes'
 
@@ -37,6 +38,7 @@ export const router = createBrowserRouter([
           { path: 'desarrollos/nuevo', element: <DesarrolloFormPage /> },
           { path: 'desarrollos/:id/editar', element: <DesarrolloFormPage /> },
           { path: 'contenido', element: <ContenidoPage /> },
+          { path: 'web', element: <WebPage /> },
           { path: 'consultas', element: <ConsultasPage /> },
         ],
       },

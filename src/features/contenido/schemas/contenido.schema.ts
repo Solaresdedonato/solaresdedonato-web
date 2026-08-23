@@ -3,7 +3,7 @@ import { z } from 'zod'
 export const TIPOS_CONTENIDO = ['foto', 'video'] as const
 export type TipoContenido = (typeof TIPOS_CONTENIDO)[number]
 
-export const CATEGORIAS_CONTENIDO = ['fachada', 'interior', 'amenities', 'obra', 'drone', 'institucional'] as const
+export const CATEGORIAS_CONTENIDO = ['fachada', 'interior', 'amenities', 'obra', 'drone', 'institucional', 'hero'] as const
 export type CategoriaContenido = (typeof CATEGORIAS_CONTENIDO)[number]
 
 export const CATEGORIA_LABELS: Record<CategoriaContenido, string> = {
@@ -13,7 +13,14 @@ export const CATEGORIA_LABELS: Record<CategoriaContenido, string> = {
   obra: 'Avance de obra',
   drone: 'Drone',
   institucional: 'Institucional',
+  // No aparece en el selector de categoría de ContenidoForm (ver CATEGORIAS_SELECCIONABLES):
+  // 'hero' se administra aparte, desde /backoffice/hero, no pertenece a ningún desarrollo.
+  hero: 'Hero (carrusel de inicio)',
 }
+
+/** CATEGORIAS_CONTENIDO menos 'hero': el selector de categoría de ContenidoForm sigue
+ *  siendo "contenido de un desarrollo" — hero se carga desde su propia pantalla. */
+export const CATEGORIAS_SELECCIONABLES = CATEGORIAS_CONTENIDO.filter((c) => c !== 'hero')
 
 export interface ContenidoMedia {
   id: number
@@ -56,9 +63,10 @@ export const contenidoFormSchema = z
     message: 'Elegí un archivo de Drive',
     path: ['driveFileId'],
   })
-  .refine((data) => data.desarrolloId !== null, {
+  .refine((data) => data.categoria === 'hero' || data.desarrolloId !== null, {
     // Sin desarrollo asignado el contenido queda huérfano: no lo muestra ninguna
-    // pantalla pública (no hay sección "institucional" en el sitio todavía).
+    // pantalla pública. Única excepción: 'hero' (carrusel de inicio), que por diseño
+    // no pertenece a un desarrollo — se carga desde /backoffice/hero, no desde acá.
     message: 'Seleccioná un desarrollo',
     path: ['desarrolloId'],
   })

@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { label: 'Inicio', to: ROUTES.backoffice, end: true },
   { label: 'Desarrollos', to: ROUTES.backofficeDesarrollos },
   { label: 'Contenido', to: ROUTES.backofficeContenido },
+  { label: 'Web', to: ROUTES.backofficeWeb },
   { label: 'Consultas', to: ROUTES.backofficeConsultas },
 ]
 

@@ -6,7 +6,7 @@ import { ErrorDisplay } from '@/shared/components/ErrorDisplay'
 import type { EnhancedErrorResponse } from '@/shared/api/errorSchema'
 import type { Desarrollo } from '@/features/desarrollo/schemas/desarrollo.schema'
 import {
-  CATEGORIAS_CONTENIDO,
+  CATEGORIAS_SELECCIONABLES,
   CATEGORIA_LABELS,
   contenidoFormSchema,
   emptyContenidoForm,
@@ -138,7 +138,7 @@ export function ContenidoForm({ desarrollos, isLoading, error, onSubmit }: Conte
             <div>
               <label className={bo.label}>Categoría</label>
               <select className={bo.select} defaultValue="fachada" {...register('categoria')}>
-                {CATEGORIAS_CONTENIDO.map((c) => (
+                {CATEGORIAS_SELECCIONABLES.map((c) => (
                   <option key={c} value={c}>
                     {CATEGORIA_LABELS[c]}
                   </option>

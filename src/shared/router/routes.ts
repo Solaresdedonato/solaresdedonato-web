@@ -8,5 +8,6 @@ export const ROUTES = {
   backofficeDesarrolloNuevo: '/backoffice/desarrollos/nuevo',
   backofficeDesarrolloEditar: (id: number | string) => `/backoffice/desarrollos/${id}/editar`,
   backofficeContenido: '/backoffice/contenido',
+  backofficeWeb: '/backoffice/web',
   backofficeConsultas: '/backoffice/consultas',
 } as const

@@ -254,7 +254,7 @@ export const handlers = [
       archivoUrl,
       videoUrl,
       esPortada: tipo === 'foto' && !!(body.esPortada && desarrolloId),
-      orden: 0,
+      orden: body.categoria === 'hero' ? contenidos.filter((c) => c.categoria === 'hero').length : 0,
     }
     contenidos.push(nuevo)
 
@@ -311,11 +311,36 @@ export const handlers = [
       archivoUrl,
       videoUrl: tipo === 'video' ? videoUrl : null,
       esPortada,
-      orden: 0,
+      orden: categoria === 'hero' ? contenidos.filter((c) => c.categoria === 'hero').length : 0,
     }
     contenidos.push(nuevo)
 
     return HttpResponse.json(nuevo, { status: 201 })
+  }),
+
+  // ---- hero: carrusel de inicio (público — sin auth, ver SecurityConfig) ----
+  http.get('/v1/contenido/hero', async () => {
+    await withLatency(null)
+    const slides = contenidos
+      .filter((c) => c.categoria === 'hero')
+      .sort((a, b) => a.orden - b.orden || a.id - b.id)
+    return HttpResponse.json(slides)
+  }),
+
+  http.put('/v1/contenido/hero/orden', async ({ request }) => {
+    await withLatency(null)
+    if (!request.headers.get('authorization')) {
+      return HttpResponse.json(mockError('UNAUTHORIZED', 'No autenticado'), { status: 401 })
+    }
+    const body = (await request.json()) as { ids: number[] }
+    body.ids.forEach((id, index) => {
+      const item = contenidos.find((c) => c.id === id && c.categoria === 'hero')
+      if (item) item.orden = index
+    })
+    const slides = contenidos
+      .filter((c) => c.categoria === 'hero')
+      .sort((a, b) => a.orden - b.orden || a.id - b.id)
+    return HttpResponse.json(slides)
   }),
 
   http.delete('/v1/contenido/:id', async ({ params }) => {
