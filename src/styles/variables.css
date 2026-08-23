@@ -1,0 +1,15 @@
+:root {
+  --negro: #080808;
+  --negro-medio: #111111;
+  --negro-suave: #1a1a1a;
+  --gris-oscuro: #2a2a2a;
+  --gris-medio: #555555;
+  --gris-claro: #999999;
+  --blanco-roto: #f5f0e8;
+  --blanco: #ffffff;
+  --dorado: #eabc7b;
+  --dorado-claro: #f2d5a0;
+  --dorado-oscuro: #b8895a;
+  --dorado-sutil: rgba(234, 188, 123, 0.12);
+  --dorado-borde: rgba(234, 188, 123, 0.3);
+}

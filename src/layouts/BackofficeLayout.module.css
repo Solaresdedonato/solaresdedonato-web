@@ -1,0 +1,164 @@
+.shell {
+  display: flex;
+  min-height: 100vh;
+  background: #080808;
+}
+
+.sidebar {
+  width: 260px;
+  min-width: 260px;
+  background: #111111;
+  border-right: 1px solid #2a2a2a;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.sidebarHeader {
+  padding: 2rem 1.75rem 1.5rem;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.sidebarMarca {
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.sidebarSub {
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  color: #eabc7b;
+  text-transform: uppercase;
+  margin-top: 0.4rem;
+}
+
+.nav {
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.navLabel {
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  color: #555555;
+  text-transform: uppercase;
+  padding: 0 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.75rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: #999999;
+  background: transparent;
+  border-left: 2px solid transparent;
+  text-decoration: none;
+}
+
+.navItemActive {
+  color: #eabc7b;
+  background: rgba(234, 188, 123, 0.08);
+  border-left: 2px solid #eabc7b;
+}
+
+.navDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #444444;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.navDotActive {
+  background: #eabc7b;
+}
+
+.sidebarFooter {
+  padding: 1.25rem 1.75rem;
+  border-top: 1px solid #2a2a2a;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Titillium Web', sans-serif;
+  color: #eabc7b;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.userName {
+  font-size: 0.82rem;
+  color: #f5f0e8;
+}
+
+.userRole {
+  font-size: 0.68rem;
+  color: #999999;
+}
+
+.logoutBtn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: #666666;
+  cursor: pointer;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-family: 'Mukta', sans-serif;
+}
+.logoutBtn:hover {
+  color: #eabc7b;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+}
+
+.toast {
+  position: fixed;
+  top: 1.5rem;
+  right: 2rem;
+  z-index: 500;
+  background: #1a1a1a;
+  border: 1px solid #eabc7b;
+  color: #f2d5a0;
+  padding: 0.9rem 1.4rem;
+  font-size: 0.85rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 210px;
+    min-width: 210px;
+  }
+}

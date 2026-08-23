@@ -1,0 +1,112 @@
+/*
+ * Carrusel de fotos del desarrollo (modal de vista rápida y página de detalle) —
+ * NO viene del HTML original (ahí esa zona era un solo fondo estático con un botón
+ * de "video" decorativo que no hacía nada). Se agrega acá, aparte de
+ * original-landing.css, para no tocar ese archivo que se mantiene como extracción
+ * literal del HTML fuente.
+ */
+
+.galeria-slides {
+  position: absolute;
+  inset: 0;
+}
+
+.galeria-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  /* opacity:0 no saca a la slide del hit-testing: sin esto, una slide inactiva más
+     tardía en el DOM tapa los clicks de la slide activa que quedó debajo (grave con
+     video: el iframe se comería los clicks del player de YouTube/Drive). */
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+.galeria-slide.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.galeria-slide-foto {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.galeria-slide-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.galeria-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(8, 8, 8, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: var(--blanco);
+  font-size: 1.4rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.2s;
+  backdrop-filter: blur(4px);
+}
+.galeria-nav:hover {
+  background: var(--dorado);
+  color: var(--negro);
+  border-color: var(--dorado);
+}
+.galeria-prev {
+  left: 1rem;
+}
+.galeria-next {
+  right: 1rem;
+}
+
+.galeria-dots {
+  position: absolute;
+  bottom: 1.1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 5;
+}
+.galeria-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.galeria-dot.active {
+  background: var(--dorado);
+  width: 20px;
+  border-radius: 4px;
+}
+
+.galeria-contador {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  color: var(--blanco);
+  background: rgba(8, 8, 8, 0.6);
+  padding: 0.3rem 0.7rem;
+  z-index: 5;
+  backdrop-filter: blur(4px);
+}
