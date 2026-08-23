@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { useDesarrollosPublicados } from '@/features/desarrollo/hooks/useDesarrollo'
 import { useReveal } from '@/shared/hooks/useReveal'
 import { DesarrollosCarousel } from '@/components/DesarrollosCarousel'
+import { MetricasDestacadas } from '@/components/MetricasDestacadas'
 import { ProximamenteGrid } from '@/components/ProximamenteGrid'
 import { QuickLeadForm } from '@/components/QuickLeadForm'
 import { ContactoForm } from '@/features/contacto/components/ContactoForm'
@@ -31,11 +32,23 @@ const HERO_SLIDES = [
   'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=80',
 ]
 
+const HERO_STATS = [
+  { to: 25, suffix: '+', label: 'Años de trayectoria' },
+  { to: 30000, suffix: '+', miles: true, label: 'M² construidos en CABA' },
+  { numero: 'USD', label: 'Operaciones en dólares' },
+]
+
 const NOSOTROS_STATS = [
-  { numero: '25+', label: 'Años de empresa' },
-  { numero: '30.000+', label: 'M² construidos' },
-  { numero: '500+', label: 'Unidades entregadas' },
-  { numero: '14', label: 'Desarrollos realizados' },
+  { to: 25, suffix: '+', label: 'Años de empresa' },
+  { to: 30000, suffix: '+', miles: true, label: 'M² construidos' },
+  { to: 500, suffix: '+', label: 'Unidades entregadas' },
+  { to: 14, suffix: '', label: 'Desarrollos realizados' },
+]
+
+const CTA_QUICK_STATS = [
+  { to: 25, suffix: '', label: 'Años de trayectoria' },
+  { to: 30, suffix: 'k+', label: 'M² construidos' },
+  { to: 14, suffix: '', label: 'Desarrollos' },
 ]
 
 const BROKER_BENEFICIOS = [
@@ -129,18 +142,7 @@ export function Home() {
           </div>
         </div>
         <div className="hero-stats">
-          <div className="stat-item">
-            <div className="numero">25+</div>
-            <div className="etiqueta">Años de trayectoria</div>
-          </div>
-          <div className="stat-item">
-            <div className="numero">30.000+</div>
-            <div className="etiqueta">M² construidos en CABA</div>
-          </div>
-          <div className="stat-item">
-            <div className="numero">USD</div>
-            <div className="etiqueta">Operaciones en dólares</div>
-          </div>
+          <MetricasDestacadas items={HERO_STATS} variant="columna" />
         </div>
         <div className="hero-scroll">
           <span>Explorar</span>
@@ -162,7 +164,6 @@ export function Home() {
                 display: 'block',
                 marginBottom: '0.8rem',
                 fontStyle: 'normal',
-                fontFamily: "'Mukta', sans-serif",
               }}
             >
               Sobre nosotros
@@ -193,12 +194,7 @@ export function Home() {
           </p>
         </Reveal>
         <div className="nosotros-stats">
-          {NOSOTROS_STATS.map((s) => (
-            <div className="stat-block" key={s.label}>
-              <div className="big-numero">{s.numero}</div>
-              <div className="big-etiqueta">{s.label}</div>
-            </div>
-          ))}
+          <MetricasDestacadas items={NOSOTROS_STATS} variant="columna" className="izquierda" />
         </div>
       </section>
 
@@ -255,20 +251,7 @@ export function Home() {
               Contanos qué buscás y un asesor especializado te contactará dentro de las próximas 24 horas con las mejores
               opciones.
             </p>
-            <div className="cta-quick-features">
-              <div className="cta-feature">
-                <span className="feature-num">25</span>
-                <span className="feature-txt">Años de trayectoria</span>
-              </div>
-              <div className="cta-feature">
-                <span className="feature-num">30k+</span>
-                <span className="feature-txt">M² construidos</span>
-              </div>
-              <div className="cta-feature">
-                <span className="feature-num">14</span>
-                <span className="feature-txt">Desarrollos</span>
-              </div>
-            </div>
+            <MetricasDestacadas items={CTA_QUICK_STATS} variant="fila" />
           </div>
           <QuickLeadForm />
         </Reveal>
