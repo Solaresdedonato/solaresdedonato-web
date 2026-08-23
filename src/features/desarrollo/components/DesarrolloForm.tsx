@@ -246,13 +246,18 @@ export function DesarrolloForm({ desarrollo, isLoading, error, onSubmit }: Desar
           </div>
           <div className={bo.panelPadded}>
             <div className={bo.sectionEyebrow}>Imágenes</div>
-            <p className={bo.hint} style={{ marginBottom: 0 }}>
-              La portada y la galería de fotos/videos se administran desde{' '}
-              <RouterLink to={ROUTES.backofficeContenido} style={{ color: '#eabc7b' }}>
-                Contenido
-              </RouterLink>
-              , asociando cada foto a este desarrollo.
-            </p>
+            {desarrollo ? (
+              <>
+                <p className={bo.hint}>La portada y la galería de fotos/videos de este desarrollo se administran acá.</p>
+                <RouterLink to={ROUTES.backofficeDesarrolloContenido(desarrollo.id)} className={bo.btnOutline}>
+                  Administrar contenido
+                </RouterLink>
+              </>
+            ) : (
+              <p className={bo.hint} style={{ marginBottom: 0 }}>
+                Guardá el desarrollo para poder cargar fotos y videos.
+              </p>
+            )}
           </div>
         </div>
       </div>

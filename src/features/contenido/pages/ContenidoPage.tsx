@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { Link as RouterLink, useParams } from 'react-router-dom'
 import bo from '@/styles/backoffice.module.css'
 import { LoadingScreen } from '@/shared/components/LoadingScreen'
 import { EmptyState } from '@/shared/components/EmptyState'
 import { ConfirmDeleteDialog } from '@/shared/components/ConfirmDeleteDialog'
-import { useDesarrollosAdmin } from '@/features/desarrollo/hooks/useDesarrollosAdmin'
+import { ROUTES } from '@/shared/router/routes'
+import { useDesarrolloAdmin } from '@/features/desarrollo/hooks/useDesarrollo'
 import { useContenidoList, useEliminarContenido } from '../hooks/useContenido'
 import { useGuardarContenido } from '../hooks/useGuardarContenido'
 import { ContenidoForm } from '../components/ContenidoForm'
@@ -11,52 +13,54 @@ import { ContenidoGrid } from '../components/ContenidoGrid'
 import type { ContenidoMedia } from '../schemas/contenido.schema'
 
 export function ContenidoPage() {
+  const { id } = useParams<{ id: string }>()
+  const desarrolloId = Number(id)
   const [aEliminar, setAEliminar] = useState<ContenidoMedia | null>(null)
-  const [desarrolloFiltro, setDesarrolloFiltro] = useState<number | null>(null)
-  const { data: desarrollos } = useDesarrollosAdmin({ size: 100 })
-  const { data: contenido, isLoading } = useContenidoList({ desarrolloId: desarrolloFiltro ?? undefined, size: 100 })
+
+  const { data: desarrollo, isLoading: cargandoDesarrollo } = useDesarrolloAdmin(desarrolloId)
+  const { data: contenido, isLoading } = useContenidoList({ desarrolloId, size: 100 })
   const { guardar, isLoading: creando, error: errorCrear } = useGuardarContenido()
   const { eliminar, isLoading: eliminando, error: errorEliminar } = useEliminarContenido()
 
+  if (cargandoDesarrollo) return <LoadingScreen />
+  if (!desarrollo) {
+    return (
+      <div className={bo.page}>
+        <EmptyState message="No encontramos el desarrollo." />
+      </div>
+    )
+  }
+
   return (
     <div className={bo.page}>
-      <div className={bo.breadcrumb}>Contenido estático / Nuevo</div>
-      <h1 className={bo.pageTitle} style={{ marginBottom: '2rem' }}>
-        Nuevo contenido
-      </h1>
+      <div className={bo.breadcrumb}>
+        <RouterLink to={ROUTES.backofficeDesarrollos} style={{ color: 'inherit' }}>
+          Desarrollos
+        </RouterLink>{' '}
+        / {desarrollo.nombre} / Contenido
+      </div>
+      <div className={bo.pageHeader}>
+        <h1 className={bo.pageTitle}>Contenido de {desarrollo.nombre}</h1>
+        <RouterLink to={ROUTES.backofficeDesarrolloEditar(desarrollo.id)} className={bo.btnGhost}>
+          ← Volver al desarrollo
+        </RouterLink>
+      </div>
 
       <ContenidoForm
-        desarrollos={desarrollos?.content ?? []}
+        desarrollo={desarrollo}
         isLoading={creando}
         error={errorCrear}
         onSubmit={(values, archivo) => guardar({ form: values, archivo })}
       />
 
       <div style={{ borderTop: '1px solid #2a2a2a', paddingTop: '2rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem' }}>
-          <h2 style={{ fontFamily: "'Titillium Web', sans-serif", fontWeight: 400, fontSize: '1.3rem', color: '#ffffff', margin: 0 }}>
-            Biblioteca de contenido
-          </h2>
-          <select
-            className={bo.select}
-            style={{ width: 'auto', minWidth: 220 }}
-            value={desarrolloFiltro ?? ''}
-            onChange={(e) => setDesarrolloFiltro(e.target.value ? Number(e.target.value) : null)}
-          >
-            <option value="">Todos los desarrollos</option>
-            {desarrollos?.content.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.nombre}
-              </option>
-            ))}
-          </select>
-        </div>
+        <h2 style={{ fontFamily: "'Titillium Web', sans-serif", fontWeight: 400, fontSize: '1.3rem', color: '#ffffff', margin: '0 0 1.5rem' }}>
+          Fotos y videos de este desarrollo
+        </h2>
         {isLoading ? (
           <LoadingScreen />
         ) : !contenido?.content.length ? (
-          <EmptyState
-            message={desarrolloFiltro ? 'Este desarrollo todavía no tiene contenido.' : 'Todavía no agregaste contenido.'}
-          />
+          <EmptyState message="Este desarrollo todavía no tiene contenido." />
         ) : (
           <ContenidoGrid items={contenido.content} onEliminar={setAEliminar} />
         )}

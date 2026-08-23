@@ -17,13 +17,15 @@ import { UploadZone } from './UploadZone'
 import { DriveSourcePanel } from './DriveSourcePanel'
 
 interface ContenidoFormProps {
-  desarrollos: Desarrollo[]
+  /** Este contenido siempre se carga en el contexto de un desarrollo puntual (se llega
+   *  acá desde su ficha de edición) — no hay picker, el desarrollo ya está fijado. */
+  desarrollo: Desarrollo
   isLoading?: boolean
   error?: EnhancedErrorResponse | null
   onSubmit: (values: ContenidoFormValues, archivo: File | null) => void
 }
 
-export function ContenidoForm({ desarrollos, isLoading, error, onSubmit }: ContenidoFormProps) {
+export function ContenidoForm({ desarrollo, isLoading, error, onSubmit }: ContenidoFormProps) {
   const [archivo, setArchivo] = useState<File | null>(null)
   const [driveFile, setDriveFile] = useState<DriveFile | null>(null)
   const {
@@ -36,7 +38,7 @@ export function ContenidoForm({ desarrollos, isLoading, error, onSubmit }: Conte
     formState: { errors },
   } = useForm<ContenidoFormValues>({
     resolver: zodResolver(contenidoFormSchema),
-    defaultValues: emptyContenidoForm(),
+    defaultValues: { ...emptyContenidoForm(), desarrolloId: desarrollo.id },
   })
   const tipo = watch('tipo')
   const origen = watch('origen')
@@ -50,7 +52,7 @@ export function ContenidoForm({ desarrollos, isLoading, error, onSubmit }: Conte
 
   const submit = handleSubmit((values) => {
     onSubmit(values, archivo)
-    reset({ ...emptyContenidoForm(), tipo: values.tipo, origen: values.origen })
+    reset({ ...emptyContenidoForm(), desarrolloId: desarrollo.id, tipo: values.tipo, origen: values.origen })
     setArchivo(null)
     setDriveFile(null)
   })
@@ -114,26 +116,10 @@ export function ContenidoForm({ desarrollos, isLoading, error, onSubmit }: Conte
 
           <div className={bo.fieldGrid2}>
             <div>
-              <label className={bo.label}>Desarrollo asociado *</label>
-              <Controller
-                name="desarrolloId"
-                control={control}
-                render={({ field }) => (
-                  <select
-                    className={bo.select}
-                    value={field.value ?? ''}
-                    onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
-                  >
-                    <option value="">Seleccionar desarrollo...</option>
-                    {desarrollos.map((d) => (
-                      <option key={d.id} value={d.id}>
-                        {d.nombre}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              />
-              {errors.desarrolloId && <p className={bo.errorText}>{errors.desarrolloId.message}</p>}
+              <label className={bo.label}>Desarrollo asociado</label>
+              <div className={bo.input} style={{ display: 'flex', alignItems: 'center', color: '#999999' }}>
+                {desarrollo.nombre}
+              </div>
             </div>
             <div>
               <label className={bo.label}>Categoría</label>

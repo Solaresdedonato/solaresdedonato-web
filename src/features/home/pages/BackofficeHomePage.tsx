@@ -27,11 +27,8 @@ export function BackofficeHomePage() {
           <p className={bo.pageSubtitle}>Resumen general de desarrollos y contenido</p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <RouterLink to={ROUTES.backofficeDesarrolloNuevo} className={bo.btnOutline}>
+          <RouterLink to={ROUTES.backofficeDesarrolloNuevo} className={bo.btnPrimary}>
             + Nuevo desarrollo
-          </RouterLink>
-          <RouterLink to={ROUTES.backofficeContenido} className={bo.btnPrimary}>
-            + Nuevo contenido
           </RouterLink>
         </div>
       </div>
@@ -91,11 +88,6 @@ export function BackofficeHomePage() {
               ))}
             </div>
           )}
-          <div style={{ padding: '0 1.4rem 1.1rem' }}>
-            <RouterLink to={ROUTES.backofficeContenido} style={{ fontSize: '0.7rem', color: '#eabc7b', textDecoration: 'none' }}>
-              Ver toda la biblioteca →
-            </RouterLink>
-          </div>
         </div>
       </div>
     </div>

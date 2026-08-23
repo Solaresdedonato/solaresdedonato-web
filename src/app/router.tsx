@@ -37,7 +37,7 @@ export const router = createBrowserRouter([
           { path: 'desarrollos', element: <DesarrollosListPage /> },
           { path: 'desarrollos/nuevo', element: <DesarrolloFormPage /> },
           { path: 'desarrollos/:id/editar', element: <DesarrolloFormPage /> },
-          { path: 'contenido', element: <ContenidoPage /> },
+          { path: 'desarrollos/:id/contenido', element: <ContenidoPage /> },
           { path: 'web', element: <WebPage /> },
           { path: 'consultas', element: <ConsultasPage /> },
         ],
