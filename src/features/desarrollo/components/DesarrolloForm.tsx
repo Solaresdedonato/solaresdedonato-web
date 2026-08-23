@@ -25,6 +25,10 @@ interface DesarrolloFormUiValues {
   cercaniasTexto: Record<keyof DesarrolloCercanias, string>
   instrumentoTokenizacion: boolean
   instrumentoRentaFija: boolean
+  showroomVirtualUrl: string
+  brochurePlanosUrl: string
+  avanceObraUrl: string
+  solicitarInformacionUrl: string
 }
 
 function toUiValues(desarrollo?: Desarrollo): DesarrolloFormUiValues {
@@ -44,6 +48,10 @@ function toUiValues(desarrollo?: Desarrollo): DesarrolloFormUiValues {
     },
     instrumentoTokenizacion: base.instrumentoTokenizacion,
     instrumentoRentaFija: base.instrumentoRentaFija,
+    showroomVirtualUrl: base.showroomVirtualUrl ?? '',
+    brochurePlanosUrl: base.brochurePlanosUrl ?? '',
+    avanceObraUrl: base.avanceObraUrl ?? '',
+    solicitarInformacionUrl: base.solicitarInformacionUrl ?? '',
   }
 }
 
@@ -53,6 +61,8 @@ function toApiValues(ui: DesarrolloFormUiValues): DesarrolloFormValues {
       .split('\n')
       .map((line) => line.trim())
       .filter(Boolean)
+
+  const urlOrUndefined = (text: string) => text.trim() || undefined
 
   return {
     nombre: ui.nombre,
@@ -69,6 +79,10 @@ function toApiValues(ui: DesarrolloFormUiValues): DesarrolloFormValues {
     },
     instrumentoTokenizacion: ui.instrumentoTokenizacion,
     instrumentoRentaFija: ui.instrumentoRentaFija,
+    showroomVirtualUrl: urlOrUndefined(ui.showroomVirtualUrl),
+    brochurePlanosUrl: urlOrUndefined(ui.brochurePlanosUrl),
+    avanceObraUrl: urlOrUndefined(ui.avanceObraUrl),
+    solicitarInformacionUrl: urlOrUndefined(ui.solicitarInformacionUrl),
   }
 }
 
@@ -175,6 +189,45 @@ export function DesarrolloForm({ desarrollo, isLoading, error, onSubmit }: Desar
               <input type="checkbox" {...register('instrumentoRentaFija')} />
               Renta fija mensual
             </label>
+          </div>
+
+          <div className={bo.panelPadded}>
+            <div className={bo.sectionEyebrow}>Enlaces opcionales</div>
+            <p className={bo.hint}>
+              Direcciones a las que redirigen los botones de la ficha pública. Si se dejan vacías, ese botón no se
+              muestra (excepto "Solicitar información", que por defecto lleva al formulario de contacto del sitio).
+            </p>
+            <div className={bo.field}>
+              <label className={bo.label}>Showroom virtual</label>
+              <input
+                className={bo.input}
+                type="url"
+                placeholder="https://..."
+                {...register('showroomVirtualUrl')}
+              />
+            </div>
+            <div className={bo.field}>
+              <label className={bo.label}>Brochure / Planos</label>
+              <input
+                className={bo.input}
+                type="url"
+                placeholder="https://..."
+                {...register('brochurePlanosUrl')}
+              />
+            </div>
+            <div className={bo.field}>
+              <label className={bo.label}>Avance de obra</label>
+              <input className={bo.input} type="url" placeholder="https://..." {...register('avanceObraUrl')} />
+            </div>
+            <div>
+              <label className={bo.label}>Solicitar información</label>
+              <input
+                className={bo.input}
+                type="url"
+                placeholder="https://... (opcional, si no se completa usa el formulario de contacto)"
+                {...register('solicitarInformacionUrl')}
+              />
+            </div>
           </div>
         </div>
 

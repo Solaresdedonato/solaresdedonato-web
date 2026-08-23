@@ -31,6 +31,8 @@ export const desarrollosSeed: Desarrollo[] = [
     instrumentoRentaFija: false,
     publicado: true,
     imagenPortadaUrl: img('photo-1582268611958-ebfd161ef9cf'),
+    showroomVirtualUrl: 'https://my.matterport.com/show/?m=demo',
+    brochurePlanosUrl: 'https://example.com/brochure-solares-pinamar.pdf',
   },
   {
     id: 2,

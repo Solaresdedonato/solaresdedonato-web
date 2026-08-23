@@ -56,6 +56,12 @@ export interface Desarrollo {
   instrumentoRentaFija: boolean
   publicado: boolean
   imagenPortadaUrl: string | null
+  /** Enlaces opcionales de la ficha pública (botones de acción) — ninguno es obligatorio.
+   *  Ausentes (no `null`) cuando no están cargados: ver DesarrolloDto en el backend. */
+  showroomVirtualUrl?: string
+  brochurePlanosUrl?: string
+  avanceObraUrl?: string
+  solicitarInformacionUrl?: string
   /** Solo viene poblada en GET /v1/desarrollo/{slug} (el backend ya la arma ahí,
    *  componiendo ContenidoMediaRepositoryPort) — ausente en el listado y en el admin. */
   galeria?: ContenidoMedia[]
@@ -89,6 +95,10 @@ export const desarrolloFormSchema = z.object({
   }),
   instrumentoTokenizacion: z.boolean(),
   instrumentoRentaFija: z.boolean(),
+  showroomVirtualUrl: z.string().optional(),
+  brochurePlanosUrl: z.string().optional(),
+  avanceObraUrl: z.string().optional(),
+  solicitarInformacionUrl: z.string().optional(),
 })
 
 export type DesarrolloFormValues = z.infer<typeof desarrolloFormSchema>
@@ -104,5 +114,9 @@ export function emptyDesarrolloForm(): DesarrolloFormValues {
     cercanias: { educacion: [], transporte: [], comercios: [], salud: [] },
     instrumentoTokenizacion: false,
     instrumentoRentaFija: false,
+    showroomVirtualUrl: '',
+    brochurePlanosUrl: '',
+    avanceObraUrl: '',
+    solicitarInformacionUrl: '',
   }
 }

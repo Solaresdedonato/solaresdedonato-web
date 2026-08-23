@@ -123,7 +123,7 @@ export function DesarrolloDetalle() {
             </div>
           </div>
 
-          <DesarrolloAccionesBotones />
+          <DesarrolloAccionesBotones desarrollo={desarrollo} />
         </div>
       </div>
     </div>
