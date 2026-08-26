@@ -1,25 +1,26 @@
-import { ROUTES } from '@/shared/router/routes'
 import type { Desarrollo } from '@/features/desarrollo/schemas/desarrollo.schema'
+
+const WHATSAPP_NUMBER = '5491151407693'
 
 interface DesarrolloAccionesBotonesProps {
   desarrollo: Pick<
     Desarrollo,
-    'showroomVirtualUrl' | 'brochurePlanosUrl' | 'avanceObraUrl' | 'solicitarInformacionUrl'
+    'showroomVirtualUrl' | 'brochurePlanosUrl' | 'avanceObraUrl' | 'slug' | 'nombre'
   >
-  /** El botón "Solicitar información" navega a #contacto igual en el modal y en la
-   *  página de detalle cuando el desarrollo no tiene una URL propia cargada — esto es
-   *  lo único que cambia entre los dos usos (el modal también necesita cerrarse antes
-   *  de navegar). */
-  onSolicitarInfo?: () => void
 }
 
 /**
- * Cada botón es opcional: se carga por desarrollo desde el backoffice (panel "Enlaces
- * opcionales" en DesarrolloForm). Si no tiene URL cargada, el botón directamente no se
- * renderiza — "Solicitar información" es la excepción, que cae al ancla interna
- * #contacto cuando no hay una URL propia.
+ * Cada botón de enlace opcional se carga por desarrollo desde el backoffice (panel
+ * "Enlaces opcionales" en DesarrolloForm). Si no tiene URL cargada, el botón
+ * directamente no se renderiza. "Hablar con un asesor" es fijo: siempre abre WhatsApp
+ * con un mensaje que incluye el desarrollo y su URL.
  */
-export function DesarrolloAccionesBotones({ desarrollo, onSolicitarInfo }: DesarrolloAccionesBotonesProps) {
+export function DesarrolloAccionesBotones({ desarrollo }: DesarrolloAccionesBotonesProps) {
+  const urlDesarrollo = `${window.location.origin}/desarrollos/${desarrollo.slug}`
+  const mensajeAsesor = encodeURIComponent(
+    `Hola, quiero más información sobre ${desarrollo.nombre}. ${urlDesarrollo}`,
+  )
+
   return (
     <div className="modal-botones">
       {desarrollo.showroomVirtualUrl && (
@@ -69,11 +70,10 @@ export function DesarrolloAccionesBotones({ desarrollo, onSolicitarInfo }: Desar
       )}
 
       <a
-        href={desarrollo.solicitarInformacionUrl || `${ROUTES.home}#contacto`}
-        target={desarrollo.solicitarInformacionUrl ? '_blank' : undefined}
-        rel={desarrollo.solicitarInformacionUrl ? 'noreferrer' : undefined}
+        href={`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${mensajeAsesor}`}
+        target="_blank"
+        rel="noreferrer"
         className="modal-btn modal-btn-primary"
-        onClick={desarrollo.solicitarInformacionUrl ? undefined : onSolicitarInfo}
       >
         <div className="btn-icono">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

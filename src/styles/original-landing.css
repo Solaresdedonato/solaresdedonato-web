@@ -69,7 +69,7 @@
 
   .nav-cta {
     background: transparent;
-    border: 1px solid var(--dorado);
+    border: none;
     color: var(--dorado);
     font-family: 'Titillium Web', sans-serif;
     font-size: 0.7rem;
@@ -83,6 +83,12 @@
   .nav-cta:hover {
     background: var(--dorado);
     color: var(--negro);
+  }
+
+  /* Offset para que el título de cada sección no quede tapado por el nav fijo
+     al llegar por un link ancla (#nosotros, #desarrollos, etc.). */
+  #nosotros, #desarrollos, #invertir, #brokers, #contacto {
+    scroll-margin-top: 110px;
   }
 
   /* ── HERO ── */

@@ -28,7 +28,6 @@ const PALABRAS = [
 const HERO_STATS = [
   { to: 25, suffix: '+', label: 'Años de trayectoria' },
   { to: 30000, suffix: '+', miles: true, label: 'M² construidos en CABA' },
-  { numero: 'USD', label: 'Operaciones en dólares' },
 ]
 
 const NOSOTROS_STATS = [
@@ -425,9 +424,9 @@ export function Home() {
               <span className="label">WhatsApp / Teléfono</span>
               <span className="valor">+54 9 11 5140 7693</span>
             </a>
-            <a className="contacto-item" href="mailto:Info@solaresdedonato.com.ar">
+            <a className="contacto-item" href="mailto:general@solaresdedonato.com.ar">
               <span className="label">Email</span>
-              <span className="valor">Info@solaresdedonato.com.ar</span>
+              <span className="valor">general@solaresdedonato.com.ar</span>
             </a>
             <div className="contacto-item">
               <span className="label">Dirección</span>

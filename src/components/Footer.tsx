@@ -86,7 +86,7 @@ export function Footer() {
           <a href={`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer">
             +54 9 11 5140 7693
           </a>
-          <a href="mailto:Info@solaresdedonato.com.ar">Info@solaresdedonato.com.ar</a>
+          <a href="mailto:general@solaresdedonato.com.ar">general@solaresdedonato.com.ar</a>
           <p>
             Basualdo 455, C1440 DNA
             <br />

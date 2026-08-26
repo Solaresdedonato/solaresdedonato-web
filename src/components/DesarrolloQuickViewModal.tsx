@@ -94,7 +94,7 @@ export function DesarrolloQuickViewModal({ desarrollo, onClose }: DesarrolloQuic
             </div>
           </div>
 
-          <DesarrolloAccionesBotones desarrollo={d} onSolicitarInfo={onClose} />
+          <DesarrolloAccionesBotones desarrollo={d} />
         </div>
       </div>
     </div>
