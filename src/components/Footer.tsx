@@ -1,4 +1,5 @@
 import { ROUTES } from '@/shared/router/routes'
+import logo from '@/assets/logo.png'
 
 const WHATSAPP_NUMBER = '5491151407693'
 
@@ -41,8 +42,7 @@ export function Footer() {
     <footer>
       <div className="footer-grid">
         <div className="footer-col">
-          <p className="footer-marca">Solares de Donato</p>
-          <p className="footer-marca-sub">Desarrolladora inmobiliaria</p>
+          <img src={logo} alt="Solares de Donato — Desarrolladora" className="footer-logo" />
           <p>
             Equipo de profesionales especialistas en cada rubro, que abarca desde el desarrollo, arquitectura, financiación,
             construcción y postventa de emprendimientos inmobiliarios.

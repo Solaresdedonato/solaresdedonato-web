@@ -1882,18 +1882,9 @@
   }
   .footer-col a:hover { color: var(--dorado); }
 
-  .footer-marca {
-    font-family: 'Titillium Web', sans-serif;
-    font-size: 1.3rem;
-    color: var(--blanco);
-    letter-spacing: 0.08em;
-    margin-bottom: 0.4rem;
-  }
-  .footer-marca-sub {
-    font-size: 0.62rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--dorado);
+  .footer-logo {
+    height: 44px;
+    width: auto;
     margin-bottom: 1.5rem;
   }
 
