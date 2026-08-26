@@ -36,21 +36,6 @@
     transition: height 0.3s;
   }
   nav.scrolled .logo-img { height: 38px; }
-  .nav-logo .marca {
-    font-family: 'Titillium Web', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: var(--blanco);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-  .nav-logo .sub {
-    font-size: 0.6rem;
-    letter-spacing: 0.25em;
-    color: var(--dorado);
-    text-transform: uppercase;
-    margin-top: 3px;
-  }
 
   .nav-links {
     display: flex;
@@ -1733,9 +1718,16 @@
     padding: 0 4rem 6rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "encabezado encabezado"
+      "info formulario";
     gap: 6rem;
     align-items: start;
   }
+
+  .contacto-encabezado { grid-area: encabezado; }
+  .contacto-info { grid-area: info; }
+  .contacto-formulario { grid-area: formulario; }
 
   .form-titulo {
     font-family: 'Titillium Web', sans-serif;
@@ -1793,6 +1785,9 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    background: var(--negro-medio);
+    border: 1px solid var(--gris-oscuro);
+    padding: 2rem;
   }
 
   .input-grupo {
@@ -2516,7 +2511,12 @@
     nav { padding: 1rem 1.5rem; }
     .nav-links { display: none; }
     .hero-stats { display: none; }
-    .nosotros, .formulario-wrap { grid-template-columns: 1fr; gap: 3rem; }
+    .nosotros { grid-template-columns: 1fr; gap: 3rem; }
+    .formulario-wrap {
+      grid-template-columns: 1fr;
+      grid-template-areas: "encabezado" "info" "formulario";
+      gap: 3rem;
+    }
     .desarrollos-grid, .instrumentos-grid,
     .noticias-grid, .footer-grid { grid-template-columns: 1fr; gap: 2px; }
     .footer-grid { gap: 2.5rem; }

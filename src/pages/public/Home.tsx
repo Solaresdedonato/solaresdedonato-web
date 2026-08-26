@@ -410,7 +410,7 @@ export function Home() {
       {/* CONTACTO */}
       <Divisor numero="IV" />
       <section id="contacto" className="formulario-wrap">
-        <Reveal>
+        <Reveal className="contacto-encabezado">
           <h2 className="form-titulo">
             Mantengamos el <em>contacto</em>
           </h2>
@@ -418,6 +418,8 @@ export function Home() {
             Equipo de profesionales especialistas en cada rubro, que abarca desde el desarrollo, arquitectura, financiación,
             construcción y postventa de emprendimientos inmobiliarios.
           </p>
+        </Reveal>
+        <Reveal className="contacto-info">
           <div className="contacto-directo">
             <h4>Datos de contacto</h4>
             <a className="contacto-item" href="https://api.whatsapp.com/send?phone=5491151407693" target="_blank" rel="noreferrer">
@@ -438,7 +440,7 @@ export function Home() {
             </div>
           </div>
         </Reveal>
-        <Reveal>
+        <Reveal className="contacto-formulario">
           <ContactoForm />
         </Reveal>
       </section>

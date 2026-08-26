@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link as RouterLink, matchPath, useLocation, useNavigate } from 'react-router-dom'
 import { ROUTES } from '@/shared/router/routes'
+import logo from '@/assets/logo.png'
 
 const LINKS = [
   { href: '#nosotros', label: 'Sobre nosotros' },
@@ -37,8 +38,7 @@ export function Navbar() {
         </button>
       ) : (
         <RouterLink to={ROUTES.home} className="nav-logo">
-          <span className="marca">Solares de Donato</span>
-          <span className="sub">Desarrolladora</span>
+          <img src={logo} alt="Solares de Donato — Desarrolladora" className="logo-img" />
         </RouterLink>
       )}
       <ul className="nav-links">
