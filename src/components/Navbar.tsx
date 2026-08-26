@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link as RouterLink, matchPath, useLocation, useNavigate } from 'react-router-dom'
 import { ROUTES } from '@/shared/router/routes'
 import logo from '@/assets/logo.png'
+import logoIcon from '@/assets/logo-icon.png'
 
 const LINKS = [
   { href: '#nosotros', label: 'Sobre nosotros' },
@@ -38,7 +39,11 @@ export function Navbar() {
         </button>
       ) : (
         <RouterLink to={ROUTES.home} className="nav-logo">
-          <img src={logo} alt="Solares de Donato — Desarrolladora" className="logo-img" />
+          {/* En anchos intermedios (~1000-1230px) el isologo completo no entra sin
+           *  pisar el menú — ahí se muestra solo el ícono (ver media query en
+           *  original-landing.css). */}
+          <img src={logo} alt="Solares de Donato — Desarrolladora" className="logo-img logo-img-full" />
+          <img src={logoIcon} alt="Solares de Donato" className="logo-img logo-img-compact" />
         </RouterLink>
       )}
       <ul className="nav-links">

@@ -32,10 +32,14 @@
   .logo-img {
     height: 48px;
     width: auto;
-    display: block;
     transition: height 0.3s;
   }
   nav.scrolled .logo-img { height: 38px; }
+
+  /* Isologo completo por default; en anchos intermedios (ver media query más
+     abajo) no entra sin pisar el menú, así que se muestra solo el ícono. */
+  .logo-img-full { display: block; }
+  .logo-img-compact { display: none; }
 
   .nav-links {
     display: flex;
@@ -2502,6 +2506,13 @@
   }
 
   /* ── RESPONSIVE ── */
+  /* El isologo completo (ícono + "Solares de Donato") empieza a pisar el menú
+     antes de que .nav-links se oculte del todo a los 900px — de acá para
+     abajo se muestra solo el ícono. */
+  @media (max-width: 1300px) {
+    .logo-img-full { display: none; }
+    .logo-img-compact { display: block; }
+  }
   @media (max-width: 900px) {
     nav, .hero, .divisor, .nosotros, .desarrollos, .invertir,
     .noticias, .cta-band, .formulario-wrap, footer {
