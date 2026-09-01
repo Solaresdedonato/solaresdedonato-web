@@ -52,7 +52,7 @@
     font-size: 17px;
     font-weight: 400;
     line-height: 22px;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--gris-claro);
     transition: color 0.2s;
@@ -65,7 +65,7 @@
     color: var(--dorado);
     font-family: 'Titillium Web', sans-serif;
     font-size: 0.7rem;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     padding: 0.6rem 1.4rem;
     cursor: pointer;
