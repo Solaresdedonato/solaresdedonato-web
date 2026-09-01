@@ -1230,13 +1230,21 @@
     border-color: var(--dorado);
   }
 
-  .proximamente-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+  .proximamente-track {
+    display: flex;
     gap: 1.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding-bottom: 1rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
+  .proximamente-track::-webkit-scrollbar { display: none; }
 
   .prox-card {
+    flex: 0 0 calc(33.333% - 1rem);
+    scroll-snap-align: start;
     position: relative;
     aspect-ratio: 4/5;
     overflow: hidden;
@@ -1319,7 +1327,12 @@
   @media (max-width: 900px) {
     .proximamente-header { grid-template-columns: 1fr; gap: 1.5rem; }
     .prox-cta-link { justify-self: flex-start; }
-    .proximamente-grid { grid-template-columns: 1fr; gap: 1rem; }
+  }
+  @media (max-width: 1100px) {
+    .prox-card { flex: 0 0 calc(50% - 0.75rem); }
+  }
+  @media (max-width: 700px) {
+    .prox-card { flex: 0 0 85%; }
   }
 
   .desarrollo-card {
