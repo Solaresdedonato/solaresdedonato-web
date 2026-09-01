@@ -7,7 +7,6 @@ import { ConfirmDeleteDialog } from '@/shared/components/ConfirmDeleteDialog'
 import { ROUTES } from '@/shared/router/routes'
 import { useDesarrolloAdmin } from '@/features/desarrollo/hooks/useDesarrollo'
 import { useContenidoList, useEliminarContenido } from '../hooks/useContenido'
-import { useGuardarContenido } from '../hooks/useGuardarContenido'
 import { ContenidoForm } from '../components/ContenidoForm'
 import { ContenidoGrid } from '../components/ContenidoGrid'
 import type { ContenidoMedia } from '../schemas/contenido.schema'
@@ -19,7 +18,6 @@ export function ContenidoPage() {
 
   const { data: desarrollo, isLoading: cargandoDesarrollo } = useDesarrolloAdmin(desarrolloId)
   const { data: contenido, isLoading } = useContenidoList({ desarrolloId, size: 100 })
-  const { guardar, isLoading: creando, error: errorCrear } = useGuardarContenido()
   const { eliminar, isLoading: eliminando, error: errorEliminar } = useEliminarContenido()
 
   if (cargandoDesarrollo) return <LoadingScreen />
@@ -46,12 +44,7 @@ export function ContenidoPage() {
         </RouterLink>
       </div>
 
-      <ContenidoForm
-        desarrollo={desarrollo}
-        isLoading={creando}
-        error={errorCrear}
-        onSubmit={(values, archivo) => guardar({ form: values, archivo })}
-      />
+      <ContenidoForm desarrollo={desarrollo} />
 
       <div style={{ borderTop: '1px solid #2a2a2a', paddingTop: '2rem' }}>
         <h2 style={{ fontFamily: "'Titillium Web', sans-serif", fontWeight: 400, fontSize: '1.3rem', color: '#ffffff', margin: '0 0 1.5rem' }}>

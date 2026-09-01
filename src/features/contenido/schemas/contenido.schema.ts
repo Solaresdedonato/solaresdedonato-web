@@ -48,7 +48,10 @@ export const contenidoFormSchema = z
     // una URL externa de YouTube/Vimeo" en vez de subir nada.
     origen: z.enum(ORIGENES_CONTENIDO),
     driveFileId: z.string().nullable(),
-    titulo: z.string().min(1, 'Ingresá un título'),
+    // Para foto es un prefijo OPCIONAL: el título real de cada foto lo arma
+    // useGuardarContenidoLote a partir del nombre de archivo. Solo video (un único
+    // ítem, sin nombre de archivo del que derivar nada) sigue exigiéndolo.
+    titulo: z.string(),
     desarrolloId: z.number().nullable(),
     categoria: z.enum(CATEGORIAS_CONTENIDO),
     descripcion: z.string().optional(),
@@ -59,7 +62,14 @@ export const contenidoFormSchema = z
     message: 'Ingresá la URL del video',
     path: ['videoUrl'],
   })
-  .refine((data) => data.origen !== 'drive' || !!data.driveFileId, {
+  .refine((data) => data.tipo !== 'video' || data.titulo.trim().length > 0, {
+    message: 'Ingresá un título',
+    path: ['titulo'],
+  })
+  .refine((data) => data.tipo !== 'video' || data.origen !== 'drive' || !!data.driveFileId, {
+    // Para foto, la selección de Drive es un array (driveFiles) que vive fuera del
+    // form de react-hook-form — ver ContenidoForm/useGuardarContenidoLote — así que
+    // este campo/refine ya no le compete.
     message: 'Elegí un archivo de Drive',
     path: ['driveFileId'],
   })

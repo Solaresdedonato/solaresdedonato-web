@@ -11,10 +11,11 @@ interface DriveFileTileProps {
   file: DriveFile
   soportado: boolean
   selected: boolean
+  multiple?: boolean
   onClick: () => void
 }
 
-function DriveFileTile({ file, soportado, selected, onClick }: DriveFileTileProps) {
+function DriveFileTile({ file, soportado, selected, multiple, onClick }: DriveFileTileProps) {
   // yaImportado ya NO deshabilita: es informativo (la foto está en otro destino),
   // pero el backend permite reusar la misma foto de Drive en un desarrollo/categoria
   // distinto de donde ya está — solo rechaza (409) reimportarla al mismo destino.
@@ -44,6 +45,27 @@ function DriveFileTile({ file, soportado, selected, onClick }: DriveFileTileProp
             <span style={{ fontSize: '1.6rem', color: '#555555' }}>{file.mimeType.startsWith('video/') ? '▶' : '▨'}</span>
           </div>
         )}
+        {multiple && (
+          <span
+            style={{
+              position: 'absolute',
+              top: '0.4rem',
+              left: '0.4rem',
+              width: 18,
+              height: 18,
+              borderRadius: 3,
+              border: `1px solid ${selected ? '#eabc7b' : 'rgba(255,255,255,0.6)'}`,
+              background: selected ? '#eabc7b' : 'rgba(8,8,8,0.5)',
+              color: '#080808',
+              fontSize: '0.7rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {selected ? '✓' : ''}
+          </span>
+        )}
         {file.yaImportado && <span className={bo.mediaTileBadge}>En biblioteca</span>}
       </div>
       <div className={bo.mediaTileBody}>
@@ -60,12 +82,17 @@ interface DrivePickerModalProps {
    *  (para que quede claro qué hay), pero gris y deshabilitado. */
   familia: 'foto' | 'video'
   onClose: () => void
-  onSelect: (file: DriveFile) => void
+  /** Modo single (default): un click elige y confirma. Ignorado si multiple=true. */
+  onSelect?: (file: DriveFile) => void
+  /** Modo carga masiva: click hace toggle, "Elegir (N)" confirma toda la selección. */
+  multiple?: boolean
+  onSelectMultiple?: (files: DriveFile[]) => void
 }
 
-export function DrivePickerModal({ open, familia, onClose, onSelect }: DrivePickerModalProps) {
+export function DrivePickerModal({ open, familia, onClose, onSelect, multiple, onSelectMultiple }: DrivePickerModalProps) {
   const [busqueda, setBusqueda] = useState('')
   const [seleccionado, setSeleccionado] = useState<DriveFile | null>(null)
+  const [seleccionados, setSeleccionados] = useState<Map<string, DriveFile>>(new Map())
   const { data, isLoading, isFetching, error, refetch } = useDriveArchivos(open)
 
   // Sin efecto de reset (react-hooks/set-state-in-effect): DriveSourcePanel remonta
@@ -122,8 +149,20 @@ export function DrivePickerModal({ open, familia, onClose, onSelect }: DrivePick
                   key={archivo.id}
                   file={archivo}
                   soportado={familiaDriveArchivo(archivo.mimeType) === familia}
-                  selected={seleccionado?.id === archivo.id}
-                  onClick={() => setSeleccionado(archivo)}
+                  selected={multiple ? seleccionados.has(archivo.id) : seleccionado?.id === archivo.id}
+                  multiple={multiple}
+                  onClick={() => {
+                    if (!multiple) {
+                      setSeleccionado(archivo)
+                      return
+                    }
+                    setSeleccionados((prev) => {
+                      const next = new Map(prev)
+                      if (next.has(archivo.id)) next.delete(archivo.id)
+                      else next.set(archivo.id, archivo)
+                      return next
+                    })
+                  }}
                 />
               ))}
             </div>
@@ -134,14 +173,25 @@ export function DrivePickerModal({ open, familia, onClose, onSelect }: DrivePick
           <button type="button" className={bo.btnGhost} onClick={onClose}>
             Cancelar
           </button>
-          <button
-            type="button"
-            className={bo.btnPrimary}
-            disabled={!seleccionado}
-            onClick={() => seleccionado && onSelect(seleccionado)}
-          >
-            Elegir
-          </button>
+          {multiple ? (
+            <button
+              type="button"
+              className={bo.btnPrimary}
+              disabled={seleccionados.size === 0}
+              onClick={() => onSelectMultiple?.(Array.from(seleccionados.values()))}
+            >
+              Elegir ({seleccionados.size})
+            </button>
+          ) : (
+            <button
+              type="button"
+              className={bo.btnPrimary}
+              disabled={!seleccionado}
+              onClick={() => seleccionado && onSelect?.(seleccionado)}
+            >
+              Elegir
+            </button>
+          )}
         </div>
       </div>
     </div>
