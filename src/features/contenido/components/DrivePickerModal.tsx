@@ -15,9 +15,10 @@ interface DriveFileTileProps {
 }
 
 function DriveFileTile({ file, soportado, selected, onClick }: DriveFileTileProps) {
-  // yaImportado deshabilitado también: el backend lo rechaza con 409 igual, mejor
-  // no dejar elegir algo que va a fallar al enviar.
-  const disabled = !soportado || file.yaImportado
+  // yaImportado ya NO deshabilita: es informativo (la foto está en otro destino),
+  // pero el backend permite reusar la misma foto de Drive en un desarrollo/categoria
+  // distinto de donde ya está — solo rechaza (409) reimportarla al mismo destino.
+  const disabled = !soportado
   const thumbUrl = useDriveThumbnail(soportado ? file.miniaturaUrl : null)
 
   return (
@@ -28,7 +29,7 @@ function DriveFileTile({ file, soportado, selected, onClick }: DriveFileTileProp
       disabled={disabled}
       title={
         file.yaImportado
-          ? `${file.nombre} — ya está en la biblioteca`
+          ? `${file.nombre} — ya está en la biblioteca (se puede agregar también acá)`
           : soportado
             ? file.nombre
             : `${file.nombre} — tipo de archivo no soportado`
