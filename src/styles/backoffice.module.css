@@ -44,7 +44,7 @@
   background: #eabc7b;
   border: none;
   color: #080808;
-  font-family: 'Mukta', sans-serif;
+  font-family: 'Titillium Web', sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -61,7 +61,7 @@
   background: #eabc7b;
   border: none;
   color: #080808;
-  font-family: 'Mukta', sans-serif;
+  font-family: 'Titillium Web', sans-serif;
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -74,7 +74,7 @@
   background: transparent;
   border: 1px solid #eabc7b;
   color: #eabc7b;
-  font-family: 'Mukta', sans-serif;
+  font-family: 'Titillium Web', sans-serif;
   font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -90,7 +90,7 @@
   background: transparent;
   border: 1px solid #eabc7b;
   color: #eabc7b;
-  font-family: 'Mukta', sans-serif;
+  font-family: 'Titillium Web', sans-serif;
   font-size: 0.72rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -102,7 +102,7 @@
   background: transparent;
   border: 1px solid #2a2a2a;
   color: #999999;
-  font-family: 'Mukta', sans-serif;
+  font-family: 'Titillium Web', sans-serif;
   font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -116,7 +116,7 @@
   background: transparent;
   border: 1px solid #2a2a2a;
   color: #999999;
-  font-family: 'Mukta', sans-serif;
+  font-family: 'Titillium Web', sans-serif;
   font-size: 0.72rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -128,7 +128,7 @@
   background: transparent;
   border: 1px solid #eabc7b;
   color: #eabc7b;
-  font-family: 'Mukta', sans-serif;
+  font-family: 'Titillium Web', sans-serif;
   font-size: 0.72rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -137,7 +137,7 @@
 }
 
 .btnToggle {
-  font-family: 'Mukta', sans-serif;
+  font-family: 'Titillium Web', sans-serif;
   font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -227,7 +227,7 @@
   background: #080808;
   border: 1px solid #2a2a2a;
   color: #f5f0e8;
-  font-family: 'Mukta', sans-serif;
+  font-family: 'Titillium Web', sans-serif;
   font-size: 0.92rem;
   padding: 0.85rem 1rem;
 }
@@ -322,7 +322,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-family: 'Mukta', sans-serif;
+  font-family: 'Titillium Web', sans-serif;
 }
 .deleteLink {
   font-size: 0.72rem;
@@ -331,7 +331,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-family: 'Mukta', sans-serif;
+  font-family: 'Titillium Web', sans-serif;
 }
 
 /* ---- Badge de estado ---- */
@@ -366,7 +366,7 @@
   padding: 0.85rem 0.2rem;
   margin-right: 1.75rem;
   cursor: pointer;
-  font-family: 'Mukta', sans-serif;
+  font-family: 'Titillium Web', sans-serif;
   font-size: 0.85rem;
   letter-spacing: 0.02em;
   color: #999999;
