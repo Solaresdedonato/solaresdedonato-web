@@ -164,7 +164,11 @@
     font-size: 72px;
     font-weight: 600;
     text-transform: capitalize;
-    line-height: 64px;
+    /* 64px (el valor exacto del spec) es MENOR que el font-size: en una sola
+       línea no se nota, pero acá el título ocupa dos líneas y la palabra
+       dorada en italica de la segunda pisa la primera. 1.15 (mismo ratio que
+       .titulo-centrado) da lugar sin perder el tamaño pedido. */
+    line-height: 1.15;
     color: var(--blanco);
     margin-bottom: 1.5rem;
   }
