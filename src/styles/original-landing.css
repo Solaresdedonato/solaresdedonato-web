@@ -48,7 +48,10 @@
   }
   .nav-links a {
     text-decoration: none;
-    font-size: 0.75rem;
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 22px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--gris-claro);
@@ -158,9 +161,10 @@
 
   .hero-title {
     font-family: 'Titillium Web', sans-serif;
-    font-size: clamp(2.6rem, 5.5vw, 5rem);
-    font-weight: 400;
-    line-height: 1.1;
+    font-size: 72px;
+    font-weight: 600;
+    text-transform: capitalize;
+    line-height: 64px;
     color: var(--blanco);
     margin-bottom: 1.5rem;
   }
@@ -2526,6 +2530,9 @@
     nav { padding: 1rem 1.5rem; }
     .nav-links { display: none; }
     .hero-stats { display: none; }
+    /* .hero-title pasó de clamp() a un tamaño fijo (72px/64px) para el spec de
+       desktop — sin esto desborda en mobile, donde antes bajaba a 2.6rem. */
+    .hero-title { font-size: 2.6rem; line-height: 1.15; }
     .nosotros { grid-template-columns: 1fr; gap: 3rem; }
     .formulario-wrap {
       grid-template-columns: 1fr;
