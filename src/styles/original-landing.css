@@ -345,7 +345,7 @@
   .titulo-centrado {
     font-family: 'Titillium Web', sans-serif;
     font-size: clamp(2.2rem, 4vw, 3.4rem);
-    font-weight: 400;
+    font-weight: 600;
     color: var(--blanco);
     line-height: 1.15;
     margin-bottom: 1.5rem;
@@ -397,7 +397,7 @@
   .cta-quick-title {
     font-family: 'Titillium Web', sans-serif;
     font-size: clamp(1.8rem, 2.6vw, 2.4rem);
-    font-weight: 400;
+    font-weight: 600;
     color: var(--blanco);
     line-height: 1.25;
     margin-bottom: 1.5rem;
@@ -862,7 +862,7 @@
   .nosotros-texto h2 {
     font-family: 'Titillium Web', sans-serif;
     font-size: clamp(2rem, 3.5vw, 3rem);
-    font-weight: 400;
+    font-weight: 600;
     line-height: 1.2;
     color: var(--blanco);
     margin-bottom: 1.5rem;
@@ -912,7 +912,7 @@
   .seccion-header h2 {
     font-family: 'Titillium Web', sans-serif;
     font-size: clamp(1.8rem, 3vw, 2.6rem);
-    font-weight: 400;
+    font-weight: 600;
     color: var(--blanco);
     line-height: 1.2;
   }
@@ -1460,7 +1460,7 @@
   .invertir-intro h2 {
     font-family: 'Titillium Web', sans-serif;
     font-size: clamp(2rem, 3.5vw, 3rem);
-    font-weight: 400;
+    font-weight: 600;
     color: var(--blanco);
     line-height: 1.2;
     margin-bottom: 1.2rem;
@@ -1713,7 +1713,7 @@
   .cta-band h2 {
     font-family: 'Titillium Web', sans-serif;
     font-size: clamp(2rem, 4vw, 3.5rem);
-    font-weight: 400;
+    font-weight: 600;
     color: var(--blanco);
     line-height: 1.2;
     margin-bottom: 1rem;
@@ -1757,7 +1757,7 @@
   .form-titulo {
     font-family: 'Titillium Web', sans-serif;
     font-size: clamp(1.8rem, 2.5vw, 2.4rem);
-    font-weight: 400;
+    font-weight: 600;
     color: var(--blanco);
     line-height: 1.2;
     margin-bottom: 1rem;
