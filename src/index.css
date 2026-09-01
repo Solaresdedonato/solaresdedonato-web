@@ -27,6 +27,16 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Los navegadores no heredan font-family en controles de formulario por
+   default (usan la fuente del SO) — sin esto, cualquier input/button/select
+   sin font-family propio queda afuera de Titillium Web. */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
 p {
   margin: 0;
 }
