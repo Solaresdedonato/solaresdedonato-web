@@ -24,7 +24,9 @@ export function DesarrolloQuickViewModal({ desarrollo, onClose }: DesarrolloQuic
   const { data: detalle } = useDesarrolloPorSlug(desarrollo.slug)
   const d = detalle ?? desarrollo
 
-  const mapsQuery = encodeURIComponent(d.direccion)
+  // Ver comentario en DesarrolloDetalle.tsx: sin zona/país la direccion es ambigua
+  // para el geocoder de Google si esa calle existe en mas de una localidad.
+  const mapsQuery = encodeURIComponent(`${d.direccion}, ${d.zona}, Argentina`)
 
   return (
     <div className="modal-dev open">

@@ -39,7 +39,9 @@ export function DesarrolloDetalle() {
     )
   }
 
-  const mapsQuery = encodeURIComponent(desarrollo.direccion)
+  // Sin zona/país, una direccion cargada como "solo calle y numero" es ambigua:
+  // esa misma calle puede existir en otra localidad y Google geocodifica cualquiera.
+  const mapsQuery = encodeURIComponent(`${desarrollo.direccion}, ${desarrollo.zona}, Argentina`)
 
   return (
     // Sin topbar propio: el "Volver" ahora vive en el <nav> del sitio (ver Navbar.tsx),

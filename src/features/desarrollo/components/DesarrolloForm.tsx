@@ -119,7 +119,7 @@ export function DesarrolloForm({ desarrollo, isLoading, error, onSubmit }: Desar
             <div className={bo.fieldGrid2}>
               <div>
                 <label className={bo.label}>Zona</label>
-                <input className={bo.input} placeholder="Ej: Palermo" {...register('zona', { required: true })} />
+                <input className={bo.input} placeholder="Ej: Pinamar, Buenos Aires" {...register('zona', { required: true })} />
               </div>
               <div>
                 <label className={bo.label}>Estado</label>
