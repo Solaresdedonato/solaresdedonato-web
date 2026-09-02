@@ -1,5 +1,11 @@
 import { z } from 'zod'
 
+// Fotos suelen venir sin comprimir (17-34MB c/u no es raro para una foto de cámara sin
+// procesar) — un lote grande hace lenta la carga de la página del desarrollo que las
+// termina mostrando todas juntas. Tope bajo a propósito, no técnico: nada impide subir
+// más fotos, solo hay que hacerlo en más de una tanda.
+export const MAX_LOTE_FOTOS = 3
+
 export const TIPOS_CONTENIDO = ['foto', 'video'] as const
 export type TipoContenido = (typeof TIPOS_CONTENIDO)[number]
 

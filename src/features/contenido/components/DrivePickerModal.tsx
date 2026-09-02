@@ -87,9 +87,21 @@ interface DrivePickerModalProps {
   /** Modo carga masiva: click hace toggle, "Elegir (N)" confirma toda la selección. */
   multiple?: boolean
   onSelectMultiple?: (files: DriveFile[]) => void
+  /** Cupo restante para esta sesión del picker (ej. MAX_LOTE_FOTOS menos lo ya elegido
+   *  en aperturas anteriores) — más allá de este número, el click para seleccionar un
+   *  archivo nuevo no hace nada. Sin límite si no se pasa. */
+  limiteSeleccion?: number
 }
 
-export function DrivePickerModal({ open, familia, onClose, onSelect, multiple, onSelectMultiple }: DrivePickerModalProps) {
+export function DrivePickerModal({
+  open,
+  familia,
+  onClose,
+  onSelect,
+  multiple,
+  onSelectMultiple,
+  limiteSeleccion,
+}: DrivePickerModalProps) {
   const [busqueda, setBusqueda] = useState('')
   const [seleccionado, setSeleccionado] = useState<DriveFile | null>(null)
   const [seleccionados, setSeleccionados] = useState<Map<string, DriveFile>>(new Map())
@@ -158,8 +170,11 @@ export function DrivePickerModal({ open, familia, onClose, onSelect, multiple, o
                     }
                     setSeleccionados((prev) => {
                       const next = new Map(prev)
-                      if (next.has(archivo.id)) next.delete(archivo.id)
-                      else next.set(archivo.id, archivo)
+                      if (next.has(archivo.id)) {
+                        next.delete(archivo.id)
+                      } else if (limiteSeleccion === undefined || next.size < limiteSeleccion) {
+                        next.set(archivo.id, archivo)
+                      }
                       return next
                     })
                   }}
@@ -180,7 +195,7 @@ export function DrivePickerModal({ open, familia, onClose, onSelect, multiple, o
               disabled={seleccionados.size === 0}
               onClick={() => onSelectMultiple?.(Array.from(seleccionados.values()))}
             >
-              Elegir ({seleccionados.size})
+              Elegir ({seleccionados.size}{limiteSeleccion !== undefined ? `/${limiteSeleccion}` : ''})
             </button>
           ) : (
             <button

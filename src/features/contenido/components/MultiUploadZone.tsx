@@ -1,5 +1,6 @@
 import { useRef, useState, type DragEvent } from 'react'
 import { formatBytes } from '@/shared/utils/formatBytes'
+import { MAX_LOTE_FOTOS } from '../schemas/contenido.schema'
 
 // Mismo allow-list que UploadZone/ValidadorArchivoImagen (jpg/png/webp/avif).
 const ACCEPT = '.jpg,.jpeg,.png,.webp,.avif'
@@ -29,9 +30,18 @@ export function MultiUploadZone({ files, onChange, disabled }: MultiUploadZonePr
 
   const handleFiles = (incoming: FileList | null) => {
     if (disabled || !incoming || incoming.length === 0) return
+    if (files.length >= MAX_LOTE_FOTOS) {
+      setErrorMsg(`Máximo ${MAX_LOTE_FOTOS} fotos por carga — sacá alguna antes de agregar más`)
+      return
+    }
     const nuevos: File[] = []
     let primerError: string | null = null
+    let excedente = false
     for (const f of Array.from(incoming)) {
+      if (files.length + nuevos.length >= MAX_LOTE_FOTOS) {
+        excedente = true
+        break
+      }
       const error = validate(f)
       if (error) {
         primerError = primerError ?? error
@@ -42,7 +52,7 @@ export function MultiUploadZone({ files, onChange, disabled }: MultiUploadZonePr
         nuevos.push(f)
       }
     }
-    setErrorMsg(primerError)
+    setErrorMsg(excedente ? `Máximo ${MAX_LOTE_FOTOS} fotos por carga — se descartó el resto` : primerError)
     if (nuevos.length > 0) onChange([...files, ...nuevos])
   }
 
@@ -79,9 +89,9 @@ export function MultiUploadZone({ files, onChange, disabled }: MultiUploadZonePr
       >
         <span style={{ fontSize: '1.6rem', color: '#555555' }}>▨</span>
         <span style={{ fontSize: '0.78rem', color: '#666666', textAlign: 'center', padding: '0 1.5rem' }}>
-          Arrastrá una o varias fotos acá o hacé clic para seleccionar
+          Arrastrá hasta {MAX_LOTE_FOTOS} fotos acá o hacé clic para seleccionar
         </span>
-        <span style={{ fontSize: '0.68rem', color: '#444444' }}>JPG, PNG, WebP, AVIF · max 5 MB c/u</span>
+        <span style={{ fontSize: '0.68rem', color: '#444444' }}>JPG, PNG, WebP, AVIF · max 5 MB c/u · máx {MAX_LOTE_FOTOS} por carga</span>
         <input
           ref={inputRef}
           type="file"

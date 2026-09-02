@@ -10,6 +10,7 @@ import type { Desarrollo } from '@/features/desarrollo/schemas/desarrollo.schema
 import {
   CATEGORIAS_SELECCIONABLES,
   CATEGORIA_LABELS,
+  MAX_LOTE_FOTOS,
   contenidoFormSchema,
   emptyContenidoForm,
   type ContenidoFormValues,
@@ -278,9 +279,17 @@ export function ContenidoForm({ desarrollo }: ContenidoFormProps) {
             )
           ) : origen === 'drive' ? (
             <div>
-              <button type="button" className={bo.btnOutline} disabled={isLoading} onClick={() => setPickerAbierto(true)}>
+              <button
+                type="button"
+                className={bo.btnOutline}
+                disabled={isLoading || driveFilesLote.length >= MAX_LOTE_FOTOS}
+                onClick={() => setPickerAbierto(true)}
+              >
                 Elegir de Drive
               </button>
+              <span style={{ marginLeft: '0.75rem', fontSize: '0.68rem', color: '#666666' }}>
+                {driveFilesLote.length}/{MAX_LOTE_FOTOS}
+              </span>
               {driveFilesLote.length > 0 && (
                 <div style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                   {driveFilesLote.map((f) => (
@@ -301,11 +310,15 @@ export function ContenidoForm({ desarrollo }: ContenidoFormProps) {
                 open={pickerAbierto}
                 familia="foto"
                 multiple
+                limiteSeleccion={Math.max(0, MAX_LOTE_FOTOS - driveFilesLote.length)}
                 onClose={() => setPickerAbierto(false)}
                 onSelectMultiple={(files) => {
                   setDriveFilesLote((prev) => {
                     const existentes = new Set(prev.map((f) => f.id))
-                    return [...prev, ...files.filter((f) => !existentes.has(f.id))]
+                    const nuevos = files.filter((f) => !existentes.has(f.id))
+                    // Defensivo: el limiteSeleccion del picker ya frena esto, pero no
+                    // duele truncar acá también por si algún día se llama distinto.
+                    return [...prev, ...nuevos].slice(0, MAX_LOTE_FOTOS)
                   })
                   setPickerAbierto(false)
                 }}
