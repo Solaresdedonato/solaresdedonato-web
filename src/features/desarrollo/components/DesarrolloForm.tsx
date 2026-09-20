@@ -5,6 +5,7 @@ import { ROUTES } from '@/shared/router/routes'
 import { ErrorDisplay } from '@/shared/components/ErrorDisplay'
 import type { EnhancedErrorResponse } from '@/shared/api/errorSchema'
 import { ESTADOS } from '../schemas/estados'
+import { DesarrolloGaleriaPreview } from './DesarrolloGaleriaPreview'
 import {
   CERCANIAS_CATEGORIAS,
   ESTADOS_DESARROLLO,
@@ -155,10 +156,11 @@ export function DesarrolloForm({ desarrollo, isLoading, error, onSubmit }: Desar
 
           <div className={bo.panelPadded}>
             <div className={bo.sectionEyebrow}>Características</div>
+            <p className={bo.hint}>Opcional. Las que se dejen vacías no se muestran en la ficha pública.</p>
             {[0, 1, 2, 3].map((i) => (
               <div className={bo.field} key={i}>
                 <label className={bo.label}>{desarrollo?.features[i]?.titulo ?? emptyDesarrolloForm().features[i].titulo}</label>
-                <input className={bo.input} placeholder="Detalle..." {...register(`features.${i}.texto` as const, { required: true })} />
+                <input className={bo.input} placeholder="Detalle..." {...register(`features.${i}.texto` as const)} />
               </div>
             ))}
           </div>
@@ -234,6 +236,7 @@ export function DesarrolloForm({ desarrollo, isLoading, error, onSubmit }: Desar
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div className={bo.panelPadded}>
             <div className={bo.sectionEyebrow}>Vista previa</div>
+            {desarrollo && <DesarrolloGaleriaPreview desarrollo={desarrollo} />}
             <div style={{ fontSize: '0.85rem', color: '#999999', lineHeight: 1.6 }}>
               <div style={{ color: '#f5f0e8', fontFamily: "'Titillium Web', sans-serif", fontSize: '1.15rem', marginBottom: '0.3rem' }}>
                 {previewNombre || 'Nombre del desarrollo'}

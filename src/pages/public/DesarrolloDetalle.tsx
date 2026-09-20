@@ -43,6 +43,11 @@ export function DesarrolloDetalle() {
   // esa misma calle puede existir en otra localidad y Google geocodifica cualquiera.
   const mapsQuery = encodeURIComponent(`${desarrollo.direccion}, ${desarrollo.zona}, Argentina`)
 
+  // Solo los datos generales son obligatorios al crear un desarrollo: características y
+  // cercanías pueden venir vacías, y en ese caso no se dibuja su bloque.
+  const features = desarrollo.features.filter((f) => f.texto.trim())
+  const cercanias = CERCANIAS_CATEGORIAS.filter((cat) => desarrollo.cercanias[cat.key].length > 0)
+
   return (
     // Sin topbar propio: el "Volver" ahora vive en el <nav> del sitio (ver Navbar.tsx),
     // en el mismo lugar que ocupa el logo en el resto de las páginas — la galería queda
@@ -53,6 +58,7 @@ export function DesarrolloDetalle() {
         imagenPortadaUrl={desarrollo.imagenPortadaUrl}
         nombre={desarrollo.nombre}
         className="pagina-dev-hero"
+        ampliable
       />
 
       <div className="pagina-dev-body">
@@ -65,36 +71,40 @@ export function DesarrolloDetalle() {
           <p className="modal-direccion">{desarrollo.direccion}</p>
           <p className="modal-descripcion">{desarrollo.descripcion}</p>
 
-          <div className="modal-features">
-            {desarrollo.features.map((f) => (
-              <div className="modal-feature" key={f.clave}>
-                <p className="feature-titulo">{f.titulo}</p>
-                <p className="feature-texto">{f.texto}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="pagina-cercanias">
-            <p className="cercanias-eyebrow">Cercanías</p>
-            <h3 className="cercanias-titulo">
-              Todo lo que tenés <em>a mano</em>
-            </h3>
-            <div className="cercanias-grid">
-              {CERCANIAS_CATEGORIAS.map((cat) => (
-                <div className="cercania-cat" key={cat.key}>
-                  <div className="cercania-cat-header">
-                    <span className="cercania-icono">{CERCANIA_ICONS[cat.key]}</span>
-                    <span className="cercania-cat-titulo">{cat.titulo}</span>
-                  </div>
-                  <ul className="cercania-lista">
-                    {desarrollo.cercanias[cat.key].map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
+          {features.length > 0 && (
+            <div className="modal-features">
+              {features.map((f) => (
+                <div className="modal-feature" key={f.clave}>
+                  <p className="feature-titulo">{f.titulo}</p>
+                  <p className="feature-texto">{f.texto}</p>
                 </div>
               ))}
             </div>
-          </div>
+          )}
+
+          {cercanias.length > 0 && (
+            <div className="pagina-cercanias">
+              <p className="cercanias-eyebrow">Cercanías</p>
+              <h3 className="cercanias-titulo">
+                Todo lo que tenés <em>a mano</em>
+              </h3>
+              <div className="cercanias-grid">
+                {cercanias.map((cat) => (
+                  <div className="cercania-cat" key={cat.key}>
+                    <div className="cercania-cat-header">
+                      <span className="cercania-icono">{CERCANIA_ICONS[cat.key]}</span>
+                      <span className="cercania-cat-titulo">{cat.titulo}</span>
+                    </div>
+                    <ul className="cercania-lista">
+                      {desarrollo.cercanias[cat.key].map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="modal-mapa">
             <div className="mapa-header">

@@ -208,6 +208,18 @@
   line-height: 1.5;
 }
 
+/* Vista previa de la galería de la ficha pública (DesarrolloGaleriaPreview). Es el
+   contenedor que DesarrolloGaleria espera: las slides y controles van posicionados
+   en absoluto adentro, así que necesita position + tamaño propio. */
+.galeriaPreview {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #0d0d0d;
+  border: 1px solid #2a2a2a;
+  margin-bottom: 0.75rem;
+}
+
 /* ---- Campos de formulario ---- */
 .field {
   margin-bottom: 1.25rem;

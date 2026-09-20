@@ -110,3 +110,123 @@
   z-index: 5;
   backdrop-filter: blur(4px);
 }
+
+/* ── Foto clickeable (solo en la página de detalle, prop `ampliable`) ── */
+
+/* El degradé de .pagina-dev-hero (::after, original-landing.css) cubre toda la galería:
+   sin esto intercepta los clics destinados a la foto (y al player del video). */
+.pagina-dev-hero::after {
+  pointer-events: none;
+}
+
+.galeria-slide-foto-ampliable {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+  cursor: zoom-in;
+}
+
+/* Ícono decorativo (no interactivo): avisa que la foto se puede ampliar, sobre todo en
+   táctil, donde no hay cursor. Abajo a la derecha para no pisar contador, flechas ni dots. */
+.galeria-ampliar {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--blanco);
+  background: rgba(8, 8, 8, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+  transition: all 0.2s;
+}
+.galeria-slide-foto-ampliable:hover .galeria-ampliar,
+.galeria-slide-foto-ampliable:focus-visible .galeria-ampliar {
+  background: var(--dorado);
+  color: var(--negro);
+  border-color: var(--dorado);
+}
+
+/* ── Lightbox: carrusel de fotos a pantalla completa ── */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  /* Por encima del nav (z-index 100) y del modal de vista rápida (200). */
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 5, 5, 0.94);
+  cursor: zoom-out;
+}
+.lightbox-img {
+  position: relative;
+  z-index: 1;
+  max-width: 92vw;
+  max-height: 86vh;
+  object-fit: contain;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 5;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 8, 8, 0.85);
+  border: 1px solid var(--gris-oscuro);
+  color: var(--blanco);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.lightbox-close:hover {
+  border-color: var(--dorado);
+  color: var(--dorado);
+}
+
+.lightbox-prev {
+  left: 1.25rem;
+}
+.lightbox-next {
+  right: 1.25rem;
+}
+
+/* Arriba a la izquierda, lejos de la cruz (arriba a la derecha). */
+.lightbox-contador {
+  position: absolute;
+  top: 1.75rem;
+  left: 1.5rem;
+  z-index: 5;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: var(--blanco);
+}
+
+@media (max-width: 700px) {
+  .lightbox-img {
+    max-width: 100vw;
+  }
+  .lightbox-prev {
+    left: 0.5rem;
+  }
+  .lightbox-next {
+    right: 0.5rem;
+  }
+}

@@ -77,7 +77,8 @@ export interface ResumenDesarrollos {
 const featureSchema = z.object({
   clave: z.enum(FEATURE_CLAVES),
   titulo: z.string().min(1),
-  texto: z.string().min(1, 'Completá el detalle'),
+  // Opcional: solo los datos generales son obligatorios al crear un desarrollo.
+  texto: z.string(),
 })
 
 export const desarrolloFormSchema = z.object({

@@ -17,6 +17,16 @@ export function DesarrolloQuickViewModal({ desarrollo, onClose }: DesarrolloQuic
     }
   }, [])
 
+  // Sin botón de cruz (se solapaba con los controles de la galería), el modal se cierra
+  // con clic en el fondo o con Escape.
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [onClose])
+
   // El desarrollo que llega por props viene del listado público, que no trae galería
   // (para no engordar esa respuesta con fotos de cada card) — se pide el detalle por
   // slug acá, que es el único endpoint que la arma. Mientras carga, se ve igual el
@@ -28,24 +38,13 @@ export function DesarrolloQuickViewModal({ desarrollo, onClose }: DesarrolloQuic
   // para el geocoder de Google si esa calle existe en mas de una localidad.
   const mapsQuery = encodeURIComponent(`${d.direccion}, ${d.zona}, Argentina`)
 
+  // Características vacías (opcionales al crear el desarrollo) no se dibujan.
+  const features = d.features.filter((f) => f.texto.trim())
+
   return (
     <div className="modal-dev open">
       <div className="modal-backdrop" onClick={onClose} />
       <div className="modal-container">
-        {/* Wrapper sticky de altura 0: el botón absoluto adentro queda anclado al
-            tope de .modal-container (que scrollea internamente, ver
-            original-landing.css) en vez de scrollear con el contenido — antes,
-            apenas el modal creció con el mapa y los botones nuevos, el X se iba
-            con el scroll y quedaba inalcanzable. */}
-        <div className="modal-close-sticky">
-          <button type="button" className="modal-close" onClick={onClose} aria-label="Cerrar">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-        </div>
-
         <DesarrolloGaleria galeria={d.galeria} imagenPortadaUrl={d.imagenPortadaUrl} nombre={d.nombre} className="modal-video" />
 
         <div className="modal-info">
@@ -58,14 +57,16 @@ export function DesarrolloQuickViewModal({ desarrollo, onClose }: DesarrolloQuic
 
           <p className="modal-descripcion">{d.descripcion}</p>
 
-          <div className="modal-features">
-            {d.features.map((f) => (
-              <div className="modal-feature" key={f.clave}>
-                <p className="feature-titulo">{f.titulo}</p>
-                <p className="feature-texto">{f.texto}</p>
-              </div>
-            ))}
-          </div>
+          {features.length > 0 && (
+            <div className="modal-features">
+              {features.map((f) => (
+                <div className="modal-feature" key={f.clave}>
+                  <p className="feature-titulo">{f.titulo}</p>
+                  <p className="feature-texto">{f.texto}</p>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div className="modal-mapa">
             <div className="mapa-header">
