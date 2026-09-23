@@ -26,7 +26,7 @@ const galeria = [
   media({ id: 4, archivoUrl: 'https://img.test/c.jpg' }),
 ]
 
-function renderGaleria(props: { ampliable?: boolean } = {}) {
+function renderGaleria(props: { ampliable?: boolean; miniaturas?: boolean } = {}) {
   return render(
     <DesarrolloGaleria galeria={galeria} imagenPortadaUrl={null} nombre="Solares Pinamar" className="hero" {...props} />,
   )
@@ -34,8 +34,41 @@ function renderGaleria(props: { ampliable?: boolean } = {}) {
 
 const dialog = () => screen.getByRole('dialog')
 
+describe('DesarrolloGaleria — miniaturas', () => {
+  it('sin `miniaturas` navega con puntitos; con `miniaturas` los reemplaza por una tira de miniaturas', () => {
+    const { rerender } = renderGaleria()
+    expect(screen.getAllByRole('button', { name: /ir al elemento/i })).toHaveLength(4)
+    expect(screen.queryByRole('button', { name: /ver foto/i })).not.toBeInTheDocument()
+
+    rerender(<DesarrolloGaleria galeria={galeria} imagenPortadaUrl={null} nombre="Solares Pinamar" className="hero" miniaturas />)
+    expect(screen.queryByRole('button', { name: /ir al elemento/i })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Ver video de Solares Pinamar' })).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: /ver foto \d de solares pinamar/i })).toHaveLength(3)
+  })
+
+  it('al clickear una miniatura el visor salta a ese elemento y la miniatura queda marcada', async () => {
+    const user = userEvent.setup()
+    renderGaleria({ miniaturas: true })
+    expect(screen.getByText('1 / 4')).toBeInTheDocument()
+
+    const tercera = screen.getByRole('button', { name: 'Ver foto 3 de Solares Pinamar' })
+    await user.click(tercera)
+
+    expect(screen.getByText('3 / 4')).toBeInTheDocument()
+    expect(tercera).toHaveAttribute('aria-current', 'true')
+    expect(screen.getByRole('button', { name: 'Ver video de Solares Pinamar' })).not.toHaveAttribute('aria-current')
+  })
+
+  it('con un solo elemento no hay tira de miniaturas', () => {
+    render(
+      <DesarrolloGaleria galeria={[]} imagenPortadaUrl="https://img.test/portada.jpg" nombre="X" className="hero" miniaturas />,
+    )
+    expect(screen.queryByRole('button', { name: /ver foto/i })).not.toBeInTheDocument()
+  })
+})
+
 describe('DesarrolloGaleria — fotos clickeables', () => {
-  it('sin `ampliable` las fotos no son clickeables (modal de vista rápida, vista previa del backoffice)', () => {
+  it('sin `ampliable` las fotos no son clickeables (vista previa del backoffice)', () => {
     renderGaleria()
     expect(screen.queryByRole('button', { name: /ampliar foto/i })).not.toBeInTheDocument()
     expect(screen.getAllByRole('img', { name: /foto de solares pinamar/i })).toHaveLength(3)

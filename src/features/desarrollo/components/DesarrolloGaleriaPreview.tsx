@@ -29,15 +29,19 @@ export function DesarrolloGaleriaPreview({ desarrollo }: DesarrolloGaleriaPrevie
 
   return (
     <>
-      <DesarrolloGaleria
-        galeria={galeria}
-        imagenPortadaUrl={desarrollo.imagenPortadaUrl}
-        nombre={desarrollo.nombre}
-        className={bo.galeriaPreview}
-      />
+      <div className={bo.galeriaPreviewWrap}>
+        <DesarrolloGaleria
+          galeria={galeria}
+          imagenPortadaUrl={desarrollo.imagenPortadaUrl}
+          nombre={desarrollo.nombre}
+          className={bo.galeriaPreview}
+          miniaturas
+        />
+      </div>
       <p className={bo.hint}>
-        Así se ve la galería en la ficha pública (el video, si hay, va primero). Según el ancho de pantalla, la foto
-        se recorta distinto.
+        Así se ve la galería en la ficha pública, debajo de la descripción (el video, si hay, va primero). La foto
+        marcada como portada es además la imagen grande de arriba de la ficha. Según el ancho de pantalla, la foto se
+        recorta distinto.
       </p>
     </>
   )

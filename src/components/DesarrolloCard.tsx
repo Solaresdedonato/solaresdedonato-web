@@ -6,14 +6,19 @@ import { ESTADO_LABELS, type Desarrollo } from '@/features/desarrollo/schemas/de
 interface DesarrolloCardProps {
   desarrollo: Desarrollo
   numero: string
-  onQuickView: () => void
 }
 
-export function DesarrolloCard({ desarrollo, numero, onQuickView }: DesarrolloCardProps) {
+/**
+ * Card del carrusel de la landing. Toda la card es un link a la página de detalle
+ * (antes abría un modal de vista rápida, que se eliminó): el "Ver desarrollo →" de
+ * abajo es solo un remate visual, no un link aparte — anidar <a> dentro de <a> es
+ * HTML inválido.
+ */
+export function DesarrolloCard({ desarrollo, numero }: DesarrolloCardProps) {
   const estadoModifier = desarrollo.estado === 'entregado' ? 'entregado' : desarrollo.estado === 'preventa' ? 'preventa' : ''
 
   return (
-    <div className="carousel-card" onClick={onQuickView} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && onQuickView()}>
+    <RouterLink to={ROUTES.desarrolloDetalle(desarrollo.slug)} className="carousel-card">
       <div
         className="img-placeholder"
         style={{ backgroundImage: desarrollo.imagenPortadaUrl ? `url(${mediaUrl(desarrollo.imagenPortadaUrl)})` : undefined }}
@@ -27,11 +32,9 @@ export function DesarrolloCard({ desarrollo, numero, onQuickView }: DesarrolloCa
           <p className="zona">{desarrollo.zona}</p>
           <h3 className="nombre">{desarrollo.nombre}</h3>
           <p className="direccion">{desarrollo.direccion}</p>
-          <RouterLink to={ROUTES.desarrolloDetalle(desarrollo.slug)} className="ver-mas" onClick={(e) => e.stopPropagation()}>
-            Ver desarrollo →
-          </RouterLink>
+          <span className="ver-mas">Ver desarrollo →</span>
         </div>
       </div>
-    </div>
+    </RouterLink>
   )
 }

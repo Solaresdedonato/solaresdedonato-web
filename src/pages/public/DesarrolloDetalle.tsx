@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDesarrolloPorSlug } from '@/features/desarrollo/hooks/useDesarrollo'
 import { CERCANIAS_CATEGORIAS, ESTADO_LABELS } from '@/features/desarrollo/schemas/desarrollo.schema'
+import { mediaUrl } from '@/shared/utils/mediaUrl'
 import { DesarrolloAccionesBotones } from '@/components/DesarrolloAccionesBotones'
 import { DesarrolloGaleria } from '@/components/DesarrolloGaleria'
 
@@ -9,6 +10,10 @@ const CERCANIA_ICONS: Record<string, string> = {
   transporte: '🚉',
   comercios: '🛒',
   salud: '⛑',
+}
+
+function plural(n: number, singular: string, pluralForm: string) {
+  return `${n} ${n === 1 ? singular : pluralForm}`
 }
 
 export function DesarrolloDetalle() {
@@ -48,17 +53,32 @@ export function DesarrolloDetalle() {
   const features = desarrollo.features.filter((f) => f.texto.trim())
   const cercanias = CERCANIAS_CATEGORIAS.filter((cat) => desarrollo.cercanias[cat.key].length > 0)
 
+  // La portada del hero es la foto marcada como portada en el backoffice (el backend la
+  // copia a imagenPortadaUrl). Si todavía no marcaron ninguna, se usa la primera foto
+  // cargada para no dejar el hero vacío.
+  const fotos = (desarrollo.galeria ?? []).filter((c) => c.tipo === 'foto' && c.archivoUrl)
+  const videos = (desarrollo.galeria ?? []).filter((c) => c.tipo === 'video' && c.videoUrl)
+  const portada = desarrollo.imagenPortadaUrl ?? fotos[0]?.archivoUrl ?? null
+
+  // La galería solo se dibuja si hay algo más para ver que la portada que ya está arriba.
+  const hayGaleria = videos.length > 0 || fotos.some((f) => f.archivoUrl !== portada)
+  const resumenGaleria = [
+    fotos.length > 0 ? plural(fotos.length, 'foto', 'fotos') : null,
+    videos.length > 0 ? plural(videos.length, 'video', 'videos') : null,
+  ]
+    .filter(Boolean)
+    .join(' · ')
+
   return (
     // Sin topbar propio: el "Volver" ahora vive en el <nav> del sitio (ver Navbar.tsx),
-    // en el mismo lugar que ocupa el logo en el resto de las páginas — la galería queda
+    // en el mismo lugar que ocupa el logo en el resto de las páginas — la portada queda
     // full-bleed debajo del nav, igual que el hero de Home.
     <div>
-      <DesarrolloGaleria
-        galeria={desarrollo.galeria}
-        imagenPortadaUrl={desarrollo.imagenPortadaUrl}
-        nombre={desarrollo.nombre}
+      <div
         className="pagina-dev-hero"
-        ampliable
+        style={portada ? { backgroundImage: `url(${mediaUrl(portada)})` } : undefined}
+        role="img"
+        aria-label={`Portada de ${desarrollo.nombre}`}
       />
 
       <div className="pagina-dev-body">
@@ -66,10 +86,34 @@ export function DesarrolloDetalle() {
           <div className="modal-header-row">
             <span className={`modal-badge badge-${desarrollo.estado}`}>{ESTADO_LABELS[desarrollo.estado]}</span>
             <span className="modal-zona">{desarrollo.zona}</span>
+            <span className="pagina-dev-nombre">{desarrollo.nombre}</span>
           </div>
-          <h1 className="modal-nombre">{desarrollo.nombre}</h1>
-          <p className="modal-direccion">{desarrollo.direccion}</p>
+          {/* El título es la dirección: es lo que identifica al desarrollo para quien lo
+              busca. El nombre comercial queda como etiqueta chica en la fila de arriba. */}
+          <h1 className="modal-nombre pagina-dev-titulo">{desarrollo.direccion}</h1>
           <p className="modal-descripcion">{desarrollo.descripcion}</p>
+
+          {hayGaleria && (
+            <section className="pagina-dev-galeria" aria-labelledby="pagina-dev-galeria-titulo">
+              <div className="pagina-dev-galeria-header">
+                <div>
+                  <p className="pagina-dev-galeria-eyebrow">Galería</p>
+                  <h2 className="pagina-dev-galeria-titulo" id="pagina-dev-galeria-titulo">
+                    Recorré el <em>desarrollo</em>
+                  </h2>
+                </div>
+                <p className="pagina-dev-galeria-resumen">{resumenGaleria}</p>
+              </div>
+              <DesarrolloGaleria
+                galeria={desarrollo.galeria}
+                imagenPortadaUrl={null}
+                nombre={desarrollo.nombre}
+                className="pagina-dev-galeria-visor"
+                ampliable
+                miniaturas
+              />
+            </section>
+          )}
 
           {features.length > 0 && (
             <div className="modal-features">
