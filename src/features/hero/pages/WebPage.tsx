@@ -154,7 +154,7 @@ export function WebPage() {
             {slides.map((slide, index) => (
               <div key={slide.id} className={bo.mediaTile} style={{ cursor: 'default' }}>
                 <div className={bo.mediaTileThumbWrap}>
-                  <img className={bo.mediaThumb} src={mediaUrl(slide.archivoUrl)} alt={slide.titulo} />
+                  <img className={bo.mediaThumb} src={mediaUrl(slide.archivoUrl)} alt={slide.titulo} loading="lazy" decoding="async" />
                   <span
                     style={{
                       position: 'absolute',

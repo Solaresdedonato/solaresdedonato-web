@@ -16,7 +16,7 @@ export function ContenidoGrid({ items, onEliminar }: ContenidoGridProps) {
           <div key={item.id} className={bo.mediaTile} style={{ cursor: 'default' }}>
             <div className={bo.mediaTileThumbWrap}>
               {tieneImagen ? (
-                <img className={bo.mediaThumb} src={mediaUrl(item.archivoUrl)} alt={item.titulo} />
+                <img className={bo.mediaThumb} src={mediaUrl(item.archivoUrl)} alt={item.titulo} loading="lazy" decoding="async" />
               ) : (
                 <div
                   className={bo.mediaThumb}

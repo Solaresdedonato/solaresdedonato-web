@@ -19,10 +19,13 @@ export function DesarrolloCard({ desarrollo, numero }: DesarrolloCardProps) {
 
   return (
     <RouterLink to={ROUTES.desarrolloDetalle(desarrollo.slug)} className="carousel-card">
-      <div
-        className="img-placeholder"
-        style={{ backgroundImage: desarrollo.imagenPortadaUrl ? `url(${mediaUrl(desarrollo.imagenPortadaUrl)})` : undefined }}
-      />
+      {/* <img lazy> y no background: el carrusel está debajo del hero, así que las portadas
+          se bajan recién cuando la card se acerca a la pantalla. */}
+      {desarrollo.imagenPortadaUrl ? (
+        <img className="img-placeholder" src={mediaUrl(desarrollo.imagenPortadaUrl)} alt="" loading="lazy" decoding="async" />
+      ) : (
+        <div className="img-placeholder" />
+      )}
       <div className="card-overlay">
         <div className="card-top">
           <span className="card-numero">{numero}</span>

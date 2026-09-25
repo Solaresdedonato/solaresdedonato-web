@@ -983,6 +983,14 @@
     transition: transform 0.7s ease, filter 0.4s;
     filter: brightness(0.55) saturate(0.4);
   }
+  img.img-placeholder,
+  img.prox-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
   .carousel-card:hover .img-placeholder {
     transform: scale(1.05);
     filter: brightness(0.65) saturate(0.55);

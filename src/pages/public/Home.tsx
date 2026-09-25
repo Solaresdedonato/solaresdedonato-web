@@ -3,6 +3,7 @@ import { useDesarrollosPublicados } from '@/features/desarrollo/hooks/useDesarro
 import { useHeroSlides } from '@/features/hero/hooks/useHeroSlides'
 import { useReveal } from '@/shared/hooks/useReveal'
 import { mediaUrl } from '@/shared/utils/mediaUrl'
+import { useSlidesCargadas } from '@/shared/hooks/useSlidesCargadas'
 import { DesarrollosCarousel } from '@/components/DesarrollosCarousel'
 import { MetricasDestacadas } from '@/components/MetricasDestacadas'
 import { ProximamenteGrid } from '@/components/ProximamenteGrid'
@@ -94,6 +95,7 @@ export function Home() {
   const palabra = useRotatingWord()
   const heroImages = (heroSlides ?? []).map((s) => mediaUrl(s.archivoUrl)).filter((url): url is string => !!url)
   const heroSlideIndex = useHeroSlideshow(heroImages.length)
+  const heroSlideCargada = useSlidesCargadas(heroSlideIndex, heroImages.length)
 
   const desarrollos = data?.content ?? []
   const proximos = desarrollos.filter((d) => d.estado === 'proximamente')
@@ -106,7 +108,11 @@ export function Home() {
         <div className="hero-bg" />
         <div className="hero-slider">
           {heroImages.map((src, i) => (
-            <div key={src} className={`hero-slide ${i === heroSlideIndex ? 'active' : ''}`} style={{ backgroundImage: `url(${src})` }} />
+            <div
+              key={src}
+              className={`hero-slide ${i === heroSlideIndex ? 'active' : ''}`}
+              style={heroSlideCargada(i) ? { backgroundImage: `url(${src})` } : undefined}
+            />
           ))}
         </div>
         <div className="hero-overlay-gradient" />

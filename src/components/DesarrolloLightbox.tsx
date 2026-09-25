@@ -46,6 +46,15 @@ export function DesarrolloLightbox({ fotos, index, nombre, onIndexChange, onClos
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [hayVarias, prev, next, onIndexChange, onClose])
 
+  // Precarga la foto anterior y la siguiente: al navegar ya están en la caché del navegador.
+  useEffect(() => {
+    if (!hayVarias) return
+    for (const i of [prev, next]) {
+      const url = mediaUrl(fotos[i])
+      if (url) new Image().src = url
+    }
+  }, [fotos, hayVarias, prev, next])
+
   const onTouchEnd = (e: React.TouchEvent) => {
     const startX = touchStartX.current
     touchStartX.current = null

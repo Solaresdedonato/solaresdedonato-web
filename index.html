@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Solares de Donato — Desarrolladora inmobiliaria y constructora." />
+    <!-- Abre la conexión al API (fotos + datos) mientras baja el bundle. Vite reemplaza
+         %VITE_API_URL% en el build; preconnect ignora el path. -->
+    <link rel="preconnect" href="%VITE_API_URL%" />
+    <link rel="preconnect" href="%VITE_API_URL%" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

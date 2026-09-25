@@ -75,10 +75,11 @@ export function ProximamenteGrid({ items }: ProximamenteGridProps) {
         <div className="proximamente-track" ref={trackRef}>
           {items.map((d) => (
             <RouterLink to={ROUTES.desarrolloDetalle(d.slug)} className="prox-card" key={d.id}>
-              <div
-                className="prox-img"
-                style={{ backgroundImage: d.imagenPortadaUrl ? `url(${mediaUrl(d.imagenPortadaUrl)})` : undefined }}
-              />
+              {d.imagenPortadaUrl ? (
+                <img className="prox-img" src={mediaUrl(d.imagenPortadaUrl)} alt="" loading="lazy" decoding="async" />
+              ) : (
+                <div className="prox-img" />
+              )}
               <div className="prox-overlay">
                 <span className="prox-badge">Próximamente</span>
                 <div className="prox-info">

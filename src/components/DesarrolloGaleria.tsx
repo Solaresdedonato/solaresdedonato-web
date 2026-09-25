@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { mediaUrl } from '@/shared/utils/mediaUrl'
 import { videoEmbedUrl } from '@/shared/utils/videoEmbedUrl'
+import { useSlidesCargadas } from '@/shared/hooks/useSlidesCargadas'
 import type { ContenidoMedia } from '@/features/contenido/schemas/contenido.schema'
 import { DesarrolloLightbox } from './DesarrolloLightbox'
 
@@ -62,6 +63,8 @@ export function DesarrolloGaleria({
     slides.push({ kind: 'foto', url: imagenPortadaUrl, id: -1 })
   }
 
+  const slideCargada = useSlidesCargadas(index, slides.length, true)
+
   if (slides.length === 0) {
     return <div className={className} />
   }
@@ -79,6 +82,8 @@ export function DesarrolloGaleria({
   const goNext = () => setIndex((i) => (i + 1) % slides.length)
 
   const hayVarias = slides.length > 1
+  const fondo = (url: string, i: number) =>
+    slideCargada(i) ? { backgroundImage: `url(${mediaUrl(url)})` } : undefined
 
   return (
     <>
@@ -98,7 +103,7 @@ export function DesarrolloGaleria({
                 <button
                   type="button"
                   className="galeria-slide-foto galeria-slide-foto-ampliable"
-                  style={{ backgroundImage: `url(${mediaUrl(slide.url)})` }}
+                  style={fondo(slide.url, i)}
                   aria-label={`Ampliar foto de ${nombre}`}
                   tabIndex={i === index ? 0 : -1}
                   onClick={() => setLightboxIndex(fotoSlides.findIndex((f) => f.id === slide.id))}
@@ -115,7 +120,7 @@ export function DesarrolloGaleria({
               ) : (
                 <div
                   className="galeria-slide-foto"
-                  style={{ backgroundImage: `url(${mediaUrl(slide.url)})` }}
+                  style={fondo(slide.url, i)}
                   role="img"
                   aria-label={`Foto de ${nombre}`}
                 />
@@ -170,7 +175,9 @@ export function DesarrolloGaleria({
                   </svg>
                 </span>
               ) : (
-                <span className="galeria-miniatura-img" style={{ backgroundImage: `url(${mediaUrl(slide.url)})` }} />
+                // <img> y no background: así el navegador solo baja las miniaturas que están
+                // a la vista en la tira. alt vacío: el botón ya tiene su aria-label.
+                <img className="galeria-miniatura-img" src={mediaUrl(slide.url)} alt="" loading="lazy" decoding="async" />
               )}
             </button>
           ))}
