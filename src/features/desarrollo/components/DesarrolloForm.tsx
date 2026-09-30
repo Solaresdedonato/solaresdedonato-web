@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link as RouterLink } from 'react-router-dom'
 import bo from '@/styles/backoffice.module.css'
 import { ROUTES } from '@/shared/router/routes'
 import { ErrorDisplay } from '@/shared/components/ErrorDisplay'
+import { guardarPreferenciaLocal, leerPreferenciaLocal } from '@/shared/utils/preferenciasLocales'
 import type { EnhancedErrorResponse } from '@/shared/api/errorSchema'
 import { DISPONIBILIDADES, ESTADOS } from '../schemas/estados'
 import { DesarrolloGaleriaPreview } from './DesarrolloGaleriaPreview'
@@ -92,6 +94,10 @@ function toApiValues(ui: DesarrolloFormUiValues): DesarrolloFormValues {
   }
 }
 
+/** Preferencia por navegador: la vista previa (galería + card) ocupa mucho en pantallas
+ *  bajas, así que se puede plegar y queda plegada para las próximas visitas. */
+const PREF_VISTA_PREVIA = 'sdd.backoffice.desarrollo.vistaPrevia'
+
 interface DesarrolloFormProps {
   desarrollo?: Desarrollo
   isLoading?: boolean
@@ -111,11 +117,17 @@ export function DesarrolloForm({ desarrollo, isLoading, error, onSubmit }: Desar
   const previewEstadoInfo = ESTADOS[previewEstado ?? 'en-pozo']
   const previewDisponibilidad = watch('disponibilidad')
   const previewDisponibilidadInfo = DISPONIBILIDADES[previewDisponibilidad ?? 'unidades-disponibles']
+  const [vistaPreviaOculta, setVistaPreviaOculta] = useState(() => leerPreferenciaLocal(PREF_VISTA_PREVIA) === 'oculta')
+  const toggleVistaPrevia = () => {
+    const oculta = !vistaPreviaOculta
+    setVistaPreviaOculta(oculta)
+    guardarPreferenciaLocal(PREF_VISTA_PREVIA, oculta ? 'oculta' : 'visible')
+  }
 
   return (
     <div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: '1.75rem', alignItems: 'start' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div className={bo.formDesarrolloGrid}>
+        <div className={bo.formColumna}>
           <div className={bo.panelPadded}>
             <div className={bo.sectionEyebrow}>Datos generales</div>
 
@@ -253,24 +265,39 @@ export function DesarrolloForm({ desarrollo, isLoading, error, onSubmit }: Desar
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div className={bo.formColumna}>
           <div className={bo.panelPadded}>
-            <div className={bo.sectionEyebrow}>Vista previa</div>
-            {desarrollo && <DesarrolloGaleriaPreview desarrollo={desarrollo} />}
-            <div style={{ fontSize: '0.85rem', color: '#999999', lineHeight: 1.6 }}>
-              <div style={{ color: '#f5f0e8', fontFamily: "'Titillium Web', sans-serif", fontSize: '1.15rem', marginBottom: '0.3rem' }}>
-                {previewNombre || 'Nombre del desarrollo'}
-              </div>
-              <div>{previewZona || 'Zona'}</div>
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.6rem' }}>
-                <span className={bo.badge} style={{ color: previewEstadoInfo.color, borderColor: previewEstadoInfo.border }}>
-                  {previewEstadoInfo.label}
-                </span>
-                <span className={bo.badge} style={{ color: previewDisponibilidadInfo.color, borderColor: previewDisponibilidadInfo.border }}>
-                  {previewDisponibilidadInfo.label}
-                </span>
-              </div>
+            <div className={bo.panelHeaderRow} style={vistaPreviaOculta ? { marginBottom: 0 } : undefined}>
+              <div className={bo.sectionEyebrow}>Vista previa</div>
+              <button
+                type="button"
+                className={bo.editLink}
+                aria-expanded={!vistaPreviaOculta}
+                aria-label={vistaPreviaOculta ? 'Mostrar vista previa' : 'Ocultar vista previa'}
+                onClick={toggleVistaPrevia}
+              >
+                {vistaPreviaOculta ? 'Mostrar' : 'Ocultar'}
+              </button>
             </div>
+            {!vistaPreviaOculta && (
+              <>
+                {desarrollo && <DesarrolloGaleriaPreview desarrollo={desarrollo} />}
+                <div style={{ fontSize: '0.85rem', color: '#999999', lineHeight: 1.6 }}>
+                  <div style={{ color: '#f5f0e8', fontFamily: "'Titillium Web', sans-serif", fontSize: '1.15rem', marginBottom: '0.3rem' }}>
+                    {previewNombre || 'Nombre del desarrollo'}
+                  </div>
+                  <div>{previewZona || 'Zona'}</div>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.6rem' }}>
+                    <span className={bo.badge} style={{ color: previewEstadoInfo.color, borderColor: previewEstadoInfo.border }}>
+                      {previewEstadoInfo.label}
+                    </span>
+                    <span className={bo.badge} style={{ color: previewDisponibilidadInfo.color, borderColor: previewDisponibilidadInfo.border }}>
+                      {previewDisponibilidadInfo.label}
+                    </span>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
           <div className={bo.panelPadded}>
             <div className={bo.sectionEyebrow}>Imágenes</div>

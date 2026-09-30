@@ -41,12 +41,12 @@ function desarrolloExistente(over: Partial<Desarrollo> = {}): Desarrollo {
 
 function renderForm(props: Partial<React.ComponentProps<typeof DesarrolloForm>> = {}) {
   const onSubmit = vi.fn()
-  render(
+  const { unmount } = render(
     <MemoryRouter>
       <DesarrolloForm onSubmit={onSubmit} {...props} />
     </MemoryRouter>,
   )
-  return { onSubmit }
+  return { onSubmit, unmount }
 }
 
 async function completarDatosGenerales(user: ReturnType<typeof userEvent.setup>, omitir?: 'descripcion') {
@@ -61,6 +61,9 @@ async function completarDatosGenerales(user: ReturnType<typeof userEvent.setup>,
 beforeEach(() => {
   useContenidoList.mockReset()
   useContenidoList.mockReturnValue({ data: undefined, isLoading: false })
+  // La preferencia "vista previa plegada" vive en localStorage y jsdom la conserva
+  // entre tests del mismo archivo: cada test arranca con la vista previa visible.
+  localStorage.clear()
 })
 
 describe('DesarrolloForm — alta con solo datos generales', () => {
@@ -140,6 +143,38 @@ describe('DesarrolloForm — alta con solo datos generales', () => {
     await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1))
     const textos = onSubmit.mock.calls[0][0].features.map((f: { texto: string }) => f.texto)
     expect(textos).toEqual(['', 'Pisos de porcelanato', '', ''])
+  })
+})
+
+describe('DesarrolloForm — vista previa plegable', () => {
+  it('se puede ocultar (saca galería y card) y la preferencia se recuerda al volver a entrar', async () => {
+    const user = userEvent.setup()
+    useContenidoList.mockReturnValue({ data: { content: [foto(1, 'https://img.test/a.jpg')] }, isLoading: false })
+    const { unmount } = renderForm({ desarrollo: desarrolloExistente() })
+    expect(screen.getAllByRole('img', { name: 'Foto de Solares Pinamar' })).toHaveLength(1)
+
+    await user.click(screen.getByRole('button', { name: 'Ocultar vista previa' }))
+    expect(screen.queryByRole('img', { name: /foto de/i })).not.toBeInTheDocument()
+    expect(screen.queryByText('Solares Pinamar', { selector: 'div' })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Mostrar vista previa' })).toHaveAttribute('aria-expanded', 'false')
+
+    // Al volver a la pantalla sigue plegada; "Mostrar" la trae de vuelta.
+    unmount()
+    renderForm({ desarrollo: desarrolloExistente() })
+    expect(screen.queryByRole('img', { name: /foto de/i })).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Mostrar vista previa' }))
+    expect(screen.getAllByRole('img', { name: 'Foto de Solares Pinamar' })).toHaveLength(1)
+  })
+
+  it('el form sigue funcionando con la vista previa plegada', async () => {
+    const user = userEvent.setup()
+    localStorage.setItem('sdd.backoffice.desarrollo.vistaPrevia', 'oculta')
+    const { onSubmit } = renderForm()
+
+    await completarDatosGenerales(user)
+    await user.click(screen.getByRole('button', { name: 'Guardar borrador' }))
+
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1))
   })
 })
 
