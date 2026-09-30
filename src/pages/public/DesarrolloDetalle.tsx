@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDesarrolloPorSlug } from '@/features/desarrollo/hooks/useDesarrollo'
-import { CERCANIAS_CATEGORIAS, ESTADO_LABELS_PUBLICO } from '@/features/desarrollo/schemas/desarrollo.schema'
+import { CERCANIAS_CATEGORIAS, DISPONIBILIDAD_LABELS, ESTADO_LABELS } from '@/features/desarrollo/schemas/desarrollo.schema'
 import { mediaUrl } from '@/shared/utils/mediaUrl'
 import { DesarrolloAccionesBotones } from '@/components/DesarrolloAccionesBotones'
 import { DesarrolloGaleria } from '@/components/DesarrolloGaleria'
@@ -84,7 +84,10 @@ export function DesarrolloDetalle() {
       <div className="pagina-dev-body">
         <div className="pagina-dev-info">
           <div className="modal-header-row">
-            <span className={`modal-badge badge-${desarrollo.estado}`}>{ESTADO_LABELS_PUBLICO[desarrollo.estado]}</span>
+            <span className={`modal-badge badge-${desarrollo.estado}`}>{ESTADO_LABELS[desarrollo.estado]}</span>
+            <span className={`modal-badge badge-${desarrollo.disponibilidad}`}>
+              {DISPONIBILIDAD_LABELS[desarrollo.disponibilidad]}
+            </span>
             <span className="modal-zona">{desarrollo.zona}</span>
             <span className="pagina-dev-nombre">{desarrollo.nombre}</span>
           </div>

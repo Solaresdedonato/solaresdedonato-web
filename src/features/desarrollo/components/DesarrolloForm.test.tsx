@@ -74,11 +74,36 @@ describe('DesarrolloForm — alta con solo datos generales', () => {
     await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1))
     const [values, publicar] = onSubmit.mock.calls[0]
     expect(publicar).toBe(false)
-    expect(values).toMatchObject({ nombre: 'Solares Test', zona: 'Pinamar', direccion: 'Av. Bunge 100' })
+    expect(values).toMatchObject({
+      nombre: 'Solares Test',
+      zona: 'Pinamar',
+      direccion: 'Av. Bunge 100',
+      estado: 'en-pozo',
+      disponibilidad: 'unidades-disponibles',
+    })
     // Las 4 características viajan igual (el API exige exactamente 4) pero con texto vacío.
     expect(values.features).toHaveLength(4)
     expect(values.features.every((f: { texto: string }) => f.texto === '')).toBe(true)
     expect(values.cercanias).toEqual({ educacion: [], transporte: [], comercios: [], salud: [] })
+  })
+
+  it('estado y disponibilidad se eligen por separado y viajan con el resto', async () => {
+    const user = userEvent.setup()
+    const { onSubmit } = renderForm()
+
+    await completarDatosGenerales(user)
+    // Orden de los selects en el form: Estado, Disponibilidad (los labels no están
+    // asociados por htmlFor, así que se toman por posición).
+    const [estado, disponibilidad] = screen.getAllByRole('combobox')
+    await user.selectOptions(estado, 'entregado')
+    await user.selectOptions(disponibilidad, 'sin-unidades')
+    await user.click(screen.getByRole('button', { name: 'Guardar borrador' }))
+
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1))
+    expect(onSubmit.mock.calls[0][0]).toMatchObject({ estado: 'entregado', disponibilidad: 'sin-unidades' })
+    // La vista previa refleja ambos badges.
+    expect(screen.getByText('Entregado', { selector: 'span' })).toBeInTheDocument()
+    expect(screen.getByText('Sin unidades', { selector: 'span' })).toBeInTheDocument()
   })
 
   it('también publica solo con los datos generales', async () => {

@@ -5,17 +5,22 @@ import type { ContenidoMedia } from '@/features/contenido/schemas/contenido.sche
 export const ESTADOS_DESARROLLO = ['en-pozo', 'entregado'] as const
 export type EstadoDesarrollo = (typeof ESTADOS_DESARROLLO)[number]
 
-/** Etiquetas del backoffice (selector del form, filtro y tabla). */
+/** Etiquetas del estado, iguales en backoffice y sitio público: el estado define en
+ *  qué carrusel de la landing va el desarrollo (en pozo arriba, entregados abajo). */
 export const ESTADO_LABELS: Record<EstadoDesarrollo, string> = {
   'en-pozo': 'En pozo',
   entregado: 'Entregado',
 }
 
-/** Etiquetas del sitio público (card del carrusel, badge de la ficha y vista previa del
- *  backoffice): al visitante no le importa el estado de obra sino si puede comprar. */
-export const ESTADO_LABELS_PUBLICO: Record<EstadoDesarrollo, string> = {
-  'en-pozo': 'Con unidades disponibles',
-  entregado: 'Sin unidades disponibles',
+/** Independiente del estado: un entregado puede tener unidades a la venta y uno en pozo
+ *  puede estar agotado. Define el badge de la card/ficha y el orden dentro de cada
+ *  carrusel (ver ordenarPorDisponibilidad). Códigos = CHECK de V9 en el API. */
+export const DISPONIBILIDADES_DESARROLLO = ['unidades-disponibles', 'sin-unidades'] as const
+export type DisponibilidadDesarrollo = (typeof DISPONIBILIDADES_DESARROLLO)[number]
+
+export const DISPONIBILIDAD_LABELS: Record<DisponibilidadDesarrollo, string> = {
+  'unidades-disponibles': 'Unidades disponibles',
+  'sin-unidades': 'Sin unidades',
 }
 
 export const FEATURE_CLAVES = ['ubicacion', 'confort', 'accesos', 'comercial'] as const
@@ -55,6 +60,7 @@ export interface Desarrollo {
   zona: string
   direccion: string
   estado: EstadoDesarrollo
+  disponibilidad: DisponibilidadDesarrollo
   descripcion: string
   features: DesarrolloFeature[]
   cercanias: DesarrolloCercanias
@@ -91,6 +97,7 @@ export const desarrolloFormSchema = z.object({
   zona: z.string().min(1, 'Ingresá la zona'),
   direccion: z.string().min(1, 'Ingresá la dirección'),
   estado: z.enum(ESTADOS_DESARROLLO),
+  disponibilidad: z.enum(DISPONIBILIDADES_DESARROLLO),
   descripcion: z.string().min(1, 'Ingresá la descripción'),
   features: z.array(featureSchema).length(4),
   cercanias: z.object({
@@ -115,6 +122,7 @@ export function emptyDesarrolloForm(): DesarrolloFormValues {
     zona: '',
     direccion: '',
     estado: 'en-pozo',
+    disponibilidad: 'unidades-disponibles',
     descripcion: '',
     features: FEATURE_CLAVES.map((clave) => ({ clave, titulo: FEATURE_TITULOS[clave], texto: '' })),
     cercanias: { educacion: [], transporte: [], comercios: [], salud: [] },

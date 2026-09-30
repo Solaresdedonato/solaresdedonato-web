@@ -13,6 +13,7 @@ export const desarrollosSeed: Desarrollo[] = [
     zona: 'Pinamar Norte',
     direccion: 'Blvd. Ameghino 349 — Pinamar',
     estado: 'en-pozo',
+    disponibilidad: 'unidades-disponibles',
     descripcion:
       'Un desarrollo único frente al bosque, donde la arquitectura contemporánea se funde con la naturaleza. Unidades de 2 y 3 ambientes con amplios balcones, amenities premium y ubicación inmejorable a metros del mar.',
     features: [
@@ -41,6 +42,7 @@ export const desarrollosSeed: Desarrollo[] = [
     zona: 'Pinamar Centro',
     direccion: 'Av. Constitución, Pinamar',
     estado: 'en-pozo',
+    disponibilidad: 'sin-unidades',
     descripcion:
       'Diseño minimalista en el corazón de Pinamar. Departamentos de categoría con vista panorámica, ideales para vivienda permanente o renta vacacional de alto rendimiento.',
     features: [
@@ -67,6 +69,7 @@ export const desarrollosSeed: Desarrollo[] = [
     zona: 'San Telmo',
     direccion: 'Moreno 1200 — San Telmo, CABA',
     estado: 'en-pozo',
+    disponibilidad: 'unidades-disponibles',
     descripcion:
       'Recuperamos un edificio histórico de San Telmo convirtiéndolo en lofts contemporáneos. Techos altos, ladrillo a la vista y diseño industrial en uno de los barrios con mayor proyección de CABA.',
     features: [
@@ -93,6 +96,7 @@ export const desarrollosSeed: Desarrollo[] = [
     zona: 'Recoleta',
     direccion: 'Av. Córdoba 1652 — Recoleta, CABA',
     estado: 'en-pozo',
+    disponibilidad: 'unidades-disponibles',
     descripcion:
       'Torre de 14 pisos sobre Av. Córdoba con vista despejada. Unidades de 1, 2 y 3 ambientes pensadas para inversión y vivienda permanente, con amenities completos.',
     features: [
@@ -119,6 +123,7 @@ export const desarrollosSeed: Desarrollo[] = [
     zona: 'Palermo',
     direccion: 'Bulnes 2673 — Palermo, CABA',
     estado: 'entregado',
+    disponibilidad: 'unidades-disponibles',
     descripcion:
       'Edificio boutique entregado en 2023. Pocas unidades, alta calidad de terminaciones y un terraza con parrilla y pileta que ofrece vista privilegiada al barrio.',
     features: [
@@ -145,6 +150,7 @@ export const desarrollosSeed: Desarrollo[] = [
     zona: 'Pinamar Norte',
     direccion: 'Av. Ameghino 500 — Pinamar',
     estado: 'en-pozo',
+    disponibilidad: 'unidades-disponibles',
     descripcion:
       'Complejo de departamentos y dúplex frente al mar. Pensado para quienes buscan una segunda residencia con todos los servicios y la posibilidad de generar renta en temporada.',
     features: [
@@ -171,6 +177,7 @@ export const desarrollosSeed: Desarrollo[] = [
     zona: 'Palermo',
     direccion: 'Palermo Hollywood, CABA',
     estado: 'entregado',
+    disponibilidad: 'sin-unidades',
     descripcion:
       'Edificio moderno en Palermo Hollywood con departamentos de 1 a 3 ambientes. Diseño contemporáneo y amenities pensados para una vida urbana plena.',
     features: [
@@ -197,6 +204,7 @@ export const desarrollosSeed: Desarrollo[] = [
     zona: 'Caballito',
     direccion: 'Av. Rivadavia, Caballito, CABA',
     estado: 'entregado',
+    disponibilidad: 'sin-unidades',
     descripcion:
       'Torre de 12 pisos sobre Av. Rivadavia. Caballito clásico con la mejor conectividad de CABA, unidades amplias y costo por m² competitivo.',
     features: [
@@ -223,6 +231,7 @@ export const desarrollosSeed: Desarrollo[] = [
     zona: 'Núñez',
     direccion: 'Núñez, CABA',
     estado: 'entregado',
+    disponibilidad: 'sin-unidades',
     descripcion:
       'Núñez residencial: tranquilidad de zona norte con la cercanía a CABA. Departamentos de 2 y 3 ambientes con cocheras y amenities.',
     features: [
@@ -249,6 +258,7 @@ export const desarrollosSeed: Desarrollo[] = [
     zona: 'Belgrano',
     direccion: 'Belgrano R, CABA',
     estado: 'entregado',
+    disponibilidad: 'sin-unidades',
     descripcion:
       'Belgrano R, el barrio con mejor calidad de vida de CABA. Edificio boutique de pocas unidades en zona arbolada.',
     features: [
@@ -275,6 +285,7 @@ export const desarrollosSeed: Desarrollo[] = [
     zona: 'Almagro',
     direccion: 'Almagro, CABA',
     estado: 'entregado',
+    disponibilidad: 'sin-unidades',
     descripcion:
       'Almagro en pleno crecimiento. Departamentos de 1 y 2 ambientes ideales para inversores o primera vivienda, con excelente relación costo-ubicación.',
     features: [
@@ -301,6 +312,7 @@ export const desarrollosSeed: Desarrollo[] = [
     zona: 'Villa Crespo',
     direccion: 'Humboldt, Villa Crespo — CABA',
     estado: 'en-pozo',
+    disponibilidad: 'unidades-disponibles',
     descripcion:
       'Nuevo desarrollo en el límite Palermo-Villa Crespo. Departamentos de diseño contemporáneo con la mejor relación precio-ubicación de la zona. Próximo lanzamiento.',
     features: [
@@ -327,6 +339,7 @@ export const desarrollosSeed: Desarrollo[] = [
     zona: 'Palermo',
     direccion: 'Julián Álvarez — Palermo, CABA',
     estado: 'en-pozo',
+    disponibilidad: 'unidades-disponibles',
     descripcion:
       'Nuevo proyecto en Palermo Soho. Lofts y departamentos premium con terminaciones de primera línea. Próximo lanzamiento de preventa con condiciones preferenciales.',
     features: [
@@ -353,6 +366,7 @@ export const desarrollosSeed: Desarrollo[] = [
     zona: 'Villa Devoto',
     direccion: 'Villa Devoto — CABA',
     estado: 'en-pozo',
+    disponibilidad: 'unidades-disponibles',
     descripcion:
       'Villa Devoto, el "barrio jardín" de CABA. Próximo desarrollo de departamentos con espacios verdes propios y la tranquilidad de un barrio residencial consolidado.',
     features: [

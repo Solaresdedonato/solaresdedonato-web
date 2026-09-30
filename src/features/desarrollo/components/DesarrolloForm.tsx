@@ -4,10 +4,12 @@ import bo from '@/styles/backoffice.module.css'
 import { ROUTES } from '@/shared/router/routes'
 import { ErrorDisplay } from '@/shared/components/ErrorDisplay'
 import type { EnhancedErrorResponse } from '@/shared/api/errorSchema'
-import { ESTADOS } from '../schemas/estados'
+import { DISPONIBILIDADES, ESTADOS } from '../schemas/estados'
 import { DesarrolloGaleriaPreview } from './DesarrolloGaleriaPreview'
 import {
   CERCANIAS_CATEGORIAS,
+  DISPONIBILIDADES_DESARROLLO,
+  DISPONIBILIDAD_LABELS,
   ESTADOS_DESARROLLO,
   ESTADO_LABELS,
   emptyDesarrolloForm,
@@ -21,6 +23,7 @@ interface DesarrolloFormUiValues {
   zona: string
   direccion: string
   estado: DesarrolloFormValues['estado']
+  disponibilidad: DesarrolloFormValues['disponibilidad']
   descripcion: string
   features: DesarrolloFormValues['features']
   cercaniasTexto: Record<keyof DesarrolloCercanias, string>
@@ -39,6 +42,7 @@ function toUiValues(desarrollo?: Desarrollo): DesarrolloFormUiValues {
     zona: base.zona,
     direccion: base.direccion,
     estado: base.estado,
+    disponibilidad: base.disponibilidad,
     descripcion: base.descripcion,
     features: base.features,
     cercaniasTexto: {
@@ -70,6 +74,7 @@ function toApiValues(ui: DesarrolloFormUiValues): DesarrolloFormValues {
     zona: ui.zona,
     direccion: ui.direccion,
     estado: ui.estado,
+    disponibilidad: ui.disponibilidad,
     descripcion: ui.descripcion,
     features: ui.features,
     cercanias: {
@@ -104,6 +109,8 @@ export function DesarrolloForm({ desarrollo, isLoading, error, onSubmit }: Desar
   const previewZona = watch('zona')
   const previewEstado = watch('estado')
   const previewEstadoInfo = ESTADOS[previewEstado ?? 'en-pozo']
+  const previewDisponibilidad = watch('disponibilidad')
+  const previewDisponibilidadInfo = DISPONIBILIDADES[previewDisponibilidad ?? 'unidades-disponibles']
 
   return (
     <div>
@@ -117,11 +124,12 @@ export function DesarrolloForm({ desarrollo, isLoading, error, onSubmit }: Desar
               <input className={bo.input} placeholder="Ej: Solares Pinamar" {...register('nombre', { required: true })} />
             </div>
 
+            <div className={bo.field}>
+              <label className={bo.label}>Zona</label>
+              <input className={bo.input} placeholder="Ej: Pinamar, Buenos Aires" {...register('zona', { required: true })} />
+            </div>
+
             <div className={bo.fieldGrid2}>
-              <div>
-                <label className={bo.label}>Zona</label>
-                <input className={bo.input} placeholder="Ej: Pinamar, Buenos Aires" {...register('zona', { required: true })} />
-              </div>
               <div>
                 <label className={bo.label}>Estado</label>
                 <select className={bo.select} {...register('estado')}>
@@ -131,6 +139,18 @@ export function DesarrolloForm({ desarrollo, isLoading, error, onSubmit }: Desar
                     </option>
                   ))}
                 </select>
+                <p className={bo.hint}>Define el carrusel del sitio: "En pozo" arriba, "Entregado" abajo.</p>
+              </div>
+              <div>
+                <label className={bo.label}>Disponibilidad</label>
+                <select className={bo.select} {...register('disponibilidad')}>
+                  {DISPONIBILIDADES_DESARROLLO.map((disponibilidad) => (
+                    <option key={disponibilidad} value={disponibilidad}>
+                      {DISPONIBILIDAD_LABELS[disponibilidad]}
+                    </option>
+                  ))}
+                </select>
+                <p className={bo.hint}>Es el badge de la card y ordena el carrusel: con unidades primero.</p>
               </div>
             </div>
 
@@ -242,9 +262,14 @@ export function DesarrolloForm({ desarrollo, isLoading, error, onSubmit }: Desar
                 {previewNombre || 'Nombre del desarrollo'}
               </div>
               <div>{previewZona || 'Zona'}</div>
-              <span className={bo.badge} style={{ color: previewEstadoInfo.color, borderColor: previewEstadoInfo.border, marginTop: '0.6rem' }}>
-                {previewEstadoInfo.label}
-              </span>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.6rem' }}>
+                <span className={bo.badge} style={{ color: previewEstadoInfo.color, borderColor: previewEstadoInfo.border }}>
+                  {previewEstadoInfo.label}
+                </span>
+                <span className={bo.badge} style={{ color: previewDisponibilidadInfo.color, borderColor: previewDisponibilidadInfo.border }}>
+                  {previewDisponibilidadInfo.label}
+                </span>
+              </div>
             </div>
           </div>
           <div className={bo.panelPadded}>

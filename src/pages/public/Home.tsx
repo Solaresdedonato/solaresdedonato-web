@@ -1,5 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useDesarrollosPublicados } from '@/features/desarrollo/hooks/useDesarrollo'
+import { ordenarPorDisponibilidad } from '@/features/desarrollo/utils/ordenarPorDisponibilidad'
+import type { Desarrollo } from '@/features/desarrollo/schemas/desarrollo.schema'
 import { useHeroSlides } from '@/features/hero/hooks/useHeroSlides'
 import { useReveal } from '@/shared/hooks/useReveal'
 import { mediaUrl } from '@/shared/utils/mediaUrl'
@@ -88,6 +90,18 @@ function useHeroSlideshow(total: number) {
   return total > 0 ? index % total : 0
 }
 
+/** Un carrusel de la landing para un estado; si no hay desarrollos en ese estado no
+ *  dibuja nada (ni el título), para no dejar un bloque vacío. */
+function CarruselPorEstado({ titulo, items }: { titulo: string; items: Desarrollo[] }) {
+  if (items.length === 0) return null
+  return (
+    <Reveal className="carrusel-estado">
+      <p className="carrusel-estado-titulo">{titulo}</p>
+      <DesarrollosCarousel items={items} />
+    </Reveal>
+  )
+}
+
 export function Home() {
   const { data, isLoading } = useDesarrollosPublicados()
   const { data: heroSlides } = useHeroSlides()
@@ -96,10 +110,11 @@ export function Home() {
   const heroSlideIndex = useHeroSlideshow(heroImages.length)
   const heroSlideCargada = useSlidesCargadas(heroSlideIndex, heroImages.length)
 
-  // Desde que los estados son solo 'en-pozo'/'entregado' (V8 en el API) ya no existe
-  // "próximamente": todos los publicados van al mismo carrusel, y el badge de cada card
-  // dice si tiene o no unidades disponibles.
+  // Un carrusel por estado — en pozo arriba, entregados abajo — y dentro de cada uno
+  // primero los que tienen unidades disponibles (el badge de cada card).
   const desarrollos = data?.content ?? []
+  const enPozo = ordenarPorDisponibilidad(desarrollos.filter((d) => d.estado === 'en-pozo'))
+  const entregados = ordenarPorDisponibilidad(desarrollos.filter((d) => d.estado === 'entregado'))
 
   return (
     <>
@@ -213,9 +228,10 @@ export function Home() {
         </Reveal>
 
         {!isLoading && (
-          <Reveal>
-            <DesarrollosCarousel items={desarrollos} />
-          </Reveal>
+          <>
+            <CarruselPorEstado titulo="En pozo" items={enPozo} />
+            <CarruselPorEstado titulo="Entregados" items={entregados} />
+          </>
         )}
 
         <Reveal className="desarrollos-cta-bottom">

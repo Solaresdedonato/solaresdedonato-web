@@ -1,10 +1,10 @@
 import { Link as RouterLink } from 'react-router-dom'
 import bo from '@/styles/backoffice.module.css'
 import { ROUTES } from '@/shared/router/routes'
-import { ESTADOS } from '../schemas/estados'
-import { ESTADO_LABELS, type Desarrollo } from '../schemas/desarrollo.schema'
+import { DISPONIBILIDADES, ESTADOS } from '../schemas/estados'
+import { DISPONIBILIDAD_LABELS, ESTADO_LABELS, type Desarrollo } from '../schemas/desarrollo.schema'
 
-const COLUMNS = '2fr 1.2fr 1fr 1fr 0.8fr'
+const COLUMNS = '2fr 1.1fr 0.8fr 1.2fr 0.9fr 0.8fr'
 
 interface DesarrollosTableProps {
   items: Desarrollo[]
@@ -18,11 +18,13 @@ export function DesarrollosTable({ items, onEliminar }: DesarrollosTableProps) {
         <div>Nombre</div>
         <div>Zona</div>
         <div>Estado</div>
+        <div>Disponibilidad</div>
         <div>Publicado</div>
         <div />
       </div>
       {items.map((d) => {
         const estado = ESTADOS[d.estado]
+        const disponibilidad = DISPONIBILIDADES[d.disponibilidad]
         return (
           <div className={bo.tableRow} style={{ gridTemplateColumns: COLUMNS }} key={d.id}>
             <div className={bo.tableCellPrimary}>{d.nombre}</div>
@@ -30,6 +32,11 @@ export function DesarrollosTable({ items, onEliminar }: DesarrollosTableProps) {
             <div>
               <span className={bo.badge} style={{ color: estado.color, borderColor: estado.border }}>
                 {ESTADO_LABELS[d.estado]}
+              </span>
+            </div>
+            <div>
+              <span className={bo.badge} style={{ color: disponibilidad.color, borderColor: disponibilidad.border }}>
+                {DISPONIBILIDAD_LABELS[d.disponibilidad]}
               </span>
             </div>
             <div>

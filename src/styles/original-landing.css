@@ -1035,7 +1035,7 @@
     background: rgba(8,8,8,0.6);
     backdrop-filter: blur(4px);
   }
-  .card-estado.entregado { color: var(--gris-claro); border-color: rgba(255,255,255,0.15); }
+  .card-estado.sin-unidades { color: var(--gris-claro); border-color: rgba(255,255,255,0.15); }
 
   .card-info {
     color: var(--blanco-roto);
@@ -1440,6 +1440,27 @@
     background: var(--dorado);
     color: var(--negro);
     border-color: var(--dorado);
+  }
+
+  /* ── Carruseles por estado (en pozo arriba, entregados abajo) ── */
+  .carrusel-estado + .carrusel-estado {
+    margin-top: 4rem;
+  }
+  .carrusel-estado-titulo {
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--dorado);
+    margin: 0 0 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .carrusel-estado-titulo::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(234,188,123,0.25);
   }
 
   .desarrollos-cta-bottom {
@@ -2137,7 +2158,9 @@
     color: var(--dorado);
   }
   .modal-badge.badge-en-pozo { color: var(--dorado); border-color: var(--dorado); }
-  .modal-badge.badge-entregado { color: var(--gris-claro); border-color: rgba(255,255,255,0.2); }
+  .modal-badge.badge-entregado { color: var(--blanco-roto); border-color: rgba(255,255,255,0.35); }
+  .modal-badge.badge-unidades-disponibles { color: var(--dorado); border-color: var(--dorado); background: rgba(234,188,123,0.08); }
+  .modal-badge.badge-sin-unidades { color: var(--gris-claro); border-color: rgba(255,255,255,0.2); }
 
   .modal-zona {
     font-size: 0.65rem;

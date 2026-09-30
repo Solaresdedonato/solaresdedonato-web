@@ -1,7 +1,7 @@
 import { Link as RouterLink } from 'react-router-dom'
 import { ROUTES } from '@/shared/router/routes'
 import { mediaUrl } from '@/shared/utils/mediaUrl'
-import { ESTADO_LABELS_PUBLICO, type Desarrollo } from '@/features/desarrollo/schemas/desarrollo.schema'
+import { DISPONIBILIDAD_LABELS, type Desarrollo } from '@/features/desarrollo/schemas/desarrollo.schema'
 
 interface DesarrolloCardProps {
   desarrollo: Desarrollo
@@ -15,8 +15,9 @@ interface DesarrolloCardProps {
  * HTML inválido.
  */
 export function DesarrolloCard({ desarrollo, numero }: DesarrolloCardProps) {
-  // Solo 'entregado' (sin unidades) cambia el color del badge; 'en-pozo' usa el dorado base.
-  const estadoModifier = desarrollo.estado === 'entregado' ? 'entregado' : ''
+  // El badge de la card es la disponibilidad (el estado ya lo dice el carrusel en el que
+  // está): dorado con unidades, gris apagado sin unidades.
+  const disponibilidadModifier = desarrollo.disponibilidad === 'sin-unidades' ? 'sin-unidades' : ''
 
   return (
     <RouterLink to={ROUTES.desarrolloDetalle(desarrollo.slug)} className="carousel-card">
@@ -30,7 +31,7 @@ export function DesarrolloCard({ desarrollo, numero }: DesarrolloCardProps) {
       <div className="card-overlay">
         <div className="card-top">
           <span className="card-numero">{numero}</span>
-          <span className={`card-estado ${estadoModifier}`}>{ESTADO_LABELS_PUBLICO[desarrollo.estado]}</span>
+          <span className={`card-estado ${disponibilidadModifier}`}>{DISPONIBILIDAD_LABELS[desarrollo.disponibilidad]}</span>
         </div>
         <div className="card-info">
           <p className="zona">{desarrollo.zona}</p>

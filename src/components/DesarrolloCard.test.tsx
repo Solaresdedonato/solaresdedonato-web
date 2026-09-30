@@ -31,20 +31,21 @@ describe('DesarrolloCard', () => {
     expect(links[0]).toHaveTextContent('Ver desarrollo')
   })
 
-  it('el badge muestra la etiqueta pública del estado, no el código del backoffice', () => {
+  it('el badge es la disponibilidad (el estado ya lo dice el carrusel), gris cuando no hay unidades', () => {
     const { rerender } = render(
       <MemoryRouter>
-        <DesarrolloCard desarrollo={{ ...desarrollo, estado: 'en-pozo' }} numero="01" />
+        <DesarrolloCard desarrollo={{ ...desarrollo, disponibilidad: 'unidades-disponibles' }} numero="01" />
       </MemoryRouter>,
     )
-    expect(screen.getByText('Con unidades disponibles')).toHaveClass('card-estado')
-    expect(screen.getByText('Con unidades disponibles')).not.toHaveClass('entregado')
+    expect(screen.getByText('Unidades disponibles')).toHaveClass('card-estado')
+    expect(screen.getByText('Unidades disponibles')).not.toHaveClass('sin-unidades')
+    expect(screen.queryByText(/en pozo|entregado/i)).not.toBeInTheDocument()
 
     rerender(
       <MemoryRouter>
-        <DesarrolloCard desarrollo={{ ...desarrollo, estado: 'entregado' }} numero="01" />
+        <DesarrolloCard desarrollo={{ ...desarrollo, disponibilidad: 'sin-unidades' }} numero="01" />
       </MemoryRouter>,
     )
-    expect(screen.getByText('Sin unidades disponibles')).toHaveClass('card-estado', 'entregado')
+    expect(screen.getByText('Sin unidades')).toHaveClass('card-estado', 'sin-unidades')
   })
 })

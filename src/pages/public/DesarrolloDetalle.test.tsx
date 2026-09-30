@@ -68,6 +68,13 @@ describe('DesarrolloDetalle', () => {
     expect(screen.getByText('Solares Pinamar')).toBeInTheDocument()
   })
 
+  it('la fila de arriba muestra el estado y la disponibilidad como badges separados', () => {
+    renderDetalle(desarrollo({ estado: 'entregado', disponibilidad: 'sin-unidades' }))
+
+    expect(screen.getByText('Entregado')).toHaveClass('modal-badge', 'badge-entregado')
+    expect(screen.getByText('Sin unidades')).toHaveClass('modal-badge', 'badge-sin-unidades')
+  })
+
   it('la portada es la única imagen del hero; la galería completa va después de la descripción', () => {
     const { container } = renderDetalle(desarrollo())
 
