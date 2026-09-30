@@ -1,10 +1,8 @@
-import type { EstadoDesarrollo } from './desarrollo.schema'
+import { ESTADO_LABELS_PUBLICO, type EstadoDesarrollo } from './desarrollo.schema'
 
-/** Colores exactos del diccionario ESTADOS del backoffice HTML original. */
+/** Colores del diccionario ESTADOS del backoffice HTML original, reducidos a los dos
+ *  estados vigentes. El label es el público: se usa en la vista previa de la ficha. */
 export const ESTADOS: Record<EstadoDesarrollo, { label: string; color: string; border: string }> = {
-  'en-venta': { label: 'En venta', color: '#EABC7B', border: '#EABC7B' },
-  preventa: { label: 'Preventa', color: '#F2D5A0', border: '#EABC7B' },
-  'en-obra': { label: 'En obra', color: '#F5F0E8', border: '#555555' },
-  entregado: { label: 'Entregado', color: '#999999', border: 'rgba(255,255,255,0.15)' },
-  proximamente: { label: 'Próximamente', color: '#EABC7B', border: 'rgba(234,188,123,0.3)' },
+  'en-pozo': { label: ESTADO_LABELS_PUBLICO['en-pozo'], color: '#EABC7B', border: '#EABC7B' },
+  entregado: { label: ESTADO_LABELS_PUBLICO.entregado, color: '#999999', border: 'rgba(255,255,255,0.15)' },
 }

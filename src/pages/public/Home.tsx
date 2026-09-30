@@ -6,7 +6,6 @@ import { mediaUrl } from '@/shared/utils/mediaUrl'
 import { useSlidesCargadas } from '@/shared/hooks/useSlidesCargadas'
 import { DesarrollosCarousel } from '@/components/DesarrollosCarousel'
 import { MetricasDestacadas } from '@/components/MetricasDestacadas'
-import { ProximamenteGrid } from '@/components/ProximamenteGrid'
 import { QuickLeadForm } from '@/components/QuickLeadForm'
 import { ContactoForm } from '@/features/contacto/components/ContactoForm'
 import { BrokerForm } from '@/features/broker/components/BrokerForm'
@@ -97,9 +96,10 @@ export function Home() {
   const heroSlideIndex = useHeroSlideshow(heroImages.length)
   const heroSlideCargada = useSlidesCargadas(heroSlideIndex, heroImages.length)
 
+  // Desde que los estados son solo 'en-pozo'/'entregado' (V8 en el API) ya no existe
+  // "próximamente": todos los publicados van al mismo carrusel, y el badge de cada card
+  // dice si tiene o no unidades disponibles.
   const desarrollos = data?.content ?? []
-  const proximos = desarrollos.filter((d) => d.estado === 'proximamente')
-  const disponibles = desarrollos.filter((d) => d.estado !== 'proximamente')
 
   return (
     <>
@@ -214,7 +214,7 @@ export function Home() {
 
         {!isLoading && (
           <Reveal>
-            <DesarrollosCarousel items={disponibles} />
+            <DesarrollosCarousel items={desarrollos} />
           </Reveal>
         )}
 
@@ -225,10 +225,6 @@ export function Home() {
           <a href="#contacto" className="btn-primario">
             Ver desarrollos disponibles
           </a>
-        </Reveal>
-
-        <Reveal>
-          <ProximamenteGrid items={proximos} />
         </Reveal>
       </section>
 

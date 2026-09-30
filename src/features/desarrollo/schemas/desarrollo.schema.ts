@@ -1,15 +1,21 @@
 import { z } from 'zod'
 import type { ContenidoMedia } from '@/features/contenido/schemas/contenido.schema'
 
-export const ESTADOS_DESARROLLO = ['en-venta', 'preventa', 'en-obra', 'entregado', 'proximamente'] as const
+/** Los dos códigos que conoce el back (CHECK de V8): 'en-pozo' y 'entregado'. */
+export const ESTADOS_DESARROLLO = ['en-pozo', 'entregado'] as const
 export type EstadoDesarrollo = (typeof ESTADOS_DESARROLLO)[number]
 
+/** Etiquetas del backoffice (selector del form, filtro y tabla). */
 export const ESTADO_LABELS: Record<EstadoDesarrollo, string> = {
-  'en-venta': 'En venta',
-  preventa: 'Preventa',
-  'en-obra': 'En obra',
+  'en-pozo': 'En pozo',
   entregado: 'Entregado',
-  proximamente: 'Próximamente',
+}
+
+/** Etiquetas del sitio público (card del carrusel, badge de la ficha y vista previa del
+ *  backoffice): al visitante no le importa el estado de obra sino si puede comprar. */
+export const ESTADO_LABELS_PUBLICO: Record<EstadoDesarrollo, string> = {
+  'en-pozo': 'Con unidades disponibles',
+  entregado: 'Sin unidades disponibles',
 }
 
 export const FEATURE_CLAVES = ['ubicacion', 'confort', 'accesos', 'comercial'] as const
@@ -69,8 +75,7 @@ export interface Desarrollo {
 
 export interface ResumenDesarrollos {
   total: number
-  enVenta: number
-  preventa: number
+  enPozo: number
   entregados: number
 }
 
@@ -109,7 +114,7 @@ export function emptyDesarrolloForm(): DesarrolloFormValues {
     nombre: '',
     zona: '',
     direccion: '',
-    estado: 'en-venta',
+    estado: 'en-pozo',
     descripcion: '',
     features: FEATURE_CLAVES.map((clave) => ({ clave, titulo: FEATURE_TITULOS[clave], texto: '' })),
     cercanias: { educacion: [], transporte: [], comercios: [], salud: [] },

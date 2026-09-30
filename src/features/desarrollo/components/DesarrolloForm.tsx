@@ -103,7 +103,7 @@ export function DesarrolloForm({ desarrollo, isLoading, error, onSubmit }: Desar
   const previewNombre = watch('nombre')
   const previewZona = watch('zona')
   const previewEstado = watch('estado')
-  const previewEstadoInfo = ESTADOS[previewEstado ?? 'en-venta']
+  const previewEstadoInfo = ESTADOS[previewEstado ?? 'en-pozo']
 
   return (
     <div>

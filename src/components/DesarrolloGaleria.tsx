@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { mediaUrl } from '@/shared/utils/mediaUrl'
-import { videoEmbedUrl } from '@/shared/utils/videoEmbedUrl'
+import { esVideoServidoPorApi, videoEmbedUrl } from '@/shared/utils/videoEmbedUrl'
 import { useSlidesCargadas } from '@/shared/hooks/useSlidesCargadas'
 import type { ContenidoMedia } from '@/features/contenido/schemas/contenido.schema'
 import { DesarrolloLightbox } from './DesarrolloLightbox'
@@ -92,13 +92,26 @@ export function DesarrolloGaleria({
           {slides.map((slide, i) => (
             <div key={slide.id} className={`galeria-slide ${i === index ? 'active' : ''}`}>
               {slide.kind === 'video' ? (
-                <iframe
-                  className="galeria-slide-video"
-                  src={videoEmbedUrl(slide.url)}
-                  title={`Video de ${nombre}`}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
+                esVideoServidoPorApi(slide.url) ? (
+                  // Importado de Drive: lo streamea la API con soporte de Range, así que
+                  // el <video> nativo puede hacer seek. No hay player externo que embeber.
+                  <video
+                    className="galeria-slide-video"
+                    src={mediaUrl(slide.url)}
+                    controls
+                    preload="metadata"
+                    playsInline
+                    aria-label={`Video de ${nombre}`}
+                  />
+                ) : (
+                  <iframe
+                    className="galeria-slide-video"
+                    src={videoEmbedUrl(slide.url)}
+                    title={`Video de ${nombre}`}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                )
               ) : ampliable ? (
                 <button
                   type="button"

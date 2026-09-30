@@ -20,7 +20,7 @@ const media = (over: Partial<ContenidoMedia>): ContenidoMedia => ({
 
 // El video va primero en la galería; el lightbox solo recorre las 3 fotos.
 const galeria = [
-  media({ id: 1, tipo: 'video', videoUrl: 'https://www.youtube.com/watch?v=abc' }),
+  media({ id: 1, tipo: 'video', videoUrl: 'https://www.youtube.com/watch?v=abcdef12345' }),
   media({ id: 2, archivoUrl: 'https://img.test/a.jpg' }),
   media({ id: 3, archivoUrl: 'https://img.test/b.jpg' }),
   media({ id: 4, archivoUrl: 'https://img.test/c.jpg' }),
@@ -64,6 +64,34 @@ describe('DesarrolloGaleria — miniaturas', () => {
       <DesarrolloGaleria galeria={[]} imagenPortadaUrl="https://img.test/portada.jpg" nombre="X" className="hero" miniaturas />,
     )
     expect(screen.queryByRole('button', { name: /ver foto/i })).not.toBeInTheDocument()
+  })
+})
+
+describe('DesarrolloGaleria — videos', () => {
+  it('un video con URL externa (YouTube) se embebe en un iframe con la URL de embed', () => {
+    const { container } = renderGaleria()
+
+    const iframe = screen.getByTitle('Video de Solares Pinamar')
+    expect(iframe.tagName).toBe('IFRAME')
+    expect(iframe).toHaveAttribute('src', 'https://www.youtube.com/embed/abcdef12345')
+    expect(container.querySelector('video')).toBeNull()
+  })
+
+  it('un video importado de Drive (path relativo que streamea la API) se reproduce con <video>, no con iframe', () => {
+    const { container } = render(
+      <DesarrolloGaleria
+        galeria={[media({ id: 9, tipo: 'video', videoUrl: '/v1/contenido/9/video' })]}
+        imagenPortadaUrl={null}
+        nombre="Solares Pinamar"
+        className="hero"
+      />,
+    )
+
+    const video = container.querySelector('video')
+    expect(video).not.toBeNull()
+    expect(video).toHaveAttribute('src', expect.stringMatching(/\/v1\/contenido\/9\/video$/))
+    expect(video).toHaveAttribute('controls')
+    expect(container.querySelector('iframe')).toBeNull()
   })
 })
 

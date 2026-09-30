@@ -84,8 +84,7 @@ export const handlers = [
     await withLatency(null)
     return HttpResponse.json({
       total: desarrollos.length,
-      enVenta: desarrollos.filter((d) => d.estado === 'en-venta').length,
-      preventa: desarrollos.filter((d) => d.estado === 'preventa').length,
+      enPozo: desarrollos.filter((d) => d.estado === 'en-pozo').length,
       entregados: desarrollos.filter((d) => d.estado === 'entregado').length,
     })
   }),

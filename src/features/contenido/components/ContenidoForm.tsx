@@ -64,6 +64,7 @@ export function ContenidoForm({ desarrollo }: ContenidoFormProps) {
   const [pickerAbierto, setPickerAbierto] = useState(false)
   const [seleccionError, setSeleccionError] = useState<string | null>(null)
   const [resultado, setResultado] = useState<LoteResultado | null>(null)
+  const [mensajeVideo, setMensajeVideo] = useState<string | null>(null)
 
   const { guardar: guardarVideo, isLoading: guardandoVideo, error: errorVideo } = useGuardarContenido()
   const { guardarLote, isLoading: guardandoLote } = useGuardarContenidoLote()
@@ -93,6 +94,7 @@ export function ContenidoForm({ desarrollo }: ContenidoFormProps) {
     setDriveFilesLote([])
     setSeleccionError(null)
     setResultado(null)
+    setMensajeVideo(null)
   }, [tipo, origen, setValue])
 
   const resetForm = (values: ContenidoFormValues) => {
@@ -128,8 +130,19 @@ export function ContenidoForm({ desarrollo }: ContenidoFormProps) {
       return
     }
 
-    guardarVideo({ form: values, archivo: null })
-    resetForm(values)
+    setMensajeVideo(null)
+    guardarVideo(
+      { form: values, archivo: null },
+      {
+        // Recién al confirmar el alta: antes se reseteaba el form en el acto, así que si
+        // la importación fallaba el error aparecía sobre un form vacío, sin el video
+        // elegido para reintentar — y si salía bien no se avisaba nada.
+        onSuccess: () => {
+          resetForm(values)
+          setMensajeVideo('Video agregado correctamente. Ya se ve en la galería de abajo y en la ficha pública.')
+        },
+      },
+    )
   })
 
   const cantidadElegida = origen === 'drive' ? driveFilesLote.length : archivos.length
@@ -333,6 +346,11 @@ export function ContenidoForm({ desarrollo }: ContenidoFormProps) {
       </div>
 
       {tipo === 'video' && <ErrorDisplay error={errorVideo} className={bo.field} />}
+      {tipo === 'video' && mensajeVideo && (
+        <div className={bo.field}>
+          <p style={{ color: '#8fbf8f', fontSize: '0.85rem' }}>{mensajeVideo}</p>
+        </div>
+      )}
 
       {resultado && (
         <div className={bo.field}>

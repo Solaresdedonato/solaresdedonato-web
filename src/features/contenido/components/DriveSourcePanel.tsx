@@ -45,7 +45,7 @@ export function DriveSourcePanel({ familia, file, onChange, disabled }: DriveSou
           </button>
           {familia === 'video' && (
             <span style={{ fontSize: '0.68rem', color: '#555555', textAlign: 'center', padding: '0 1.5rem' }}>
-              El video tiene que estar compartido en Drive como "cualquiera con el link"
+              No hace falta compartirlo públicamente: el sitio lo reproduce a través de la API
             </span>
           )}
         </div>

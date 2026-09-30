@@ -12,7 +12,7 @@ export const desarrollosSeed: Desarrollo[] = [
     nombre: 'Solares Pinamar',
     zona: 'Pinamar Norte',
     direccion: 'Blvd. Ameghino 349 — Pinamar',
-    estado: 'en-venta',
+    estado: 'en-pozo',
     descripcion:
       'Un desarrollo único frente al bosque, donde la arquitectura contemporánea se funde con la naturaleza. Unidades de 2 y 3 ambientes con amplios balcones, amenities premium y ubicación inmejorable a metros del mar.',
     features: [
@@ -40,7 +40,7 @@ export const desarrollosSeed: Desarrollo[] = [
     nombre: 'Pinamar Centro Residences',
     zona: 'Pinamar Centro',
     direccion: 'Av. Constitución, Pinamar',
-    estado: 'preventa',
+    estado: 'en-pozo',
     descripcion:
       'Diseño minimalista en el corazón de Pinamar. Departamentos de categoría con vista panorámica, ideales para vivienda permanente o renta vacacional de alto rendimiento.',
     features: [
@@ -66,7 +66,7 @@ export const desarrollosSeed: Desarrollo[] = [
     nombre: 'Moreno Residences',
     zona: 'San Telmo',
     direccion: 'Moreno 1200 — San Telmo, CABA',
-    estado: 'en-obra',
+    estado: 'en-pozo',
     descripcion:
       'Recuperamos un edificio histórico de San Telmo convirtiéndolo en lofts contemporáneos. Techos altos, ladrillo a la vista y diseño industrial en uno de los barrios con mayor proyección de CABA.',
     features: [
@@ -92,7 +92,7 @@ export const desarrollosSeed: Desarrollo[] = [
     nombre: 'Córdoba 1652',
     zona: 'Recoleta',
     direccion: 'Av. Córdoba 1652 — Recoleta, CABA',
-    estado: 'en-obra',
+    estado: 'en-pozo',
     descripcion:
       'Torre de 14 pisos sobre Av. Córdoba con vista despejada. Unidades de 1, 2 y 3 ambientes pensadas para inversión y vivienda permanente, con amenities completos.',
     features: [
@@ -144,7 +144,7 @@ export const desarrollosSeed: Desarrollo[] = [
     nombre: 'Ameghino Residences',
     zona: 'Pinamar Norte',
     direccion: 'Av. Ameghino 500 — Pinamar',
-    estado: 'en-venta',
+    estado: 'en-pozo',
     descripcion:
       'Complejo de departamentos y dúplex frente al mar. Pensado para quienes buscan una segunda residencia con todos los servicios y la posibilidad de generar renta en temporada.',
     features: [
@@ -300,7 +300,7 @@ export const desarrollosSeed: Desarrollo[] = [
     nombre: 'Humboldt',
     zona: 'Villa Crespo',
     direccion: 'Humboldt, Villa Crespo — CABA',
-    estado: 'proximamente',
+    estado: 'en-pozo',
     descripcion:
       'Nuevo desarrollo en el límite Palermo-Villa Crespo. Departamentos de diseño contemporáneo con la mejor relación precio-ubicación de la zona. Próximo lanzamiento.',
     features: [
@@ -326,7 +326,7 @@ export const desarrollosSeed: Desarrollo[] = [
     nombre: 'Julián Álvarez',
     zona: 'Palermo',
     direccion: 'Julián Álvarez — Palermo, CABA',
-    estado: 'proximamente',
+    estado: 'en-pozo',
     descripcion:
       'Nuevo proyecto en Palermo Soho. Lofts y departamentos premium con terminaciones de primera línea. Próximo lanzamiento de preventa con condiciones preferenciales.',
     features: [
@@ -352,7 +352,7 @@ export const desarrollosSeed: Desarrollo[] = [
     nombre: 'Devoto',
     zona: 'Villa Devoto',
     direccion: 'Villa Devoto — CABA',
-    estado: 'proximamente',
+    estado: 'en-pozo',
     descripcion:
       'Villa Devoto, el "barrio jardín" de CABA. Próximo desarrollo de departamentos con espacios verdes propios y la tranquilidad de un barrio residencial consolidado.',
     features: [

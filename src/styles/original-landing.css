@@ -1036,7 +1036,6 @@
     backdrop-filter: blur(4px);
   }
   .card-estado.entregado { color: var(--gris-claro); border-color: rgba(255,255,255,0.15); }
-  .card-estado.preventa { color: var(--dorado-claro); border-color: var(--dorado); }
 
   .card-info {
     color: var(--blanco-roto);
@@ -2137,11 +2136,8 @@
     border: 1px solid var(--dorado-borde);
     color: var(--dorado);
   }
-  .modal-badge.badge-en-venta { color: var(--dorado); border-color: var(--dorado); }
-  .modal-badge.badge-preventa { color: var(--dorado-claro); border-color: var(--dorado-claro); }
-  .modal-badge.badge-en-obra { color: #d4a843; border-color: rgba(212,168,67,0.4); }
+  .modal-badge.badge-en-pozo { color: var(--dorado); border-color: var(--dorado); }
   .modal-badge.badge-entregado { color: var(--gris-claro); border-color: rgba(255,255,255,0.2); }
-  .modal-badge.badge-proximamente { color: var(--dorado); border-color: var(--dorado); background: rgba(234,188,123,0.08); }
 
   .modal-zona {
     font-size: 0.65rem;

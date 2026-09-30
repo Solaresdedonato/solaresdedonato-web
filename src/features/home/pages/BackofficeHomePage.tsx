@@ -9,8 +9,7 @@ import { useContenidoList } from '@/features/contenido/hooks/useContenido'
 
 const STAT_TILES = [
   { key: 'total', label: 'Total desarrollos' },
-  { key: 'enVenta', label: 'En venta' },
-  { key: 'preventa', label: 'Preventa' },
+  { key: 'enPozo', label: 'En pozo' },
   { key: 'entregados', label: 'Entregados' },
 ] as const
 

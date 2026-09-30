@@ -1,16 +1,25 @@
 import { useEffect, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, type InfiniteData, type QueryKey } from '@tanstack/react-query'
 import { api } from '@/shared/api/axiosInstance'
 import type { EnhancedErrorResponse } from '@/shared/api/errorSchema'
 import { driveService } from '../service/driveService'
 import type { DriveFilePage } from '../schemas/drive.schema'
 
-/** enabled=false hasta que el modal se abre: sin esto, cada visita a
- *  /backoffice/contenido quemaría una llamada a la API de Drive de arriba. */
+/**
+ * enabled=false hasta que el modal se abre: sin esto, cada visita a
+ * /backoffice/contenido quemaría una llamada a la API de Drive de arriba.
+ *
+ * Paginado (infinite query): Drive devuelve de a 100 archivos, los más recientes
+ * primero. Con una carpeta que ya pasa los 100 (fotos originales + videos), lo que se
+ * subió hace tiempo quedaba fuera del picker sin ningún aviso — el modal muestra
+ * "Cargar más" mientras haya nextPageToken.
+ */
 export function useDriveArchivos(enabled: boolean, nombre?: string) {
-  return useQuery<DriveFilePage, EnhancedErrorResponse>({
+  return useInfiniteQuery<DriveFilePage, EnhancedErrorResponse, InfiniteData<DriveFilePage>, QueryKey, string | undefined>({
     queryKey: ['contenido', 'drive', nombre],
-    queryFn: () => driveService.listarArchivos(nombre),
+    queryFn: ({ pageParam }) => driveService.listarArchivos(nombre, pageParam),
+    initialPageParam: undefined,
+    getNextPageParam: (ultima) => ultima.nextPageToken ?? undefined,
     enabled,
     staleTime: 5 * 60_000,
   })

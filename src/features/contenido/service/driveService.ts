@@ -5,8 +5,10 @@ import type { DriveFilePage } from '../schemas/drive.schema'
 const BASE = '/v1/drive/archivo'
 
 export const driveService = {
-  listarArchivos: async (nombre?: string): Promise<DriveFilePage> => {
-    const { data } = await api.get<DriveFilePage>(BASE, { params: { nombre, size: 100 } })
+  /** Drive lista de a 100 (los más recientes primero) y devuelve nextPageToken si hay
+   *  más — useDriveArchivos lo encadena para que el picker pueda "Cargar más". */
+  listarArchivos: async (nombre?: string, pageToken?: string): Promise<DriveFilePage> => {
+    const { data } = await api.get<DriveFilePage>(BASE, { params: { nombre, pageToken, size: 100 } })
     return data
   },
 

@@ -105,19 +105,23 @@ export function DrivePickerModal({
   const [busqueda, setBusqueda] = useState('')
   const [seleccionado, setSeleccionado] = useState<DriveFile | null>(null)
   const [seleccionados, setSeleccionados] = useState<Map<string, DriveFile>>(new Map())
-  const { data, isLoading, isFetching, error, refetch } = useDriveArchivos(open)
+  const { data, isLoading, isFetching, error, refetch, hasNextPage, fetchNextPage, isFetchingNextPage } =
+    useDriveArchivos(open)
 
   // Sin efecto de reset (react-hooks/set-state-in-effect): DriveSourcePanel remonta
   // este componente con un key distinto cada vez que abre el modal, así que
   // busqueda/seleccionado ya nacen limpios por el useState de arriba.
 
-  // Filtro client-side: una sola llamada a Drive por apertura del modal, no una por
-  // tecla — la cuota de la Drive API es de proyecto, no vale la pena gastarla acá.
+  // Todas las páginas ya cargadas, en el orden de Drive (más recientes primero).
+  const archivos = useMemo(() => data?.pages.flatMap((p) => p.archivos) ?? [], [data])
+
+  // Filtro client-side sobre lo cargado: una llamada a Drive por apertura del modal (y
+  // una por "Cargar más"), no una por tecla — la cuota de la Drive API es de proyecto,
+  // no vale la pena gastarla acá.
   const filtrados = useMemo(() => {
-    const archivos = data?.archivos ?? []
     const termino = busqueda.trim().toLowerCase()
     return termino ? archivos.filter((a) => a.nombre.toLowerCase().includes(termino)) : archivos
-  }, [data, busqueda])
+  }, [archivos, busqueda])
 
   if (!open) return null
 
@@ -153,7 +157,13 @@ export function DrivePickerModal({
               </div>
             </>
           ) : filtrados.length === 0 ? (
-            <EmptyState message="No hay archivos en la carpeta de Drive." />
+            <EmptyState
+              message={
+                hasNextPage
+                  ? 'Ningún archivo de los cargados coincide. Probá "Cargar más": hay archivos más viejos en la carpeta.'
+                  : 'No hay archivos en la carpeta de Drive.'
+              }
+            />
           ) : (
             <div className={bo.mediaGrid}>
               {filtrados.map((archivo) => (
@@ -180,6 +190,17 @@ export function DrivePickerModal({
                   }}
                 />
               ))}
+            </div>
+          )}
+
+          {hasNextPage && !isLoading && !error && (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.9rem', marginTop: '1.1rem' }}>
+              <span style={{ fontSize: '0.72rem', color: '#666666' }}>
+                Mostrando los {archivos.length} archivos más recientes de la carpeta
+              </span>
+              <button type="button" className={bo.btnOutline} disabled={isFetchingNextPage} onClick={() => fetchNextPage()}>
+                {isFetchingNextPage ? 'Cargando…' : 'Cargar más'}
+              </button>
             </div>
           )}
         </div>
