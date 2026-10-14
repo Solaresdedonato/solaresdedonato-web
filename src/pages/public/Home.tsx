@@ -174,7 +174,7 @@ export function Home() {
           <h2>
             <small
               style={{
-                fontSize: '0.65rem',
+                fontSize: '0.85rem',
                 letterSpacing: '0.3em',
                 color: 'var(--dorado)',
                 textTransform: 'uppercase',

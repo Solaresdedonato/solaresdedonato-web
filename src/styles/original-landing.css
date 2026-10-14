@@ -43,14 +43,10 @@
 
   .nav-links {
     display: flex;
-    gap: 0.2rem;
+    gap: 2.5rem;
     list-style: none;
   }
-  /* Mismo recuadro dorado al hover que "Contacte con nosotros" (.nav-cta): el padding
-     es el tamaño del recuadro y, a la vez, la separación entre ítems. */
   .nav-links a {
-    display: block;
-    padding: 0.6rem 0.8rem;
     text-decoration: none;
     font-family: 'Titillium Web', sans-serif;
     font-size: 17px;
@@ -59,23 +55,19 @@
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--gris-claro);
-    transition: background 0.2s, color 0.2s;
+    transition: color 0.2s;
   }
-  .nav-links a:hover {
-    background: var(--dorado);
-    color: var(--negro);
-  }
+  .nav-links a:hover { color: var(--dorado); }
 
   .nav-cta {
     background: transparent;
     border: none;
     color: var(--dorado);
     font-family: 'Titillium Web', sans-serif;
-    font-size: 15px;
-    line-height: 22px;
+    font-size: 0.7rem;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    padding: 0.6rem 1.1rem;
+    padding: 0.6rem 1.4rem;
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
     text-decoration: none;
@@ -150,7 +142,7 @@
   }
 
   .hero-eyebrow {
-    font-size: 0.65rem;
+    font-size: 0.85rem;
     letter-spacing: 0.35em;
     text-transform: uppercase;
     color: var(--dorado);
@@ -333,7 +325,7 @@
     margin-right: auto;
   }
   .titulo-centrado-eyebrow {
-    font-size: 0.65rem;
+    font-size: 0.85rem;
     letter-spacing: 0.4em;
     text-transform: uppercase;
     color: var(--dorado);
@@ -385,7 +377,7 @@
     padding-right: 2rem;
   }
   .cta-quick-eyebrow {
-    font-size: 0.65rem;
+    font-size: 0.85rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--dorado);
@@ -442,7 +434,7 @@
   }
   .quick-q-label {
     display: block;
-    font-size: 0.65rem;
+    font-size: 0.8rem;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--dorado);
@@ -676,7 +668,7 @@
     padding-top: 2rem;
   }
   .broker-beneficios-titulo {
-    font-size: 0.62rem;
+    font-size: 0.8rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--dorado);
@@ -913,7 +905,7 @@
   .seccion-header h2 small {
     display: block;
     font-family: 'Titillium Web', sans-serif;
-    font-size: 0.65rem;
+    font-size: 0.85rem;
     letter-spacing: 0.3em;
     color: var(--dorado);
     text-transform: uppercase;
@@ -1003,32 +995,44 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 0.4rem;
   }
   .card-numero {
     font-family: 'Titillium Web', sans-serif;
     font-style: italic;
-    font-size: 0.85rem;
+    font-size: 1.05rem;
     color: var(--dorado);
     border: 1px solid var(--dorado-borde);
-    width: 2rem;
-    height: 2rem;
+    width: 2.6rem;
+    height: 2.6rem;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(8,8,8,0.6);
     backdrop-filter: blur(4px);
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
   }
   .card-estado {
-    font-size: 0.58rem;
+    font-size: 0.72rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--dorado);
     border: 1px solid var(--dorado-borde);
-    padding: 4px 10px;
+    padding: 6px 14px;
     background: rgba(8,8,8,0.6);
     backdrop-filter: blur(4px);
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
   }
   .card-estado.sin-unidades { color: var(--gris-claro); border-color: rgba(255,255,255,0.15); }
+  /* Etiquetas: al hover, el mismo recuadro dorado que el botón "Contacte con nosotros"
+     (.nav-cta). También en las de la ficha (.modal-badge). */
+  .card-numero:hover,
+  .card-estado:hover {
+    background: var(--dorado);
+    color: var(--negro);
+    border-color: var(--dorado);
+  }
 
   .card-info {
     color: var(--blanco-roto);
@@ -1151,6 +1155,9 @@
   }
   @media (max-width: 700px) {
     .carousel-card { flex: 0 0 85%; }
+    /* En la card angosta del celular las etiquetas grandes no entran en una línea. */
+    .card-numero { width: 2rem; height: 2rem; font-size: 0.85rem; }
+    .card-estado { font-size: 0.58rem; padding: 4px 10px; }
   }
 
   /* ── PRÓXIMAMENTE ── */
@@ -1472,7 +1479,7 @@
     margin: 0 auto 4rem;
   }
   .invertir-intro .eyebrow {
-    font-size: 0.65rem;
+    font-size: 0.85rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--dorado);
@@ -1538,7 +1545,7 @@
 
   .instrumento-tag {
     display: block;
-    font-size: 0.58rem;
+    font-size: 0.8rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--dorado);
@@ -1573,7 +1580,7 @@
     flex: 1;
   }
   .instrumento-features-titulo {
-    font-size: 0.62rem;
+    font-size: 0.8rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--dorado);
@@ -1714,7 +1721,7 @@
   }
 
   .cta-band .eyebrow {
-    font-size: 0.65rem;
+    font-size: 0.85rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--dorado);
@@ -1790,7 +1797,7 @@
     margin-bottom: 2rem;
   }
   .contacto-directo h4 {
-    font-size: 0.7rem;
+    font-size: 0.85rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--dorado);
@@ -1934,7 +1941,7 @@
     margin-bottom: 3rem;
   }
   .footer-col h5 {
-    font-size: 0.65rem;
+    font-size: 0.8rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--dorado);
@@ -2179,21 +2186,28 @@
   .modal-header-row {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    flex-wrap: wrap;
+    gap: 0.8rem 1rem;
     margin-bottom: 1.2rem;
   }
   .modal-badge {
-    font-size: 0.6rem;
+    font-size: 0.72rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    padding: 5px 12px;
+    padding: 7px 14px;
     border: 1px solid var(--dorado-borde);
     color: var(--dorado);
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
   }
   .modal-badge.badge-en-pozo { color: var(--dorado); border-color: var(--dorado); }
   .modal-badge.badge-entregado { color: var(--blanco-roto); border-color: rgba(255,255,255,0.35); }
   .modal-badge.badge-unidades-disponibles { color: var(--dorado); border-color: var(--dorado); background: rgba(234,188,123,0.08); }
   .modal-badge.badge-sin-unidades { color: var(--gris-claro); border-color: rgba(255,255,255,0.2); }
+  .modal-badge:hover {
+    background: var(--dorado);
+    color: var(--negro);
+    border-color: var(--dorado);
+  }
 
   .modal-zona {
     font-size: 0.65rem;
@@ -2250,7 +2264,7 @@
   }
   .mapa-info { flex: 1; min-width: 200px; }
   .mapa-eyebrow {
-    font-size: 0.6rem;
+    font-size: 0.8rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--dorado);
@@ -2347,7 +2361,7 @@
     border-left: 2px solid var(--dorado);
   }
   .feature-titulo {
-    font-size: 0.62rem;
+    font-size: 0.8rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--dorado);
@@ -2519,7 +2533,7 @@
 
   .pagina-cercanias { margin-bottom: 3rem; }
   .cercanias-eyebrow {
-    font-size: 0.65rem;
+    font-size: 0.85rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--dorado);
@@ -2551,9 +2565,10 @@
     margin-bottom: 1.1rem;
   }
   .cercania-icono {
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
     border: 1px solid var(--dorado-borde);
+    background: rgba(234,188,123,0.08);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2589,14 +2604,9 @@
   /* El isologo completo (ícono + "Solares de Donato") empieza a pisar el menú
      antes de que .nav-links se oculte del todo a los 900px — de acá para
      abajo se muestra solo el ícono. */
-  @media (max-width: 1360px) {
+  @media (max-width: 1300px) {
     .logo-img-full { display: none; }
     .logo-img-compact { display: block; }
-  }
-  /* Con menos aire en cada ítem, el menú sigue entrando en una línea hasta ~1220px. */
-  @media (max-width: 1280px) {
-    .nav-links a { padding-left: 0.6rem; padding-right: 0.6rem; }
-    .nav-cta { padding-left: 0.8rem; padding-right: 0.8rem; }
   }
   @media (max-width: 900px) {
     nav, .hero, .divisor, .nosotros, .desarrollos, .invertir,
@@ -2606,8 +2616,6 @@
     }
     nav { padding: 1rem 1.5rem; }
     .nav-links { display: none; }
-    /* Sin menú al lado no hace falta el tamaño grande, y así entra en una línea. */
-    .nav-cta { font-size: 0.75rem; }
     .hero-stats { display: none; }
     /* .hero-title pasó de clamp() a un tamaño fijo (72px/64px) para el spec de
        desktop — sin esto desborda en mobile, donde antes bajaba a 2.6rem. */

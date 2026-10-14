@@ -13,37 +13,40 @@ import { DesarrolloAccionesBotones } from '@/components/DesarrolloAccionesBotone
 import { DesarrolloGaleria } from '@/components/DesarrolloGaleria'
 import logoIcon from '@/assets/logo-icon.png'
 
+/** Mismo trazo que los íconos de los botones de acción (.btn-icono): línea fina dorada. */
 function IconoCercania({ children }: { children: ReactNode }) {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       {children}
     </svg>
   )
 }
 
+// Los mismos motivos que tenían los emojis (🎓 🚉 🛒 ⛑), dibujados como íconos de línea.
 const CERCANIA_ICONS: Record<keyof DesarrolloCercanias, ReactNode> = {
   educacion: (
     <IconoCercania>
-      <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-      <path d="M6 12v5c3 3 9 3 12 0v-5" />
+      <path d="M21.42 10.92a1 1 0 0 0-.02-1.84L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.83l8.57 3.91a2 2 0 0 0 1.66 0z" />
+      <path d="M22 10v6" />
+      <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5" />
     </IconoCercania>
   ),
   transporte: (
     <IconoCercania>
       <rect x="4" y="3" width="16" height="16" rx="2" />
-      <path d="M4 11h16M10 6h4M8 15h.01M16 15h.01M6 19v2M18 19v2M4 6 2 7M20 6l2 1" />
+      <path d="M4 11h16M12 3v8M8 15h.01M16 15h.01M8 19l-2 3M16 19l2 3" />
     </IconoCercania>
   ),
   comercios: (
     <IconoCercania>
-      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-      <path d="M3 6h18M16 10a4 4 0 0 1-8 0" />
+      <circle cx="8" cy="21" r="1" />
+      <circle cx="19" cy="21" r="1" />
+      <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
     </IconoCercania>
   ),
   salud: (
     <IconoCercania>
-      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z" />
-      <path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27" />
+      <path d="M4 9a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h4a1 1 0 0 1 1 1v4a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-4a1 1 0 0 1 1-1h4a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-4a1 1 0 0 1-1-1V4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4a1 1 0 0 1-1 1z" />
     </IconoCercania>
   ),
 }
