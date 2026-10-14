@@ -43,10 +43,14 @@
 
   .nav-links {
     display: flex;
-    gap: 2.5rem;
+    gap: 0.2rem;
     list-style: none;
   }
+  /* Mismo recuadro dorado al hover que "Contacte con nosotros" (.nav-cta): el padding
+     es el tamaño del recuadro y, a la vez, la separación entre ítems. */
   .nav-links a {
+    display: block;
+    padding: 0.6rem 0.8rem;
     text-decoration: none;
     font-family: 'Titillium Web', sans-serif;
     font-size: 17px;
@@ -55,19 +59,23 @@
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--gris-claro);
-    transition: color 0.2s;
+    transition: background 0.2s, color 0.2s;
   }
-  .nav-links a:hover { color: var(--dorado); }
+  .nav-links a:hover {
+    background: var(--dorado);
+    color: var(--negro);
+  }
 
   .nav-cta {
     background: transparent;
     border: none;
     color: var(--dorado);
     font-family: 'Titillium Web', sans-serif;
-    font-size: 0.7rem;
+    font-size: 15px;
+    line-height: 22px;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    padding: 0.6rem 1.4rem;
+    padding: 0.6rem 1.1rem;
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
     text-decoration: none;
@@ -147,16 +155,6 @@
     text-transform: uppercase;
     color: var(--dorado);
     margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  .hero-eyebrow::before {
-    content: '';
-    display: block;
-    width: 40px;
-    height: 1px;
-    background: var(--dorado);
   }
 
   .hero-title {
@@ -166,7 +164,7 @@
     text-transform: capitalize;
     /* 64px (el valor exacto del spec) es MENOR que el font-size: en una sola
        línea no se nota, pero acá el título ocupa dos líneas y la palabra
-       dorada en italica de la segunda pisa la primera. 1.15 (mismo ratio que
+       dorada de la segunda pisa la primera. 1.15 (mismo ratio que
        .titulo-centrado) da lugar sin perder el tamaño pedido. */
     line-height: 1.15;
     color: var(--blanco);
@@ -175,7 +173,6 @@
 
   /* Palabra rotante */
   .palabra-rotante {
-    font-style: italic;
     color: var(--dorado-claro);
     display: inline-block;
     min-width: 0;
@@ -344,14 +341,14 @@
   }
   .titulo-centrado {
     font-family: 'Titillium Web', sans-serif;
-    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    font-size: clamp(2.6rem, 4.8vw, 4.1rem);
     font-weight: 600;
     color: var(--blanco);
     line-height: 1.15;
     margin-bottom: 1.5rem;
   }
   .titulo-centrado em {
-    font-style: italic;
+    font-style: normal;
     color: var(--dorado);
   }
   .titulo-centrado-linea {
@@ -402,7 +399,7 @@
     line-height: 1.25;
     margin-bottom: 1.5rem;
   }
-  .cta-quick-title em { font-style: italic; color: var(--dorado); }
+  .cta-quick-title em { font-style: normal; color: var(--dorado); }
 
   .cta-quick-desc {
     font-size: 0.95rem;
@@ -558,14 +555,10 @@
     display: flex;
     gap: 0.5rem;
   }
-  .quick-flag {
+  .quick-phone-wrap .codigo-pais {
     background: var(--negro);
-    border: 1px solid var(--gris-oscuro);
     padding: 0 1rem;
-    display: flex;
-    align-items: center;
-    font-size: 1.3rem;
-    line-height: 1;
+    font-size: 0.92rem;
   }
   .quick-phone { flex: 1; }
 
@@ -669,7 +662,7 @@
     line-height: 1.15;
     margin-bottom: 1.5rem;
   }
-  .broker-title em { font-style: italic; color: var(--dorado); }
+  .broker-title em { font-style: normal; color: var(--dorado); }
 
   .broker-desc {
     font-size: 0.95rem;
@@ -861,14 +854,14 @@
 
   .nosotros-texto h2 {
     font-family: 'Titillium Web', sans-serif;
-    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-size: clamp(2.4rem, 4.2vw, 3.6rem);
     font-weight: 600;
     line-height: 1.2;
     color: var(--blanco);
     margin-bottom: 1.5rem;
   }
   .nosotros-texto h2 em {
-    font-style: italic;
+    font-style: normal;
     color: var(--dorado);
   }
   .nosotros-texto p {
@@ -911,12 +904,12 @@
   }
   .seccion-header h2 {
     font-family: 'Titillium Web', sans-serif;
-    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-size: clamp(2.2rem, 3.6vw, 3.1rem);
     font-weight: 600;
     color: var(--blanco);
     line-height: 1.2;
   }
-  .seccion-header h2 span { color: var(--dorado); font-style: italic; }
+  .seccion-header h2 span { color: var(--dorado); }
   .seccion-header h2 small {
     display: block;
     font-family: 'Titillium Web', sans-serif;
@@ -1216,7 +1209,7 @@
     line-height: 1.2;
     margin-bottom: 0.8rem;
   }
-  .prox-title em { font-style: italic; color: var(--dorado); }
+  .prox-title em { font-style: normal; color: var(--dorado); }
 
   .prox-desc {
     font-size: 0.92rem;
@@ -1447,8 +1440,8 @@
     margin-top: 4rem;
   }
   .carrusel-estado-titulo {
-    font-size: 0.65rem;
-    letter-spacing: 0.35em;
+    font-size: 0.9rem;
+    letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--dorado);
     margin: 0 0 1.4rem;
@@ -1487,13 +1480,13 @@
   }
   .invertir-intro h2 {
     font-family: 'Titillium Web', sans-serif;
-    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-size: clamp(2.4rem, 4.2vw, 3.6rem);
     font-weight: 600;
     color: var(--blanco);
     line-height: 1.2;
     margin-bottom: 1.2rem;
   }
-  .invertir-intro h2 em { font-style: italic; color: var(--dorado); }
+  .invertir-intro h2 em { font-style: normal; color: var(--dorado); }
   .invertir-intro p {
     font-size: 0.95rem;
     color: var(--gris-claro);
@@ -1544,32 +1537,23 @@
   }
 
   .instrumento-tag {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
+    display: block;
     font-size: 0.58rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--dorado);
     margin-bottom: 1.5rem;
   }
-  .instrumento-tag::before {
-    content: '';
-    display: block;
-    width: 24px;
-    height: 1px;
-    background: var(--dorado);
-  }
 
   .instrumento h3 {
     font-family: 'Titillium Web', sans-serif;
-    font-size: 1.8rem;
+    font-size: 2.2rem;
     font-weight: 400;
     color: var(--blanco);
     line-height: 1.2;
     margin-bottom: 1rem;
   }
-  .instrumento h3 em { font-style: italic; color: var(--dorado-claro); }
+  .instrumento h3 em { font-style: normal; color: var(--dorado-claro); }
 
   .instrumento-desc {
     font-size: 0.9rem;
@@ -1740,14 +1724,14 @@
 
   .cta-band h2 {
     font-family: 'Titillium Web', sans-serif;
-    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-size: clamp(2.4rem, 4.8vw, 4.2rem);
     font-weight: 600;
     color: var(--blanco);
     line-height: 1.2;
     margin-bottom: 1rem;
     position: relative;
   }
-  .cta-band h2 em { font-style: italic; color: var(--dorado); }
+  .cta-band h2 em { font-style: normal; color: var(--dorado); }
 
   .cta-band p {
     font-size: 0.95rem;
@@ -1784,13 +1768,13 @@
 
   .form-titulo {
     font-family: 'Titillium Web', sans-serif;
-    font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+    font-size: clamp(2.2rem, 3vw, 2.9rem);
     font-weight: 600;
     color: var(--blanco);
     line-height: 1.2;
     margin-bottom: 1rem;
   }
-  .form-titulo em { color: var(--dorado); font-style: italic; }
+  .form-titulo em { color: var(--dorado); font-style: normal; }
 
   .form-desc {
     font-size: 0.92rem;
@@ -1884,6 +1868,42 @@
   .campo select option { background: var(--negro-suave); }
   .campo textarea { resize: vertical; min-height: 110px; }
 
+  .campo-telefono {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .campo-telefono input { flex: 1; min-width: 0; }
+
+  /* Dropdown del código de país (CodigoPaisSelect): la caja muestra solo el código y el
+     <select> nativo va encima, transparente, así al abrirlo se ve la lista de países. */
+  .codigo-pais {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex-shrink: 0;
+    /* Entra el código más largo (+598) sin que la caja cambie de ancho al elegir otro país. */
+    min-width: 5.75rem;
+    padding: 0 0.9rem;
+    background: var(--negro-suave);
+    border: 1px solid var(--gris-oscuro);
+    color: var(--blanco-roto);
+    font-size: 0.88rem;
+    transition: border-color 0.2s;
+  }
+  .codigo-pais:focus-within { border-color: var(--dorado-borde); }
+  .codigo-pais svg { color: var(--dorado); }
+  .codigo-pais .codigo-pais-select {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
   .btn-form {
     background: var(--dorado);
     color: var(--negro);
@@ -1930,6 +1950,19 @@
     transition: color 0.2s;
   }
   .footer-col a:hover { color: var(--dorado); }
+
+  .footer-col .footer-contacto {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    margin-bottom: 0.5rem;
+  }
+  /* El margen baja el ícono a la altura de la primera línea (line-height 1.8). */
+  .footer-contacto svg {
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+    color: var(--dorado);
+  }
 
   .footer-logo {
     height: 44px;
@@ -2171,7 +2204,7 @@
 
   .modal-nombre {
     font-family: 'Titillium Web', sans-serif;
-    font-size: clamp(2rem, 4vw, 3rem);
+    font-size: clamp(2.4rem, 4.8vw, 3.6rem);
     font-weight: 400;
     color: var(--blanco);
     line-height: 1.1;
@@ -2259,6 +2292,54 @@
     height: 100%;
     border: 0;
     filter: invert(0.92) hue-rotate(180deg) saturate(0.6) brightness(0.95);
+    /* Fijo: el pin con el logo está encima, en el centro; si el mapa se pudiera arrastrar
+       el pin quedaría apuntando a otro lugar. El click lo toma .mapa-overlay. */
+    pointer-events: none;
+  }
+  .mapa-overlay {
+    position: absolute;
+    inset: 0;
+  }
+  .mapa-overlay:focus-visible {
+    outline: 2px solid var(--dorado);
+    outline-offset: -4px;
+  }
+  /* Pin con el isologo. Tapa el pin de Google: el embed centra el mapa en la dirección,
+     así que la punta (abajo) va en el centro exacto del recuadro. */
+  .mapa-marcador {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translate(-50%, -100%);
+    transform-origin: 50% 100%;
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,0.55));
+    transition: transform 0.2s;
+  }
+  .mapa-overlay:hover .mapa-marcador { transform: translate(-50%, -100%) scale(1.08); }
+  .mapa-marcador::after {
+    content: '';
+    margin-top: -1px;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-top: 13px solid var(--dorado);
+  }
+  .mapa-marcador-logo {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--negro);
+    border: 2px solid var(--dorado);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .mapa-marcador-logo img {
+    width: 32px;
+    height: 32px;
+    display: block;
   }
   .modal-feature {
     padding: 1.3rem;
@@ -2446,12 +2527,12 @@
   }
   .cercanias-titulo {
     font-family: 'Titillium Web', sans-serif;
-    font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+    font-size: clamp(1.7rem, 2.9vw, 2.2rem);
     font-weight: 400;
     color: var(--blanco);
     margin-bottom: 1.5rem;
   }
-  .cercanias-titulo em { font-style: italic; color: var(--dorado); }
+  .cercanias-titulo em { font-style: normal; color: var(--dorado); }
 
   .cercanias-grid {
     display: grid;
@@ -2495,14 +2576,6 @@
     font-size: 0.85rem;
     color: var(--blanco-roto);
     line-height: 1.5;
-    padding-left: 1rem;
-    position: relative;
-  }
-  .cercania-lista li::before {
-    content: '—';
-    position: absolute;
-    left: 0;
-    color: var(--dorado);
   }
 
   @media (max-width: 700px) {
@@ -2516,9 +2589,14 @@
   /* El isologo completo (ícono + "Solares de Donato") empieza a pisar el menú
      antes de que .nav-links se oculte del todo a los 900px — de acá para
      abajo se muestra solo el ícono. */
-  @media (max-width: 1300px) {
+  @media (max-width: 1360px) {
     .logo-img-full { display: none; }
     .logo-img-compact { display: block; }
+  }
+  /* Con menos aire en cada ítem, el menú sigue entrando en una línea hasta ~1220px. */
+  @media (max-width: 1280px) {
+    .nav-links a { padding-left: 0.6rem; padding-right: 0.6rem; }
+    .nav-cta { padding-left: 0.8rem; padding-right: 0.8rem; }
   }
   @media (max-width: 900px) {
     nav, .hero, .divisor, .nosotros, .desarrollos, .invertir,
@@ -2528,6 +2606,8 @@
     }
     nav { padding: 1rem 1.5rem; }
     .nav-links { display: none; }
+    /* Sin menú al lado no hace falta el tamaño grande, y así entra en una línea. */
+    .nav-cta { font-size: 0.75rem; }
     .hero-stats { display: none; }
     /* .hero-title pasó de clamp() a un tamaño fijo (72px/64px) para el spec de
        desktop — sin esto desborda en mobile, donde antes bajaba a 2.6rem. */

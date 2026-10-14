@@ -1,10 +1,14 @@
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { CodigoPaisSelect } from '@/components/CodigoPaisSelect'
+import { ISO_PAIS_DEFAULT, telefonoConCodigo, type IsoPais } from '@/shared/utils/telefono'
 import { contactoFormSchema, PROYECTOS_INTERES, type ContactoFormValues } from '../schemas/contacto.schema'
 import { useEnviarContacto } from '../hooks/useEnviarContacto'
 
 export function ContactoForm() {
   const { enviar, isLoading, error, isSuccess } = useEnviarContacto()
+  const [codigoPais, setCodigoPais] = useState<IsoPais>(ISO_PAIS_DEFAULT)
   const {
     register,
     handleSubmit,
@@ -15,8 +19,11 @@ export function ContactoForm() {
     defaultValues: { nombre: '', apellido: '', email: '', telefono: '', proyectoInteres: '', mensaje: '' },
   })
 
+  const onSubmit = (values: ContactoFormValues) =>
+    enviar({ ...values, telefono: telefonoConCodigo(codigoPais, values.telefono) }, { onSuccess: () => reset() })
+
   return (
-    <form className="form-contacto" onSubmit={handleSubmit((values) => enviar(values, { onSuccess: () => reset() }))} noValidate>
+    <form className="form-contacto" onSubmit={handleSubmit(onSubmit)} noValidate>
       <div className="input-grupo">
         <div className="campo">
           <label htmlFor="contacto-nombre">Nombre</label>
@@ -38,7 +45,10 @@ export function ContactoForm() {
         </div>
         <div className="campo">
           <label htmlFor="contacto-telefono">Teléfono / WhatsApp</label>
-          <input id="contacto-telefono" type="tel" placeholder="+54 9 11..." {...register('telefono')} />
+          <div className="campo-telefono">
+            <CodigoPaisSelect value={codigoPais} onChange={setCodigoPais} />
+            <input id="contacto-telefono" type="tel" {...register('telefono')} />
+          </div>
           {errors.telefono && <span style={{ color: '#d97b7b', fontSize: '0.72rem' }}>{errors.telefono.message}</span>}
         </div>
       </div>
@@ -46,7 +56,7 @@ export function ContactoForm() {
       <div className="campo">
         <label htmlFor="contacto-proyecto">Proyecto de interés</label>
         <select id="contacto-proyecto" {...register('proyectoInteres')}>
-          <option value="">— Seleccioná un proyecto —</option>
+          <option value="">Seleccioná un proyecto</option>
           {PROYECTOS_INTERES.map((p) => (
             <option key={p} value={p}>
               {p}

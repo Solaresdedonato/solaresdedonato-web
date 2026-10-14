@@ -1,6 +1,7 @@
 import { Link as RouterLink } from 'react-router-dom'
 import { ROUTES } from '@/shared/router/routes'
 import { mediaUrl } from '@/shared/utils/mediaUrl'
+import { sinGuiones } from '@/shared/utils/sinGuiones'
 import { DISPONIBILIDAD_LABELS, type Desarrollo } from '@/features/desarrollo/schemas/desarrollo.schema'
 
 interface DesarrolloCardProps {
@@ -35,8 +36,8 @@ export function DesarrolloCard({ desarrollo, numero }: DesarrolloCardProps) {
         </div>
         <div className="card-info">
           <p className="zona">{desarrollo.zona}</p>
-          <h3 className="nombre">{desarrollo.nombre}</h3>
-          <p className="direccion">{desarrollo.direccion}</p>
+          <h3 className="nombre">{sinGuiones(desarrollo.nombre, ' ')}</h3>
+          <p className="direccion">{sinGuiones(desarrollo.direccion)}</p>
           <span className="ver-mas">Ver desarrollo →</span>
         </div>
       </div>

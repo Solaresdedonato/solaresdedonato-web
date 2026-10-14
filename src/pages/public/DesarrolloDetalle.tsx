@@ -1,15 +1,51 @@
+import type { ReactNode } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDesarrolloPorSlug } from '@/features/desarrollo/hooks/useDesarrollo'
-import { CERCANIAS_CATEGORIAS, DISPONIBILIDAD_LABELS, ESTADO_LABELS } from '@/features/desarrollo/schemas/desarrollo.schema'
+import {
+  CERCANIAS_CATEGORIAS,
+  DISPONIBILIDAD_LABELS,
+  ESTADO_LABELS,
+  type DesarrolloCercanias,
+} from '@/features/desarrollo/schemas/desarrollo.schema'
 import { mediaUrl } from '@/shared/utils/mediaUrl'
+import { sinGuiones } from '@/shared/utils/sinGuiones'
 import { DesarrolloAccionesBotones } from '@/components/DesarrolloAccionesBotones'
 import { DesarrolloGaleria } from '@/components/DesarrolloGaleria'
+import logoIcon from '@/assets/logo-icon.png'
 
-const CERCANIA_ICONS: Record<string, string> = {
-  educacion: '🎓',
-  transporte: '🚉',
-  comercios: '🛒',
-  salud: '⛑',
+function IconoCercania({ children }: { children: ReactNode }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {children}
+    </svg>
+  )
+}
+
+const CERCANIA_ICONS: Record<keyof DesarrolloCercanias, ReactNode> = {
+  educacion: (
+    <IconoCercania>
+      <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+      <path d="M6 12v5c3 3 9 3 12 0v-5" />
+    </IconoCercania>
+  ),
+  transporte: (
+    <IconoCercania>
+      <rect x="4" y="3" width="16" height="16" rx="2" />
+      <path d="M4 11h16M10 6h4M8 15h.01M16 15h.01M6 19v2M18 19v2M4 6 2 7M20 6l2 1" />
+    </IconoCercania>
+  ),
+  comercios: (
+    <IconoCercania>
+      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+      <path d="M3 6h18M16 10a4 4 0 0 1-8 0" />
+    </IconoCercania>
+  ),
+  salud: (
+    <IconoCercania>
+      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z" />
+      <path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27" />
+    </IconoCercania>
+  ),
 }
 
 function plural(n: number, singular: string, pluralForm: string) {
@@ -47,6 +83,8 @@ export function DesarrolloDetalle() {
   // Sin zona/país, una direccion cargada como "solo calle y numero" es ambigua:
   // esa misma calle puede existir en otra localidad y Google geocodifica cualquiera.
   const mapsQuery = encodeURIComponent(`${desarrollo.direccion}, ${desarrollo.zona}, Argentina`)
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`
+  const direccion = sinGuiones(desarrollo.direccion)
 
   // Solo los datos generales son obligatorios al crear un desarrollo: características y
   // cercanías pueden venir vacías, y en ese caso no se dibuja su bloque.
@@ -89,11 +127,11 @@ export function DesarrolloDetalle() {
               {DISPONIBILIDAD_LABELS[desarrollo.disponibilidad]}
             </span>
             <span className="modal-zona">{desarrollo.zona}</span>
-            <span className="pagina-dev-nombre">{desarrollo.nombre}</span>
+            <span className="pagina-dev-nombre">{sinGuiones(desarrollo.nombre, ' ')}</span>
           </div>
           {/* El título es la dirección: es lo que identifica al desarrollo para quien lo
               busca. El nombre comercial queda como etiqueta chica en la fila de arriba. */}
-          <h1 className="modal-nombre pagina-dev-titulo">{desarrollo.direccion}</h1>
+          <h1 className="modal-nombre pagina-dev-titulo">{direccion}</h1>
           <p className="modal-descripcion">{desarrollo.descripcion}</p>
 
           {hayGaleria && (
@@ -144,7 +182,7 @@ export function DesarrolloDetalle() {
                     </div>
                     <ul className="cercania-lista">
                       {desarrollo.cercanias[cat.key].map((item) => (
-                        <li key={item}>{item}</li>
+                        <li key={item}>{sinGuiones(item)}</li>
                       ))}
                     </ul>
                   </div>
@@ -157,14 +195,9 @@ export function DesarrolloDetalle() {
             <div className="mapa-header">
               <div className="mapa-info">
                 <p className="mapa-eyebrow">Ubicación en el mapa</p>
-                <p className="mapa-direccion">{desarrollo.direccion}</p>
+                <p className="mapa-direccion">{direccion}</p>
               </div>
-              <a
-                className="mapa-link"
-                href={`https://www.google.com/maps/search/?api=1&query=${mapsQuery}`}
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a className="mapa-link" href={mapsUrl} target="_blank" rel="noreferrer">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                   <circle cx="12" cy="10" r="3" />
@@ -173,12 +206,29 @@ export function DesarrolloDetalle() {
               </a>
             </div>
             <div className="mapa-iframe-wrap">
+              {/* El embed no deja cambiar el pin de Google: el del logo va encima (ver
+                  .mapa-marcador) y el mapa queda fijo; el click lo abre en Google Maps. */}
               <iframe
                 title={`Mapa de ${desarrollo.nombre}`}
                 src={`https://maps.google.com/maps?q=${mapsQuery}&output=embed&z=15&hl=es`}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
+                tabIndex={-1}
+                aria-hidden="true"
               />
+              <a
+                className="mapa-overlay"
+                href={mapsUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`Ver ${direccion} en Google Maps`}
+              >
+                <span className="mapa-marcador" aria-hidden="true">
+                  <span className="mapa-marcador-logo">
+                    <img src={logoIcon} alt="" />
+                  </span>
+                </span>
+              </a>
             </div>
           </div>
 

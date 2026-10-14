@@ -108,6 +108,49 @@ describe('DesarrolloDetalle', () => {
     expect(container.querySelector('.pagina-dev-galeria')).not.toBeInTheDocument()
   })
 
+  it('nombre, dirección y cercanías se muestran sin los guiones cargados como separador', () => {
+    renderDetalle(
+      desarrollo({
+        nombre: 'SOLARES - VILLA LURO',
+        direccion: 'Rivadavia 9954 — Villa Luro',
+        cercanias: {
+          educacion: [],
+          transporte: ['Tren - Estación Villa Luro'],
+          comercios: [],
+          salud: ['Farmacia Belén — Av. Rivadavia 9626'],
+        },
+      }),
+    )
+
+    expect(screen.getByText('SOLARES VILLA LURO')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Rivadavia 9954, Villa Luro')
+    expect(screen.getByText('Tren, Estación Villa Luro')).toBeInTheDocument()
+    expect(screen.getByText('Farmacia Belén, Av. Rivadavia 9626')).toBeInTheDocument()
+  })
+
+  it('cada categoría de cercanías tiene un ícono SVG, sin emojis', () => {
+    const { container } = renderDetalle(
+      desarrollo({ cercanias: { educacion: ['Colegio'], transporte: ['Subte'], comercios: ['Súper'], salud: ['Hospital'] } }),
+    )
+
+    const iconos = container.querySelectorAll('.cercania-icono')
+    expect(iconos).toHaveLength(4)
+    iconos.forEach((icono) => {
+      expect(icono.querySelector('svg')).toBeInTheDocument()
+      expect(icono.textContent).toBe('')
+    })
+  })
+
+  it('el mapa lleva el pin con el logo y el click abre la dirección en Google Maps', () => {
+    const { container } = renderDetalle(desarrollo())
+
+    const link = screen.getByRole('link', { name: /ver blvd\. ameghino 349 en google maps/i })
+    expect(link.getAttribute('href')).toMatch(/^https:\/\/www\.google\.com\/maps\/search\/\?api=1&query=/)
+    expect(link.querySelector('.mapa-marcador img')).toBeInTheDocument()
+    // El iframe queda fijo (el pin está encima): fuera del orden de tabulación.
+    expect(container.querySelector('.mapa-iframe-wrap iframe')).toHaveAttribute('tabindex', '-1')
+  })
+
   it('sin fotos ni video no dibuja la galería', () => {
     const { container } = renderDetalle(desarrollo({ imagenPortadaUrl: null, galeria: [] }))
 

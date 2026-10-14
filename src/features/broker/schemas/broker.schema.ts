@@ -4,10 +4,10 @@ export const EXPERIENCIAS_BROKER = ['Menos de 2 años', '2 a 5 años', '5 a 10 a
 export type ExperienciaBroker = (typeof EXPERIENCIAS_BROKER)[number]
 
 export const ZONAS_OPERACION = [
-  'CABA - Norte (Belgrano, Núñez, Palermo)',
-  'CABA - Centro (Recoleta, Retiro, San Telmo)',
-  'CABA - Oeste (Villa Devoto, Caballito)',
-  'CABA - Sur',
+  'CABA Norte (Belgrano, Núñez, Palermo)',
+  'CABA Centro (Recoleta, Retiro, San Telmo)',
+  'CABA Oeste (Villa Devoto, Caballito)',
+  'CABA Sur',
   'GBA Norte',
   'GBA Sur',
   'Costa Atlántica (Pinamar, Cariló)',

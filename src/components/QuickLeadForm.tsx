@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { ISO_PAIS_DEFAULT, telefonoConCodigo, type IsoPais } from '@/shared/utils/telefono'
+import { CodigoPaisSelect } from './CodigoPaisSelect'
 
 const AMBIENTES = ['1', '2', '3', '4'] as const
 const ZONAS = ['Palermo', 'Villa Luro', 'Pinamar'] as const
@@ -10,6 +12,7 @@ export function QuickLeadForm() {
   const [zona, setZona] = useState<string>('')
   const [nombre, setNombre] = useState('')
   const [email, setEmail] = useState('')
+  const [codigoPais, setCodigoPais] = useState<IsoPais>(ISO_PAIS_DEFAULT)
   const [telefono, setTelefono] = useState('')
 
   const toggleAmbiente = (a: string) => {
@@ -24,7 +27,7 @@ export function QuickLeadForm() {
       zona ? `Mi zona de preferencia es ${zona}.` : null,
       nombre ? `Mi nombre es ${nombre}.` : null,
       email ? `Mi email es ${email}.` : null,
-      telefono ? `Mi teléfono es ${telefono}.` : null,
+      telefono ? `Mi teléfono es ${telefonoConCodigo(codigoPais, telefono)}.` : null,
     ].filter(Boolean)
     const texto = encodeURIComponent(partes.join(' '))
     window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${texto}`, '_blank', 'noreferrer')
@@ -74,7 +77,7 @@ export function QuickLeadForm() {
         />
         <input className="quick-input" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
         <div className="quick-phone-wrap">
-          <span className="quick-flag">🇦🇷</span>
+          <CodigoPaisSelect value={codigoPais} onChange={setCodigoPais} />
           <input
             className="quick-input quick-phone"
             type="tel"

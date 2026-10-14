@@ -1,5 +1,8 @@
+import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { CodigoPaisSelect } from '@/components/CodigoPaisSelect'
+import { ISO_PAIS_DEFAULT, telefonoConCodigo, type IsoPais } from '@/shared/utils/telefono'
 import {
   brokerFormSchema,
   EXPERIENCIAS_BROKER,
@@ -13,6 +16,7 @@ import { useEnviarBroker } from '../hooks/useEnviarBroker'
 
 export function BrokerForm() {
   const { enviar, isLoading, error, isSuccess } = useEnviarBroker()
+  const [codigoPais, setCodigoPais] = useState<IsoPais>(ISO_PAIS_DEFAULT)
   const {
     register,
     control,
@@ -35,6 +39,9 @@ export function BrokerForm() {
     },
   })
 
+  const onSubmit = (values: BrokerFormValues) =>
+    enviar({ ...values, telefono: telefonoConCodigo(codigoPais, values.telefono) }, { onSuccess: () => reset() })
+
   return (
     <div className="broker-form">
       <div className="broker-form-header">
@@ -42,7 +49,7 @@ export function BrokerForm() {
         <p>Completá tus datos y nuestro equipo te contactará para coordinar una reunión.</p>
       </div>
 
-      <form onSubmit={handleSubmit((values) => enviar(values, { onSuccess: () => reset() }))} noValidate>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <div className="broker-grupo">
           <div className="campo">
             <label htmlFor="broker-nombre">Nombre y apellido</label>
@@ -56,7 +63,10 @@ export function BrokerForm() {
         <div className="broker-grupo">
           <div className="campo">
             <label htmlFor="broker-telefono">Teléfono / WhatsApp</label>
-            <input id="broker-telefono" type="tel" placeholder="+54 9 11..." {...register('telefono')} />
+            <div className="campo-telefono">
+              <CodigoPaisSelect value={codigoPais} onChange={setCodigoPais} />
+              <input id="broker-telefono" type="tel" {...register('telefono')} />
+            </div>
           </div>
           <div className="campo">
             <label htmlFor="broker-inmobiliaria">Inmobiliaria / Empresa</label>
@@ -71,7 +81,7 @@ export function BrokerForm() {
           <div className="campo">
             <label htmlFor="broker-experiencia">Años de experiencia</label>
             <select id="broker-experiencia" {...register('experiencia')}>
-              <option value="">— Seleccioná —</option>
+              <option value="">Seleccioná</option>
               {EXPERIENCIAS_BROKER.map((e) => (
                 <option key={e} value={e}>
                   {e}
@@ -84,7 +94,7 @@ export function BrokerForm() {
         <div className="campo">
           <label htmlFor="broker-zona">Zona principal de operación</label>
           <select id="broker-zona" {...register('zonaOperacion')}>
-            <option value="">— Seleccioná tu zona —</option>
+            <option value="">Seleccioná tu zona</option>
             {ZONAS_OPERACION.map((z) => (
               <option key={z} value={z}>
                 {z}
@@ -122,7 +132,7 @@ export function BrokerForm() {
         <div className="campo">
           <label htmlFor="broker-operaciones">Operaciones cerradas en los últimos 12 meses</label>
           <select id="broker-operaciones" {...register('operacionesCerradas')}>
-            <option value="">— Seleccioná —</option>
+            <option value="">Seleccioná</option>
             {OPERACIONES_CERRADAS.map((o) => (
               <option key={o} value={o}>
                 {o}
