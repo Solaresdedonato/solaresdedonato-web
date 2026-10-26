@@ -2240,9 +2240,12 @@
     border-bottom: 1px solid var(--gris-oscuro);
   }
 
+  /* Las cuatro (Ubicación, Confort, Accesos, Comercial) del mismo alto: todas las filas
+     toman el alto de la más alta, aunque el texto de una ocupe más renglones. */
   .modal-features {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 1fr;
     gap: 1.5rem;
     margin-bottom: 3rem;
   }
@@ -2367,8 +2370,11 @@
      recuadro abraza la palabra con el mismo aire a los cuatro lados: el padding derecho
      descuenta el letter-spacing que queda después de la última letra, y el de abajo es
      mayor porque con line-height 1 las mayúsculas de Titillium quedan bajas en la caja.
-     En reposo, el margen negativo deja la palabra alineada con el párrafo de abajo. */
+     En reposo, el margen negativo deja la palabra alineada con el párrafo de abajo, y
+     --medio-interlineado devuelve el lugar que ocupaba el título con su interlineado
+     normal (20px), así el bloque conserva el alto que tenía. */
   .feature-titulo {
+    --medio-interlineado: 0.28125em;
     --pad-x: 0.6em;
     --pad-top: 0.34em;
     --pad-bottom: 0.38em;
@@ -2381,7 +2387,11 @@
     color: var(--dorado);
     border: 1px solid transparent;
     padding: var(--pad-top) calc(var(--pad-x) - 0.25em + 1px) var(--pad-bottom) var(--pad-x);
-    margin: calc(-1px - var(--pad-top)) 0 calc(0.6rem - var(--pad-bottom) - 1px) calc(-1px - var(--pad-x));
+    margin:
+      calc(var(--medio-interlineado) - var(--pad-top) - 1px)
+      0
+      calc(0.6rem + var(--medio-interlineado) - var(--pad-bottom) - 1px)
+      calc(-1px - var(--pad-x));
     transition: background 0.2s, color 0.2s, border-color 0.2s;
   }
   .feature-titulo:hover {
@@ -2477,7 +2487,8 @@
     .modal-info { padding: 2rem 1.5rem; }
     .modal-video { height: 240px; }
     .play-icon { width: 60px; height: 60px; }
-    .modal-features { grid-template-columns: 1fr; gap: 1rem; }
+    /* En una columna, cada bloque con su alto: igualarlos deja huecos grandes. */
+    .modal-features { grid-template-columns: 1fr; grid-auto-rows: auto; gap: 1rem; }
     .modal-botones { grid-template-columns: 1fr; }
   }
 
