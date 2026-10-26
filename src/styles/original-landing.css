@@ -2363,11 +2363,11 @@
     border-left: 2px solid var(--dorado);
   }
   /* Ubicación / Confort / Accesos / Comercial: como las etiquetas, el título se recuadra
-     y se pinta de dorado al pasar por el bloque. El recuadro abraza la palabra con el mismo
-     aire a los cuatro lados: el padding derecho descuenta el letter-spacing que queda
-     después de la última letra, y el de abajo es mayor porque con line-height 1 las
-     mayúsculas de Titillium quedan bajas en la caja. En reposo, el margen negativo deja la palabra alineada con
-     el párrafo de abajo. */
+     y se pinta de dorado solo con el cursor sobre la palabra, no sobre todo el bloque. El
+     recuadro abraza la palabra con el mismo aire a los cuatro lados: el padding derecho
+     descuenta el letter-spacing que queda después de la última letra, y el de abajo es
+     mayor porque con line-height 1 las mayúsculas de Titillium quedan bajas en la caja.
+     En reposo, el margen negativo deja la palabra alineada con el párrafo de abajo. */
   .feature-titulo {
     --pad-x: 0.6em;
     --pad-top: 0.34em;
@@ -2384,7 +2384,7 @@
     margin: calc(-1px - var(--pad-top)) 0 calc(0.6rem - var(--pad-bottom) - 1px) calc(-1px - var(--pad-x));
     transition: background 0.2s, color 0.2s, border-color 0.2s;
   }
-  .modal-feature:hover .feature-titulo {
+  .feature-titulo:hover {
     background: var(--dorado);
     color: var(--negro);
     border-color: var(--dorado);
@@ -2589,12 +2589,12 @@
     border: 1px solid var(--gris-oscuro);
     padding: 1.5rem;
   }
-  /* Ícono + categoría (Educación, Transporte...): sin recuadro en reposo; al pasar por la
-     categoría se recuadran juntos y se pintan de dorado, como "Cómo llegar". El recuadro
-     abraza ícono y palabra con el mismo aire a los costados (el margen negativo del título
-     descuenta parte del letter-spacing final; el resto empata el margen interno del
-     ícono a la izquierda) y, en reposo, el margen negativo del encabezado deja
-     el ícono alineado con la lista de abajo. */
+  /* Ícono + categoría (Educación, Transporte...): sin recuadro en reposo; con el cursor
+     sobre el ícono o la palabra, no sobre toda la categoría, se recuadran juntos y se
+     pintan de dorado, como "Cómo llegar". El recuadro abraza ícono y palabra con el mismo
+     aire a los costados (el margen negativo del título descuenta parte del letter-spacing
+     final; el resto empata el margen interno del ícono a la izquierda) y, en reposo, el
+     margen negativo del encabezado deja el ícono alineado con la lista de abajo. */
   .cercania-cat-header {
     --pad-x: 0.55rem;
     --pad-y: 0.4rem;
@@ -2623,12 +2623,12 @@
     color: var(--blanco);
     transition: color 0.2s;
   }
-  .cercania-cat:hover .cercania-cat-header {
+  .cercania-cat-header:hover {
     background: var(--dorado);
     border-color: var(--dorado);
   }
-  .cercania-cat:hover .cercania-icono,
-  .cercania-cat:hover .cercania-cat-titulo {
+  .cercania-cat-header:hover .cercania-icono,
+  .cercania-cat-header:hover .cercania-cat-titulo {
     color: var(--negro);
   }
   .cercania-lista {
