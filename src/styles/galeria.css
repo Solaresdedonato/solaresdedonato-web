@@ -101,6 +101,8 @@
   border-radius: 4px;
 }
 
+/* Contador "1 / 6": como las etiquetas de las cards, sin recuadro en reposo (la sombra
+   lo despega de la foto) y recuadro dorado al hover. */
 .galeria-contador {
   position: absolute;
   top: 1rem;
@@ -108,10 +110,18 @@
   font-size: 0.62rem;
   letter-spacing: 0.15em;
   color: var(--blanco);
-  background: rgba(8, 8, 8, 0.6);
+  border: 1px solid transparent;
   padding: 0.3rem 0.7rem;
   z-index: 5;
-  backdrop-filter: blur(4px);
+  text-shadow: 0 1px 6px rgba(8, 8, 8, 0.8);
+  transition: background 0.2s, color 0.2s, border-color 0.2s, text-shadow 0.2s;
+}
+.galeria-contador:hover,
+.lightbox-contador:hover {
+  background: var(--dorado);
+  color: var(--negro);
+  border-color: var(--dorado);
+  text-shadow: none;
 }
 
 /* ── Página de detalle: encabezado y galería debajo de la descripción ── */
@@ -332,15 +342,19 @@
   right: 1.25rem;
 }
 
-/* Arriba a la izquierda, lejos de la cruz (arriba a la derecha). */
+/* Arriba a la izquierda, lejos de la cruz (arriba a la derecha). El top/left descuentan
+   el padding del recuadro del hover para que el texto quede donde estaba. */
 .lightbox-contador {
   position: absolute;
-  top: 1.75rem;
-  left: 1.5rem;
+  top: calc(1.75rem - 0.3rem - 1px);
+  left: calc(1.5rem - 0.7rem - 1px);
   z-index: 5;
   font-size: 0.7rem;
   letter-spacing: 0.15em;
   color: var(--blanco);
+  border: 1px solid transparent;
+  padding: 0.3rem 0.7rem;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
 @media (max-width: 700px) {

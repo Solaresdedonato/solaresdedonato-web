@@ -2287,7 +2287,8 @@
     color: var(--dorado);
     text-decoration: none;
     padding: 0.7rem 1.2rem;
-    border: 1px solid var(--dorado-borde);
+    /* Sin recuadro hasta el hover, como las etiquetas. */
+    border: 1px solid transparent;
     transition: all 0.2s;
     white-space: nowrap;
   }
@@ -2361,12 +2362,24 @@
     background: var(--negro-medio);
     border-left: 2px solid var(--dorado);
   }
+  /* Ubicación / Confort / Accesos / Comercial: como las etiquetas, el título se recuadra
+     y se pinta de dorado al pasar por el bloque. El margen negativo compensa el padding
+     del recuadro para que, en reposo, el texto quede alineado con el párrafo de abajo. */
   .feature-titulo {
+    width: fit-content;
     font-size: 0.8rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--dorado);
-    margin-bottom: 0.6rem;
+    border: 1px solid transparent;
+    padding: 4px 10px;
+    margin: -5px 0 calc(0.6rem - 5px) -11px;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .modal-feature:hover .feature-titulo {
+    background: var(--dorado);
+    color: var(--negro);
+    border-color: var(--dorado);
   }
   .feature-texto {
     font-size: 0.85rem;
@@ -2398,15 +2411,23 @@
     background: var(--negro-suave);
     transform: translateY(-2px);
   }
+  /* Íconos de los botones (Showroom virtual, Brochure, etc.): sin recuadro en reposo; al
+     hover del botón se recuadran y se pintan de dorado, como las etiquetas. */
   .btn-icono {
     width: 44px;
     height: 44px;
-    border: 1px solid var(--dorado-borde);
+    border: 1px solid transparent;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--dorado);
     flex-shrink: 0;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .modal-btn:hover .btn-icono {
+    background: var(--dorado);
+    color: var(--negro);
+    border-color: var(--dorado);
   }
   .btn-textos {
     display: flex;
@@ -2439,6 +2460,7 @@
     color: var(--negro);
   }
   .modal-btn-primary:hover .btn-icono {
+    background: transparent;
     border-color: var(--negro);
     color: var(--negro);
   }
@@ -2565,16 +2587,23 @@
     gap: 0.9rem;
     margin-bottom: 1.1rem;
   }
+  /* Sin recuadro en reposo; al pasar por la categoría el ícono se recuadra y se pinta de
+     dorado, como las etiquetas. */
   .cercania-icono {
     width: 44px;
     height: 44px;
-    border: 1px solid var(--dorado-borde);
-    background: rgba(234,188,123,0.08);
+    border: 1px solid transparent;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--dorado);
     flex-shrink: 0;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .cercania-cat:hover .cercania-icono {
+    background: var(--dorado);
+    color: var(--negro);
+    border-color: var(--dorado);
   }
   .cercania-cat-titulo {
     font-size: 0.72rem;
