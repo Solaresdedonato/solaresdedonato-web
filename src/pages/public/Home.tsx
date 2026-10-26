@@ -29,20 +29,20 @@ const PALABRAS = [
 
 const HERO_STATS = [
   { to: 25, prefix: '+', label: 'Años de trayectoria' },
-  { to: 30000, prefix: '+', miles: true, label: 'M² construidos en CABA' },
+  { to: 40000, prefix: '+', miles: true, label: 'M² construidos en CABA' },
   { to: 26, prefix: '+', label: 'Desarrollos' },
 ]
 
 const NOSOTROS_STATS = [
   { to: 25, prefix: '+', label: 'Años de empresa' },
-  { to: 30000, prefix: '+', miles: true, label: 'M² construidos' },
-  { to: 500, prefix: '+', label: 'Unidades entregadas' },
+  { to: 40000, prefix: '+', miles: true, label: 'M² construidos' },
+  { to: 400, prefix: '+', label: 'Unidades vendidas' },
   { to: 14, suffix: '', label: 'Desarrollos realizados' },
 ]
 
 const CTA_QUICK_STATS = [
   { to: 25, suffix: '', label: 'Años de trayectoria' },
-  { to: 30, prefix: '+', suffix: 'k', label: 'M² construidos' },
+  { to: 40, prefix: '+', suffix: 'k', label: 'M² construidos' },
   { to: 14, suffix: '', label: 'Desarrollos' },
 ]
 

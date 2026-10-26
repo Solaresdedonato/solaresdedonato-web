@@ -1002,36 +1002,37 @@
     font-style: italic;
     font-size: 1.05rem;
     color: var(--dorado);
-    border: 1px solid var(--dorado-borde);
+    border: 1px solid transparent;
     width: 2.6rem;
     height: 2.6rem;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(8,8,8,0.6);
-    backdrop-filter: blur(4px);
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    text-shadow: 0 1px 6px rgba(8,8,8,0.8);
+    transition: background 0.2s, color 0.2s, border-color 0.2s, text-shadow 0.2s;
   }
   .card-estado {
     font-size: 0.72rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--dorado);
-    border: 1px solid var(--dorado-borde);
+    border: 1px solid transparent;
     padding: 6px 14px;
-    background: rgba(8,8,8,0.6);
-    backdrop-filter: blur(4px);
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    text-shadow: 0 1px 6px rgba(8,8,8,0.8);
+    transition: background 0.2s, color 0.2s, border-color 0.2s, text-shadow 0.2s;
   }
-  .card-estado.sin-unidades { color: var(--gris-claro); border-color: rgba(255,255,255,0.15); }
-  /* Etiquetas: al hover, el mismo recuadro dorado que el botón "Contacte con nosotros"
-     (.nav-cta). También en las de la ficha (.modal-badge). */
+  .card-estado.sin-unidades { color: var(--gris-claro); }
+  /* Etiquetas: sin recuadro en reposo (solo el texto, como "Contacte con nosotros"); al
+     hover se recuadran y se pintan de dorado como ese botón (.nav-cta). El borde
+     transparente reserva el lugar del recuadro para que la etiqueta no salte. También
+     en las de la ficha (.modal-badge). */
   .card-numero:hover,
   .card-estado:hover {
     background: var(--dorado);
     color: var(--negro);
     border-color: var(--dorado);
+    text-shadow: none;
   }
 
   .card-info {
@@ -2195,14 +2196,14 @@
     letter-spacing: 0.25em;
     text-transform: uppercase;
     padding: 7px 14px;
-    border: 1px solid var(--dorado-borde);
+    border: 1px solid transparent;
     color: var(--dorado);
     transition: background 0.2s, color 0.2s, border-color 0.2s;
   }
-  .modal-badge.badge-en-pozo { color: var(--dorado); border-color: var(--dorado); }
-  .modal-badge.badge-entregado { color: var(--blanco-roto); border-color: rgba(255,255,255,0.35); }
-  .modal-badge.badge-unidades-disponibles { color: var(--dorado); border-color: var(--dorado); background: rgba(234,188,123,0.08); }
-  .modal-badge.badge-sin-unidades { color: var(--gris-claro); border-color: rgba(255,255,255,0.2); }
+  .modal-badge.badge-en-pozo { color: var(--dorado); }
+  .modal-badge.badge-entregado { color: var(--blanco-roto); }
+  .modal-badge.badge-unidades-disponibles { color: var(--dorado); }
+  .modal-badge.badge-sin-unidades { color: var(--gris-claro); }
   .modal-badge:hover {
     background: var(--dorado);
     color: var(--negro);
