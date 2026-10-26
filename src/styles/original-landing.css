@@ -2363,17 +2363,25 @@
     border-left: 2px solid var(--dorado);
   }
   /* Ubicación / Confort / Accesos / Comercial: como las etiquetas, el título se recuadra
-     y se pinta de dorado al pasar por el bloque. El margen negativo compensa el padding
-     del recuadro para que, en reposo, el texto quede alineado con el párrafo de abajo. */
+     y se pinta de dorado al pasar por el bloque. El recuadro abraza la palabra con el mismo
+     aire a los cuatro lados: el padding derecho descuenta el letter-spacing que queda
+     después de la última letra, y el de abajo es mayor porque con line-height 1 las
+     mayúsculas de Titillium quedan bajas en la caja. En reposo, el margen negativo deja la palabra alineada con
+     el párrafo de abajo. */
   .feature-titulo {
+    --pad-x: 0.6em;
+    --pad-top: 0.34em;
+    --pad-bottom: 0.38em;
     width: fit-content;
+    max-width: 100%;
     font-size: 0.8rem;
+    line-height: 1;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--dorado);
     border: 1px solid transparent;
-    padding: 4px 10px;
-    margin: -5px 0 calc(0.6rem - 5px) -11px;
+    padding: var(--pad-top) calc(var(--pad-x) - 0.25em + 1px) var(--pad-bottom) var(--pad-x);
+    margin: calc(-1px - var(--pad-top)) 0 calc(0.6rem - var(--pad-bottom) - 1px) calc(-1px - var(--pad-x));
     transition: background 0.2s, color 0.2s, border-color 0.2s;
   }
   .modal-feature:hover .feature-titulo {
@@ -2581,35 +2589,47 @@
     border: 1px solid var(--gris-oscuro);
     padding: 1.5rem;
   }
+  /* Ícono + categoría (Educación, Transporte...): sin recuadro en reposo; al pasar por la
+     categoría se recuadran juntos y se pintan de dorado, como "Cómo llegar". El recuadro
+     abraza ícono y palabra con el mismo aire a los costados (el margen negativo del título
+     descuenta parte del letter-spacing final; el resto empata el margen interno del
+     ícono a la izquierda) y, en reposo, el margen negativo del encabezado deja
+     el ícono alineado con la lista de abajo. */
   .cercania-cat-header {
+    --pad-x: 0.55rem;
+    --pad-y: 0.4rem;
     display: flex;
+    width: fit-content;
+    max-width: 100%;
     align-items: center;
-    gap: 0.9rem;
-    margin-bottom: 1.1rem;
-  }
-  /* Sin recuadro en reposo; al pasar por la categoría el ícono se recuadra y se pinta de
-     dorado, como las etiquetas. */
-  .cercania-icono {
-    width: 44px;
-    height: 44px;
+    gap: 0.7rem;
     border: 1px solid transparent;
+    padding: var(--pad-y) var(--pad-x);
+    margin: calc(-1px - var(--pad-y)) 0 calc(1.1rem - var(--pad-y) - 1px) calc(-1px - var(--pad-x));
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .cercania-icono {
     display: flex;
-    align-items: center;
-    justify-content: center;
     color: var(--dorado);
     flex-shrink: 0;
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
-  }
-  .cercania-cat:hover .cercania-icono {
-    background: var(--dorado);
-    color: var(--negro);
-    border-color: var(--dorado);
+    transition: color 0.2s;
   }
   .cercania-cat-titulo {
     font-size: 0.72rem;
+    line-height: 1.2;
     letter-spacing: 0.12em;
+    margin-right: -0.06em;
     text-transform: uppercase;
     color: var(--blanco);
+    transition: color 0.2s;
+  }
+  .cercania-cat:hover .cercania-cat-header {
+    background: var(--dorado);
+    border-color: var(--dorado);
+  }
+  .cercania-cat:hover .cercania-icono,
+  .cercania-cat:hover .cercania-cat-titulo {
+    color: var(--negro);
   }
   .cercania-lista {
     list-style: none;
