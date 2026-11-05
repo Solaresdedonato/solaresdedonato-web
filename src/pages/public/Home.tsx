@@ -73,6 +73,32 @@ function NumSeccion({ n }: { n: string }) {
   return <span className="rd-num">{n}</span>
 }
 
+const PALABRAS = [
+  'Diferente',
+  'Exclusivo',
+  'Único',
+  'Excepcional',
+  'Sofisticado',
+  'Elegante',
+  'Moderno',
+  'Innovador',
+  'Inspirador',
+  'Vanguardista',
+  'Distinguido',
+  'Auténtico',
+]
+
+/** Palabra del hero que va cambiando (excepción pedida a "solo se animan los links"). */
+function useRotatingWord() {
+  const [index, setIndex] = useState(0)
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const id = setInterval(() => setIndex((i) => (i + 1) % PALABRAS.length), 2600)
+    return () => clearInterval(id)
+  }, [])
+  return index
+}
+
 /** Índice que avanza cada `ms` (carruseles de fondo del hero y de la banda final). */
 function useSlideshow(total: number, ms = 5000) {
   const [index, setIndex] = useState(0)
@@ -188,6 +214,7 @@ function Entregados({ items }: { items: Desarrollo[] }) {
 export function Home() {
   const { data, isLoading } = useDesarrollosPublicados()
   const { data: heroSlides } = useHeroSlides()
+  const palabraIdx = useRotatingWord()
   const heroImages = (heroSlides ?? []).map((s) => mediaUrl(s.archivoUrl)).filter((url): url is string => !!url)
   const heroSlideIndex = useSlideshow(heroImages.length)
   const heroSlideCargada = useSlidesCargadas(heroSlideIndex, heroImages.length)
@@ -237,7 +264,14 @@ export function Home() {
           <h1 className="rd-hero-title">
             <span className="line">Un concepto</span>
             <span className="line">
-              de vida <em>diferente</em>
+              de vida{' '}
+              <span className="rd-rotator" aria-live="polite">
+                {PALABRAS.map((p, i) => (
+                  <b key={p} className={i === palabraIdx ? 'on' : ''} aria-hidden={i !== palabraIdx}>
+                    {p}
+                  </b>
+                ))}
+              </span>
             </span>
           </h1>
           <p className="rd-hero-desc">

@@ -625,3 +625,38 @@ nav.scrolled .logo-img { height: 65px; }
   nav .logo-img { height: 60px; }
   nav.scrolled .logo-img { height: 50px; }
 }
+
+/* Menú de celular (botón hamburguesa) — solo debajo de 900px, donde .nav-links se oculta. */
+.rd-burger { display: none; position: relative; width: 44px; height: 44px; background: none; border: 0; cursor: pointer; z-index: 102; }
+.rd-burger span { position: absolute; left: 10px; right: 10px; height: 1.5px; background: var(--dorado); transition: transform 0.4s, top 0.4s, opacity 0.3s; }
+.rd-burger span:nth-child(1) { top: 15px; }
+.rd-burger span:nth-child(2) { top: 21px; }
+.rd-burger span:nth-child(3) { top: 27px; }
+.rd-burger.open span:nth-child(1) { top: 21px; transform: rotate(45deg); }
+.rd-burger.open span:nth-child(2) { opacity: 0; }
+.rd-burger.open span:nth-child(3) { top: 21px; transform: rotate(-45deg); }
+.rd-mm {
+  position: fixed; inset: 0; z-index: 99; background: rgba(8, 8, 8, 0.98); display: flex; flex-direction: column;
+  padding: 110px 28px 40px; overflow-y: auto; opacity: 0; visibility: hidden; transition: opacity 0.35s, visibility 0s linear 0.35s;
+}
+.rd-mm.open { opacity: 1; visibility: visible; transition: opacity 0.35s; }
+.rd-mm > ul { list-style: none; margin: 0; padding: 0; }
+.rd-mm > ul > li { border-bottom: 1px solid #222; }
+.rd-mm-link {
+  display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 0; background: none; border: 0;
+  font-family: 'Titillium Web', sans-serif; font-size: 22px; font-weight: 300; color: var(--blanco-roto); text-decoration: none; text-align: left; cursor: pointer;
+}
+.rd-mm-link:hover, .rd-mm-grupo.open > .rd-mm-link { color: var(--dorado); }
+.rd-mm-grupo.open .rd-dd-caret { transform: translateY(1px) rotate(-135deg); }
+.rd-mm-sub { list-style: none; margin: 0 0 14px; padding: 0 0 0 14px; border-left: 1px solid var(--dorado-borde); }
+.rd-mm-sub a { display: block; padding: 10px 0; text-decoration: none; }
+.rd-mm-cta {
+  margin-top: 32px; align-self: flex-start; padding: 15px 26px; border: 1px solid var(--dorado); color: var(--dorado); text-decoration: none;
+  font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; transition: background 0.3s, color 0.3s;
+}
+.rd-mm-cta:hover { background: var(--dorado); color: var(--negro); }
+@media (max-width: 900px) {
+  .rd-burger { display: block; }
+  nav .nav-cta { display: none; }
+  nav .nav-logo, nav .pagina-dev-volver { position: relative; z-index: 102; }
+}
