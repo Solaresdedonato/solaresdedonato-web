@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { useDesarrollosPublicados } from '@/features/desarrollo/hooks/useDesarrollo'
 import { ordenarPorDisponibilidad } from '@/features/desarrollo/utils/ordenarPorDisponibilidad'
-import { DISPONIBILIDAD_LABELS, type Desarrollo } from '@/features/desarrollo/schemas/desarrollo.schema'
+import type { Desarrollo } from '@/features/desarrollo/schemas/desarrollo.schema'
 import { useHeroSlides } from '@/features/hero/hooks/useHeroSlides'
 import { useReveal } from '@/shared/hooks/useReveal'
-import { useHorizontalPin, useOnScroll, useParallax } from '@/shared/hooks/useScrollFx'
+import { useHorizontalPin, useParallax } from '@/shared/hooks/useScrollFx'
+import logoIcon from '@/assets/logo-icon.png'
 import { mediaUrl } from '@/shared/utils/mediaUrl'
 import { sinGuiones } from '@/shared/utils/sinGuiones'
 import { guardarOrigenClic, romanoDe } from '@/shared/utils/desarrolloUi'
@@ -15,21 +16,6 @@ import { MetricasDestacadas } from '@/components/MetricasDestacadas'
 import { QuickLeadForm } from '@/components/QuickLeadForm'
 import { ContactoForm } from '@/features/contacto/components/ContactoForm'
 import { BrokerForm } from '@/features/broker/components/BrokerForm'
-
-const PALABRAS = [
-  'Diferente',
-  'Exclusivo',
-  'Único',
-  'Excepcional',
-  'Sofisticado',
-  'Elegante',
-  'Moderno',
-  'Innovador',
-  'Inspirador',
-  'Vanguardista',
-  'Distinguido',
-  'Auténtico',
-]
 
 const NOSOTROS_STATS = [
   { to: 25, prefix: '+', label: 'Años de empresa' },
@@ -54,22 +40,28 @@ const BROKER_BENEFICIOS = [
 const WHATSAPP_HREF =
   'https://api.whatsapp.com/send?phone=5491151407693&text=Hola,%20vengo%20de%20la%20web%20y%20quiero%20m%C3%A1s%20informaci%C3%B3n'
 
+/**
+ * Contenedor de bloque. Los textos NO se animan (criterio de diseño: solo se mueven las
+ * palabras que son links); `anim` activa la entrada al scrollear para tarjetas/imágenes.
+ */
 function Reveal({
   children,
   className = '',
   delay = 0,
+  anim = false,
   as: Tag = 'div',
 }: {
   children: ReactNode
   className?: string
   delay?: number
+  anim?: boolean
   as?: 'div' | 'p' | 'span'
 }) {
   const { ref, visible } = useReveal<HTMLDivElement>()
   return (
     <Tag
       ref={ref as never}
-      className={`rd-rv ${visible ? 'in' : ''} ${className}`}
+      className={`rd-rv ${anim ? 'rd-anim' : ''} ${visible ? 'in' : ''} ${className}`}
       style={{ '--d': `${delay}s` } as CSSProperties}
     >
       {children}
@@ -81,58 +73,15 @@ function NumSeccion({ n }: { n: string }) {
   return <span className="rd-num">{n}</span>
 }
 
-function useRotatingWord() {
-  const [index, setIndex] = useState(0)
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    const id = setInterval(() => setIndex((i) => (i + 1) % PALABRAS.length), 2600)
-    return () => clearInterval(id)
-  }, [])
-  return index
-}
-
-function useHeroSlideshow(total: number) {
+/** Índice que avanza cada `ms` (carruseles de fondo del hero y de la banda final). */
+function useSlideshow(total: number, ms = 5000) {
   const [index, setIndex] = useState(0)
   useEffect(() => {
     if (total < 2) return
-    const id = setInterval(() => setIndex((i) => (i + 1) % total), 5000)
+    const id = setInterval(() => setIndex((i) => (i + 1) % total), ms)
     return () => clearInterval(id)
-  }, [total])
+  }, [total, ms])
   return total > 0 ? index % total : 0
-}
-
-/** Sol decorativo (motivo del isologo) con rayos alternados. */
-function SolDecorativo() {
-  const rayos = Array.from({ length: 24 }, (_, i) => {
-    const a = (i * 15 * Math.PI) / 180
-    const r2 = i % 2 ? 78 : 96
-    return (
-      <line
-        key={i}
-        x1={100 + Math.cos(a) * 52}
-        y1={100 + Math.sin(a) * 52}
-        x2={100 + Math.cos(a) * r2}
-        y2={100 + Math.sin(a) * r2}
-      />
-    )
-  })
-  return (
-    <svg viewBox="0 0 200 200" aria-hidden="true">
-      <g fill="none" stroke="#eabc7b" strokeWidth=".5">
-        <circle cx="100" cy="100" r="34" />
-        <circle cx="100" cy="100" r="44" />
-        {rayos}
-      </g>
-    </svg>
-  )
-}
-
-function ChipDisponibilidad({ d }: { d: Desarrollo }) {
-  return (
-    <span className={`rd-chip ${d.disponibilidad === 'sin-unidades' ? 'sold' : 'ok'}`}>
-      {DISPONIBILIDAD_LABELS[d.disponibilidad]}
-    </span>
-  )
 }
 
 function Portada({ d, className = '' }: { d: Desarrollo; className?: string }) {
@@ -175,7 +124,6 @@ function EnPozo({ items }: { items: Desarrollo[] }) {
                 <div>
                   <div className="rd-chips">
                     <span className="rd-chip">En pozo</span>
-                    <ChipDisponibilidad d={d} />
                   </div>
                   <span className="rd-zona">{d.zona}</span>
                   <h4>{sinGuiones(d.nombre, ' ')}</h4>
@@ -199,47 +147,22 @@ function EnPozo({ items }: { items: Desarrollo[] }) {
   )
 }
 
-type FiltroEntregados = 'todos' | Desarrollo['disponibilidad']
-
 function Entregados({ items }: { items: Desarrollo[] }) {
-  const [filtro, setFiltro] = useState<FiltroEntregados>('todos')
   if (items.length === 0) return null
-  const visibles = filtro === 'todos' ? items : items.filter((d) => d.disponibilidad === filtro)
-  const opciones: { v: FiltroEntregados; label: string }[] = [
-    { v: 'todos', label: 'Todos' },
-    { v: 'unidades-disponibles', label: 'Unidades disponibles' },
-    { v: 'sin-unidades', label: 'Sin unidades' },
-  ]
   return (
     <section className="rd-entregados" aria-label="Desarrollos entregados">
       <div className="rd-wrap">
         <div className="rd-grp-head">
-          <Reveal as="div">
-            <h3 className="rd-grp-title">Entregados</h3>
-          </Reveal>
-          <Reveal className="rd-filters" delay={0.1}>
-            {opciones.map((o) => (
-              <button
-                key={o.v}
-                type="button"
-                className={`rd-filter ${filtro === o.v ? 'on' : ''}`}
-                aria-pressed={filtro === o.v}
-                onClick={() => setFiltro(o.v)}
-              >
-                {o.label}
-              </button>
-            ))}
-          </Reveal>
+          <h3 className="rd-grp-title">Entregados</h3>
         </div>
         <div className="rd-ent-grid">
-          {visibles.map((d, i) => (
-            <Reveal key={d.slug} delay={(i % 3) * 0.12}>
+          {items.map((d, i) => (
+            <Reveal key={d.slug} delay={(i % 3) * 0.12} anim>
               <RouterLink to={ROUTES.desarrolloDetalle(d.slug)} className="rd-ent-card" onClick={guardarOrigenClic}>
                 <div className="rd-ent-media">
                   <Portada d={d} />
                   <div className="rd-chips">
                     <span className="rd-chip">Entregado</span>
-                    <ChipDisponibilidad d={d} />
                   </div>
                 </div>
                 <div className="rd-ent-body">
@@ -261,45 +184,12 @@ function Entregados({ items }: { items: Desarrollo[] }) {
   )
 }
 
-/** Título de la banda final: cada palabra se ilumina a medida que la banda sube. */
-function FraseIluminada() {
-  const ref = useRef<HTMLHeadingElement | null>(null)
-  const palabras = useMemo(
-    () => [
-      { t: 'Tu', em: false },
-      { t: 'próxima', em: false },
-      { t: 'inversión', em: false },
-      { t: 'te', em: true },
-      { t: 'está', em: true },
-      { t: 'esperando', em: true },
-    ],
-    [],
-  )
-  const [encendidas, setEncendidas] = useState(0)
-  useOnScroll(() => {
-    const el = ref.current
-    if (!el) return
-    const h = window.innerHeight
-    const p = Math.min(Math.max((h * 0.85 - el.getBoundingClientRect().top) / (h * 0.5), 0), 1)
-    setEncendidas(Math.round(p * palabras.length))
-  })
-  return (
-    <h2 ref={ref} className="rd-band-title">
-      {palabras.map((w, i) => (
-        <span key={i} className={`rd-w ${i < encendidas ? 'lit' : ''} ${w.em ? 'em' : ''}`}>
-          {w.t}{' '}
-        </span>
-      ))}
-    </h2>
-  )
-}
 
 export function Home() {
   const { data, isLoading } = useDesarrollosPublicados()
   const { data: heroSlides } = useHeroSlides()
-  const palabraIdx = useRotatingWord()
   const heroImages = (heroSlides ?? []).map((s) => mediaUrl(s.archivoUrl)).filter((url): url is string => !!url)
-  const heroSlideIndex = useHeroSlideshow(heroImages.length)
+  const heroSlideIndex = useSlideshow(heroImages.length)
   const heroSlideCargada = useSlidesCargadas(heroSlideIndex, heroImages.length)
 
   const heroParallax = useParallax<HTMLDivElement>(0.3)
@@ -313,7 +203,10 @@ export function Home() {
   // Fotos de apoyo: las del carrusel del hero (backoffice → Web) y, si faltan, portadas.
   const portadas = desarrollos.map((d) => mediaUrl(d.imagenPortadaUrl)).filter((u): u is string => !!u)
   const fotoNosotros = heroImages[1] ?? heroImages[0] ?? portadas[0]
-  const fotoBanda = portadas[portadas.length - 1] ?? heroImages[0]
+  // La banda final va pasando por las portadas de los desarrollos (o las del hero si faltan).
+  const fotosBanda = portadas.length > 0 ? portadas : heroImages
+  const bandaIndex = useSlideshow(fotosBanda.length, 4500)
+  const bandaCargada = useSlidesCargadas(bandaIndex, fotosBanda.length)
 
   const [revealNosotros, setRevealNosotros] = useState(false)
   const nosotrosImgWrap = useRef<HTMLDivElement | null>(null)
@@ -338,26 +231,13 @@ export function Home() {
             />
           ))}
         </div>
-        <div className="rd-hero-sun">
-          <SolDecorativo />
-        </div>
+        <img className="rd-hero-logo" src={logoIcon} alt="" aria-hidden="true" />
         <div className="rd-wrap rd-hero-in">
           <p className="rd-eyebrow rd-hero-tag">Desarrolladora Inmobiliaria y Constructora</p>
           <h1 className="rd-hero-title">
+            <span className="line">Un concepto</span>
             <span className="line">
-              <span>Un concepto</span>
-            </span>
-            <span className="line">
-              <span>
-                de vida{' '}
-                <span className="rd-rotator" aria-live="polite">
-                  {PALABRAS.map((p, i) => (
-                    <b key={p} className={i === palabraIdx ? 'on' : ''} aria-hidden={i !== palabraIdx}>
-                      {p}
-                    </b>
-                  ))}
-                </span>
-              </span>
+              de vida <em>diferente</em>
             </span>
           </h1>
           <p className="rd-hero-desc">
@@ -633,12 +513,22 @@ export function Home() {
 
       {/* CTA CON PARALLAX */}
       <section className="rd-band">
-        <div className="rd-band-bg" ref={bandaParallax} style={fotoBanda ? { backgroundImage: `url(${fotoBanda})` } : undefined} />
+        <div className="rd-band-bg" ref={bandaParallax}>
+          {fotosBanda.map((src, i) => (
+            <div
+              key={src}
+              className={`rd-band-slide ${i === bandaIndex ? 'active' : ''}`}
+              style={bandaCargada(i) ? { backgroundImage: `url(${src})` } : undefined}
+            />
+          ))}
+        </div>
         <div className="rd-wrap">
           <Reveal>
             <p className="rd-eyebrow">¿Querés más información?</p>
           </Reveal>
-          <FraseIluminada />
+          <h2 className="rd-band-title">
+            Tu próxima inversión <em>te está esperando</em>
+          </h2>
           <Reveal as="p" delay={0.1}>
             ¿Estás interesado en nuestros proyectos? Contactanos para obtener más información y resolver todas tus consultas.
             Nuestro equipo está listo para asesorarte y acompañarte en cada etapa de tu inversión inmobiliaria.

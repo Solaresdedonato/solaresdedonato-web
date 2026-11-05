@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom'
 import { useDesarrolloPorSlug, useDesarrollosPublicados } from '@/features/desarrollo/hooks/useDesarrollo'
-import { DISPONIBILIDAD_LABELS, ESTADO_LABELS } from '@/features/desarrollo/schemas/desarrollo.schema'
+import { ESTADO_LABELS } from '@/features/desarrollo/schemas/desarrollo.schema'
 import { mediaUrl } from '@/shared/utils/mediaUrl'
 import { sinGuiones } from '@/shared/utils/sinGuiones'
 import { esVideoServidoPorApi, videoEmbedUrl } from '@/shared/utils/videoEmbedUrl'
 import { useOnScroll } from '@/shared/hooks/useScrollFx'
 import { ROUTES } from '@/shared/router/routes'
-import { DesarrolloLightbox } from '@/components/DesarrolloLightbox'
+import { VisorFotos } from '@/components/VisorFotos'
 import { CercaniasRadar } from '@/components/CercaniasRadar'
 import { guardarOrigenClic, romanoDe, separarEntrada, suavizar, tomarOrigenClic } from '@/shared/utils/desarrolloUi'
 import logoIcon from '@/assets/logo-icon.png'
@@ -143,7 +143,6 @@ function Ficha({ slug }: { slug: string | undefined }) {
     desarrollo.showroomVirtualUrl && { titulo: 'Showroom virtual', sub: 'Recorré la unidad en 360°', href: desarrollo.showroomVirtualUrl },
     desarrollo.brochurePlanosUrl && { titulo: 'Brochure / Planos', sub: 'Descargar material comercial', href: desarrollo.brochurePlanosUrl },
     desarrollo.avanceObraUrl && { titulo: 'Avance de obra', sub: 'Ver fotos actualizadas', href: desarrollo.avanceObraUrl },
-    { titulo: 'Cómo llegar', sub: 'Abrir en Google Maps', href: mapsUrl },
   ].filter((e): e is { titulo: string; sub: string; href: string } => !!e)
 
   const publicados = lista?.content ?? []
@@ -168,9 +167,9 @@ function Ficha({ slug }: { slug: string | undefined }) {
           {romanoDe(desarrollo.nombre)}
         </div>
         <div className="rd-cover-in">
+          <img className="rd-cover-logo" src={logoIcon} alt="" aria-hidden="true" />
           <div className="rd-tags">
             <span className={`rd-tag badge-${desarrollo.estado}`}>{ESTADO_LABELS[desarrollo.estado]}</span>
-            <span className={`rd-tag badge-${desarrollo.disponibilidad}`}>{DISPONIBILIDAD_LABELS[desarrollo.disponibilidad]}</span>
             {desarrollo.instrumentoRentaFija && <span className="rd-tag">Renta fija</span>}
             {desarrollo.instrumentoTokenizacion && <span className="rd-tag">Tokenización</span>}
           </div>
@@ -274,7 +273,7 @@ function Ficha({ slug }: { slug: string | undefined }) {
         </section>
       )}
       {fotoAbierta !== null && (
-        <DesarrolloLightbox
+        <VisorFotos
           fotos={fotosCollage}
           index={fotoAbierta}
           nombre={desarrollo.nombre}
@@ -288,27 +287,42 @@ function Ficha({ slug }: { slug: string | undefined }) {
 
       {/* UBICACIÓN Y MATERIAL */}
       <section className="rd-place">
-        <div className="rd-map-arch">
-          {/* El embed no deja cambiar el pin de Google: el del logo va encima y el clic
-              abre la dirección en Google Maps. */}
-          <iframe
-            title={`Mapa de ${desarrollo.nombre}`}
-            src={`https://maps.google.com/maps?q=${mapsQuery}&output=embed&z=15&hl=es`}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            tabIndex={-1}
-            aria-hidden="true"
-          />
-          <a className="rd-map-overlay" href={mapsUrl} target="_blank" rel="noreferrer" aria-label={`Ver ${direccion} en Google Maps`}>
-            <span className="rd-map-pin" aria-hidden="true">
-              <img src={logoIcon} alt="" />
-            </span>
-          </a>
+        {/* Mapa idéntico al de la web actual (mismas clases y estilos de original-landing.css). */}
+        <div className="modal-mapa">
+          <div className="mapa-header">
+            <div className="mapa-info">
+              <p className="mapa-eyebrow">Ubicación en el mapa</p>
+              <p className="mapa-direccion">{direccion}</p>
+            </div>
+            <a className="mapa-link" href={mapsUrl} target="_blank" rel="noreferrer">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              Cómo llegar
+            </a>
+          </div>
+          <div className="mapa-iframe-wrap">
+            {/* El embed no deja cambiar el pin de Google: el del logo va encima (ver
+                .mapa-marcador) y el mapa queda fijo; el click lo abre en Google Maps. */}
+            <iframe
+              title={`Mapa de ${desarrollo.nombre}`}
+              src={`https://maps.google.com/maps?q=${mapsQuery}&output=embed&z=15&hl=es`}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              tabIndex={-1}
+              aria-hidden="true"
+            />
+            <a className="mapa-overlay" href={mapsUrl} target="_blank" rel="noreferrer" aria-label={`Ver ${direccion} en Google Maps`}>
+              <span className="mapa-marcador" aria-hidden="true">
+                <span className="mapa-marcador-logo">
+                  <img src={logoIcon} alt="" />
+                </span>
+              </span>
+            </a>
+          </div>
         </div>
         <div>
-          <p className="rd-kicker">Ubicación en el mapa</p>
-          <p className="rd-addr-big">{direccion}</p>
-          <p className="rd-zone">{desarrollo.zona}</p>
           <ul className="rd-links">
             {enlaces.map((e) => (
               <li key={e.titulo}>

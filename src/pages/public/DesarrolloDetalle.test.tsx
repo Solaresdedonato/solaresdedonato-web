@@ -77,11 +77,12 @@ describe('DesarrolloDetalle', () => {
     expect(screen.getByText('Solares Pinamar')).toBeInTheDocument()
   })
 
-  it('muestra el estado y la disponibilidad como etiquetas separadas', () => {
+  it('muestra el estado como etiqueta y no muestra carteles de disponibilidad', () => {
     renderDetalle(desarrollo({ estado: 'entregado', disponibilidad: 'sin-unidades' }))
 
     expect(screen.getByText('Entregado')).toHaveClass('rd-tag', 'badge-entregado')
-    expect(screen.getByText('Sin unidades')).toHaveClass('rd-tag', 'badge-sin-unidades')
+    expect(screen.queryByText('Sin unidades')).not.toBeInTheDocument()
+    expect(screen.queryByText('Unidades disponibles')).not.toBeInTheDocument()
   })
 
   it('la portada es la imagen de la cabecera; la galería va después de la descripción y no repite la portada', () => {
@@ -159,13 +160,32 @@ describe('DesarrolloDetalle', () => {
     expect(container.querySelectorAll('.rd-radar .dot')).toHaveLength(3)
   })
 
-  it('el mapa lleva el pin con el logo y el click abre la dirección en Google Maps', () => {
+  it('el mapa es el mismo de la web actual: pin con el logo y el click abre Google Maps', () => {
     const { container } = renderDetalle(desarrollo())
 
     const link = screen.getByRole('link', { name: /ver blvd\. ameghino 349 en google maps/i })
     expect(link.getAttribute('href')).toMatch(/^https:\/\/www\.google\.com\/maps\/search\/\?api=1&query=/)
-    expect(link.querySelector('.rd-map-pin img')).toBeInTheDocument()
-    expect(container.querySelector('.rd-map-arch iframe')).toHaveAttribute('tabindex', '-1')
+    expect(link.querySelector('.mapa-marcador img')).toBeInTheDocument()
+    expect(container.querySelector('.modal-mapa .mapa-iframe-wrap iframe')).toHaveAttribute('tabindex', '-1')
+    expect(screen.getByRole('link', { name: /cómo llegar/i })).toHaveClass('mapa-link')
+  })
+
+  it('el visor de fotos se navega con miniaturas, sin flechas', () => {
+    renderDetalle(
+      desarrollo({
+        galeria: [
+          media({ id: 1, archivoUrl: PORTADA, esPortada: true }),
+          media({ id: 2, archivoUrl: 'https://img.test/b.jpg' }),
+          media({ id: 3, archivoUrl: 'https://img.test/c.jpg' }),
+        ],
+      }),
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: /ampliar foto 1 de/i }))
+    const visor = screen.getByRole('dialog', { name: /fotos de solares pinamar/i })
+    expect(visor.querySelector('.galeria-nav, .lightbox-prev, .lightbox-next')).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Ver foto 2' }))
+    expect(screen.getByRole('img', { name: /foto 2 de solares pinamar/i })).toBeInTheDocument()
   })
 
   it('sin fotos ni video no dibuja la galería', () => {

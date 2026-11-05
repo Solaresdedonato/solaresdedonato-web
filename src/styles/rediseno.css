@@ -520,3 +520,108 @@ a.rd-c-item:hover span { color: var(--dorado); }
   .rd-hscroll-pin { position: relative; height: auto; }
   .rd-hscroll-track { overflow-x: auto; transform: none !important; }
 }
+
+/* ==========================================================================
+   Ajustes de la ronda 2 (pedidos del cliente)
+   ========================================================================== */
+
+/* 8. Solo se animan las palabras que son links: los textos quedan quietos.
+      La entrada al scrollear queda solo para tarjetas/imágenes (.rd-anim). */
+.rd-rv:not(.rd-anim) { opacity: 1; transform: none; transition: none; }
+.rd-hero-tag, .rd-hero-desc { opacity: 1; animation: none; }
+.rd-hero-title .line { overflow: visible; padding: 0; margin: 0; }
+.rd-hero-title em { font-style: italic; color: var(--dorado); }
+.rd-cover-title span, .rd-ficha.open .rd-cover-title span { transform: none; transition: none; }
+.rd-amen-list span span, .rd-amen-list span span:hover { transition: none; color: inherit; font-style: normal; }
+.rd-near-list li { opacity: 1; transform: none; animation: none; transition: none; }
+.rd-near-list li:hover { color: rgba(245, 240, 232, 0.88); padding-left: 0; }
+
+/* 7. Cifras de la empresa en cursiva. */
+.rd .metrica-numero, .rd-about-badge strong { font-style: italic; }
+
+/* 1. Logo con más presencia: +70% en todos los lugares donde aparece. */
+nav .logo-img { height: 82px; }
+nav.scrolled .logo-img { height: 65px; }
+.footer-logo { height: 75px; }
+.rd-radar-sun { width: 22%; }
+.rd-hero-logo {
+  position: absolute; right: 4vw; top: 50%; width: min(46vw, 640px); translate: 0 -50%; z-index: 1;
+  opacity: 0.16; pointer-events: none; filter: drop-shadow(0 0 60px rgba(234, 188, 123, 0.35));
+  animation: rd-spin 160s linear infinite;
+}
+.rd-cover-logo { width: 88px; height: 88px; margin: 0 auto 22px; filter: drop-shadow(0 0 24px rgba(234, 188, 123, 0.45)); }
+
+/* 3. Portada de la ficha centrada (igual en todos los desarrollos). */
+.rd-cover { justify-content: center; }
+.rd-cover-in { text-align: center; display: flex; flex-direction: column; align-items: center; }
+.rd-tags { justify-content: center; }
+.rd-cover-zona { justify-content: center; }
+.rd-cover-zona::after { content: ''; width: 60px; height: 1px; background: var(--dorado); }
+
+/* 2. Mapa idéntico al de la web actual + enlaces debajo. */
+.rd-place { grid-template-columns: 1fr; gap: 40px; max-width: 1240px; margin: 0 auto; }
+.rd-place .modal-mapa { margin-bottom: 0; }
+.rd-links { margin-top: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); column-gap: 40px; }
+
+/* 5. La banda final va pasando fotos. */
+.rd-band-bg { background: #111; }
+.rd-band-slide { position: absolute; inset: 0; background: center / cover no-repeat; opacity: 0; transition: opacity 1.6s ease; }
+.rd-band-slide.active { opacity: 1; }
+
+/* 9. Menús desplegables "En pozo" y "Entregados" en la barra superior. */
+.nav-links { align-items: center; }
+.rd-dd { position: relative; }
+.rd-dd-btn {
+  background: none; border: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 0;
+  font-family: 'Titillium Web', sans-serif; font-size: 17px; font-weight: 400; line-height: 22px; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--gris-claro); transition: color 0.2s;
+}
+.rd-dd-btn:hover, .rd-dd.open .rd-dd-btn { color: var(--dorado); }
+.rd-dd-caret { width: 7px; height: 7px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-3px) rotate(45deg); transition: transform 0.3s; }
+.rd-dd.open .rd-dd-caret { transform: translateY(1px) rotate(-135deg); }
+.rd-dd-panel {
+  position: absolute; top: 100%; left: 50%; translate: -50% 0; padding-top: 22px; min-width: 330px;
+  opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity 0.25s, transform 0.25s, visibility 0s linear 0.25s;
+}
+.rd-dd.open .rd-dd-panel { opacity: 1; visibility: visible; transform: none; transition: opacity 0.25s, transform 0.25s; }
+.rd-dd-panel ul {
+  list-style: none; margin: 0; padding: 10px 0; background: rgba(8, 8, 8, 0.97); border: 1px solid var(--dorado-borde);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); max-height: 70vh; overflow-y: auto;
+}
+.rd-dd-panel a { display: block; padding: 12px 22px; text-decoration: none; text-transform: none; letter-spacing: 0; }
+.rd-dd-panel a:hover { background: rgba(234, 188, 123, 0.08); }
+.rd-dd-nombre { display: block; font-size: 16px; color: var(--blanco-roto); transition: color 0.2s, transform 0.3s; }
+.rd-dd-panel a:hover .rd-dd-nombre { color: var(--dorado); transform: translateX(6px); }
+.rd-dd-dir { display: block; font-size: 12px; letter-spacing: 0.08em; color: var(--gris-claro); margin-top: 2px; }
+@media (max-width: 1300px) { .nav-links { gap: 1.6rem; } .nav-links a, .rd-dd-btn { font-size: 14px; } }
+
+/* 4. Visor de fotos sin flechas: miniaturas + tocar a los costados. */
+.rd-visor { position: fixed; inset: 0; z-index: 1000; display: grid; grid-template-rows: 1fr auto; animation: rd-visorIn 0.4s ease; }
+@keyframes rd-visorIn { from { opacity: 0; } to { opacity: 1; } }
+.rd-visor-fondo { position: absolute; inset: 0; background: rgba(5, 5, 5, 0.96); }
+.rd-visor-cerrar {
+  position: absolute; top: 22px; right: 28px; z-index: 3; background: none; border: 0; border-bottom: 1px solid var(--dorado-borde);
+  color: var(--dorado); font-family: 'Titillium Web', sans-serif; font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase;
+  padding: 0 0 6px; cursor: pointer;
+}
+.rd-visor-cerrar:hover { border-bottom-color: var(--dorado); }
+.rd-visor-escena { position: relative; z-index: 1; display: grid; place-items: center; padding: 70px 4vw 20px; min-height: 0; }
+.rd-visor-img { max-width: 100%; max-height: calc(100vh - 220px); object-fit: contain; animation: rd-visorIn 0.5s ease; }
+.rd-visor-zona { position: absolute; top: 0; bottom: 0; width: 50%; background: none; border: 0; padding: 0; }
+.rd-visor-zona.izq { left: 0; cursor: w-resize; }
+.rd-visor-zona.der { right: 0; cursor: e-resize; }
+.rd-visor-pie { position: relative; z-index: 2; display: flex; align-items: center; gap: 24px; padding: 14px 4vw 26px; }
+.rd-visor-cont { font-family: 'Titillium Web', sans-serif; font-style: italic; color: var(--gris-claro); font-size: 18px; white-space: nowrap; }
+.rd-visor-cont b { color: var(--dorado); font-weight: 400; }
+.rd-visor-tira { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; flex: 1; justify-content: safe center; }
+.rd-visor-tira::-webkit-scrollbar { display: none; }
+.rd-visor-tira button { flex: 0 0 auto; width: 92px; height: 62px; padding: 0; border: 1px solid transparent; background: #111; cursor: pointer; opacity: 0.45; transition: opacity 0.3s, border-color 0.3s; }
+.rd-visor-tira button:hover { opacity: 0.8; }
+.rd-visor-tira button.on { opacity: 1; border-color: var(--dorado); }
+.rd-visor-tira img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (max-width: 700px) {
+  .rd-visor-tira button { width: 64px; height: 44px; }
+  .rd-hero-logo { width: 80vw; right: -20vw; opacity: 0.1; }
+  nav .logo-img { height: 60px; }
+  nav.scrolled .logo-img { height: 50px; }
+}
