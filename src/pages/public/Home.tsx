@@ -1,12 +1,16 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 import { useDesarrollosPublicados } from '@/features/desarrollo/hooks/useDesarrollo'
 import { ordenarPorDisponibilidad } from '@/features/desarrollo/utils/ordenarPorDisponibilidad'
-import type { Desarrollo } from '@/features/desarrollo/schemas/desarrollo.schema'
+import { DISPONIBILIDAD_LABELS, type Desarrollo } from '@/features/desarrollo/schemas/desarrollo.schema'
 import { useHeroSlides } from '@/features/hero/hooks/useHeroSlides'
 import { useReveal } from '@/shared/hooks/useReveal'
+import { useHorizontalPin, useOnScroll, useParallax } from '@/shared/hooks/useScrollFx'
 import { mediaUrl } from '@/shared/utils/mediaUrl'
+import { sinGuiones } from '@/shared/utils/sinGuiones'
+import { guardarOrigenClic, romanoDe } from '@/shared/utils/desarrolloUi'
 import { useSlidesCargadas } from '@/shared/hooks/useSlidesCargadas'
-import { DesarrollosCarousel } from '@/components/DesarrollosCarousel'
+import { ROUTES } from '@/shared/router/routes'
 import { MetricasDestacadas } from '@/components/MetricasDestacadas'
 import { QuickLeadForm } from '@/components/QuickLeadForm'
 import { ContactoForm } from '@/features/contacto/components/ContactoForm'
@@ -27,12 +31,6 @@ const PALABRAS = [
   'Auténtico',
 ]
 
-const HERO_STATS = [
-  { to: 25, prefix: '+', label: 'Años de trayectoria' },
-  { to: 40000, prefix: '+', miles: true, label: 'M² construidos en CABA' },
-  { to: 26, prefix: '+', label: 'Desarrollos' },
-]
-
 const NOSOTROS_STATS = [
   { to: 25, prefix: '+', label: 'Años de empresa' },
   { to: 40000, prefix: '+', miles: true, label: 'M² construidos' },
@@ -47,38 +45,50 @@ const CTA_QUICK_STATS = [
 ]
 
 const BROKER_BENEFICIOS = [
-  { titulo: 'Comisiones competitivas', desc: 'Esquemas claros y pagos puntuales en USD.' },
-  { titulo: 'Material comercial exclusivo', desc: 'Fichas técnicas, renders, planos y videos de cada desarrollo.' },
-  { titulo: 'Asesor dedicado', desc: 'Un punto de contacto comercial para gestionar todas tus operaciones.' },
-  { titulo: 'Acceso prioritario a lanzamientos', desc: 'Primeros en conocer y reservar unidades en preventa.' },
+  { icono: '$', titulo: 'Comisiones competitivas', desc: 'Esquemas claros y pagos puntuales en USD.' },
+  { icono: '◫', titulo: 'Material comercial exclusivo', desc: 'Fichas técnicas, renders, planos y videos de cada desarrollo.' },
+  { icono: '◎', titulo: 'Asesor dedicado', desc: 'Un punto de contacto comercial para gestionar todas tus operaciones.' },
+  { icono: '★', titulo: 'Acceso prioritario a lanzamientos', desc: 'Primeros en conocer y reservar unidades en preventa.' },
 ]
 
-function Reveal({ children, className = '' }: { children: ReactNode; className?: string }) {
+const WHATSAPP_HREF =
+  'https://api.whatsapp.com/send?phone=5491151407693&text=Hola,%20vengo%20de%20la%20web%20y%20quiero%20m%C3%A1s%20informaci%C3%B3n'
+
+function Reveal({
+  children,
+  className = '',
+  delay = 0,
+  as: Tag = 'div',
+}: {
+  children: ReactNode
+  className?: string
+  delay?: number
+  as?: 'div' | 'p' | 'span'
+}) {
   const { ref, visible } = useReveal<HTMLDivElement>()
   return (
-    <div ref={ref} className={`reveal ${visible ? 'visible' : ''} ${className}`}>
+    <Tag
+      ref={ref as never}
+      className={`rd-rv ${visible ? 'in' : ''} ${className}`}
+      style={{ '--d': `${delay}s` } as CSSProperties}
+    >
       {children}
-    </div>
+    </Tag>
   )
 }
 
-function Divisor({ numero }: { numero: string }) {
-  return (
-    <div className="divisor">
-      <div className="divisor-linea" />
-      <div className="divisor-numero">{numero}</div>
-      <div className="divisor-linea" />
-    </div>
-  )
+function NumSeccion({ n }: { n: string }) {
+  return <span className="rd-num">{n}</span>
 }
 
 function useRotatingWord() {
   const [index, setIndex] = useState(0)
   useEffect(() => {
-    const id = setInterval(() => setIndex((i) => (i + 1) % PALABRAS.length), 2400)
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const id = setInterval(() => setIndex((i) => (i + 1) % PALABRAS.length), 2600)
     return () => clearInterval(id)
   }, [])
-  return PALABRAS[index]
+  return index
 }
 
 function useHeroSlideshow(total: number) {
@@ -91,378 +101,608 @@ function useHeroSlideshow(total: number) {
   return total > 0 ? index % total : 0
 }
 
-/** Un carrusel de la landing para un estado; si no hay desarrollos en ese estado no
- *  dibuja nada (ni el título), para no dejar un bloque vacío. */
-function CarruselPorEstado({ titulo, items }: { titulo: string; items: Desarrollo[] }) {
+/** Sol decorativo (motivo del isologo) con rayos alternados. */
+function SolDecorativo() {
+  const rayos = Array.from({ length: 24 }, (_, i) => {
+    const a = (i * 15 * Math.PI) / 180
+    const r2 = i % 2 ? 78 : 96
+    return (
+      <line
+        key={i}
+        x1={100 + Math.cos(a) * 52}
+        y1={100 + Math.sin(a) * 52}
+        x2={100 + Math.cos(a) * r2}
+        y2={100 + Math.sin(a) * r2}
+      />
+    )
+  })
+  return (
+    <svg viewBox="0 0 200 200" aria-hidden="true">
+      <g fill="none" stroke="#eabc7b" strokeWidth=".5">
+        <circle cx="100" cy="100" r="34" />
+        <circle cx="100" cy="100" r="44" />
+        {rayos}
+      </g>
+    </svg>
+  )
+}
+
+function ChipDisponibilidad({ d }: { d: Desarrollo }) {
+  return (
+    <span className={`rd-chip ${d.disponibilidad === 'sin-unidades' ? 'sold' : 'ok'}`}>
+      {DISPONIBILIDAD_LABELS[d.disponibilidad]}
+    </span>
+  )
+}
+
+function Portada({ d, className = '' }: { d: Desarrollo; className?: string }) {
+  const src = mediaUrl(d.imagenPortadaUrl)
+  if (src) return <img className={className} src={src} alt="" loading="lazy" decoding="async" />
+  return (
+    <div className={`rd-ph ${className}`}>
+      <span>{romanoDe(d.nombre) || 'SD'}</span>
+    </div>
+  )
+}
+
+/** "En pozo": tarjetas grandes que avanzan en horizontal mientras se scrollea. */
+function EnPozo({ items }: { items: Desarrollo[] }) {
+  const { seccionRef, trackRef, progreso } = useHorizontalPin([items.length])
+  const actual = Math.min(items.length, Math.floor(progreso * items.length * 0.999) + 1)
   if (items.length === 0) return null
   return (
-    <Reveal className="carrusel-estado">
-      <p className="carrusel-estado-titulo">{titulo}</p>
-      <DesarrollosCarousel items={items} />
-    </Reveal>
+    <section className="rd-hscroll" ref={seccionRef} aria-label="Desarrollos en pozo">
+      <div className="rd-hscroll-pin">
+        <div className="rd-hscroll-head">
+          <h3>
+            En <em>pozo</em>
+          </h3>
+          <div className="rd-hscroll-count">
+            <b>{String(actual).padStart(2, '0')}</b> / {String(items.length).padStart(2, '0')}
+          </div>
+        </div>
+        <div className="rd-hscroll-track" ref={trackRef}>
+          {items.map((d, i) => (
+            <RouterLink
+              key={d.slug}
+              to={ROUTES.desarrolloDetalle(d.slug)}
+              className="rd-pozo-card"
+              onClick={guardarOrigenClic}
+            >
+              <Portada d={d} />
+              <div className="rd-pozo-info">
+                <span className="rd-idx">{String(i + 1).padStart(2, '0')}</span>
+                <div>
+                  <div className="rd-chips">
+                    <span className="rd-chip">En pozo</span>
+                    <ChipDisponibilidad d={d} />
+                  </div>
+                  <span className="rd-zona">{d.zona}</span>
+                  <h4>{sinGuiones(d.nombre, ' ')}</h4>
+                  <p className="rd-addr">{sinGuiones(d.direccion)}</p>
+                  <span className="rd-more">Ver desarrollo →</span>
+                </div>
+                <span className="rd-go" aria-hidden="true">
+                  →
+                </span>
+              </div>
+            </RouterLink>
+          ))}
+        </div>
+        <div className="rd-hscroll-bar">
+          <div>
+            <span style={{ transform: `scaleX(${progreso})` }} />
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+type FiltroEntregados = 'todos' | Desarrollo['disponibilidad']
+
+function Entregados({ items }: { items: Desarrollo[] }) {
+  const [filtro, setFiltro] = useState<FiltroEntregados>('todos')
+  if (items.length === 0) return null
+  const visibles = filtro === 'todos' ? items : items.filter((d) => d.disponibilidad === filtro)
+  const opciones: { v: FiltroEntregados; label: string }[] = [
+    { v: 'todos', label: 'Todos' },
+    { v: 'unidades-disponibles', label: 'Unidades disponibles' },
+    { v: 'sin-unidades', label: 'Sin unidades' },
+  ]
+  return (
+    <section className="rd-entregados" aria-label="Desarrollos entregados">
+      <div className="rd-wrap">
+        <div className="rd-grp-head">
+          <Reveal as="div">
+            <h3 className="rd-grp-title">Entregados</h3>
+          </Reveal>
+          <Reveal className="rd-filters" delay={0.1}>
+            {opciones.map((o) => (
+              <button
+                key={o.v}
+                type="button"
+                className={`rd-filter ${filtro === o.v ? 'on' : ''}`}
+                aria-pressed={filtro === o.v}
+                onClick={() => setFiltro(o.v)}
+              >
+                {o.label}
+              </button>
+            ))}
+          </Reveal>
+        </div>
+        <div className="rd-ent-grid">
+          {visibles.map((d, i) => (
+            <Reveal key={d.slug} delay={(i % 3) * 0.12}>
+              <RouterLink to={ROUTES.desarrolloDetalle(d.slug)} className="rd-ent-card" onClick={guardarOrigenClic}>
+                <div className="rd-ent-media">
+                  <Portada d={d} />
+                  <div className="rd-chips">
+                    <span className="rd-chip">Entregado</span>
+                    <ChipDisponibilidad d={d} />
+                  </div>
+                </div>
+                <div className="rd-ent-body">
+                  <div>
+                    <small>{d.zona}</small>
+                    <h4>{sinGuiones(d.nombre, ' ')}</h4>
+                    <p>{sinGuiones(d.direccion)}</p>
+                  </div>
+                  <span className="rd-go" aria-hidden="true">
+                    →
+                  </span>
+                </div>
+              </RouterLink>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/** Título de la banda final: cada palabra se ilumina a medida que la banda sube. */
+function FraseIluminada() {
+  const ref = useRef<HTMLHeadingElement | null>(null)
+  const palabras = useMemo(
+    () => [
+      { t: 'Tu', em: false },
+      { t: 'próxima', em: false },
+      { t: 'inversión', em: false },
+      { t: 'te', em: true },
+      { t: 'está', em: true },
+      { t: 'esperando', em: true },
+    ],
+    [],
+  )
+  const [encendidas, setEncendidas] = useState(0)
+  useOnScroll(() => {
+    const el = ref.current
+    if (!el) return
+    const h = window.innerHeight
+    const p = Math.min(Math.max((h * 0.85 - el.getBoundingClientRect().top) / (h * 0.5), 0), 1)
+    setEncendidas(Math.round(p * palabras.length))
+  })
+  return (
+    <h2 ref={ref} className="rd-band-title">
+      {palabras.map((w, i) => (
+        <span key={i} className={`rd-w ${i < encendidas ? 'lit' : ''} ${w.em ? 'em' : ''}`}>
+          {w.t}{' '}
+        </span>
+      ))}
+    </h2>
   )
 }
 
 export function Home() {
   const { data, isLoading } = useDesarrollosPublicados()
   const { data: heroSlides } = useHeroSlides()
-  const palabra = useRotatingWord()
+  const palabraIdx = useRotatingWord()
   const heroImages = (heroSlides ?? []).map((s) => mediaUrl(s.archivoUrl)).filter((url): url is string => !!url)
   const heroSlideIndex = useHeroSlideshow(heroImages.length)
   const heroSlideCargada = useSlidesCargadas(heroSlideIndex, heroImages.length)
 
-  // Un carrusel por estado — en pozo arriba, entregados abajo — y dentro de cada uno
-  // primero los que tienen unidades disponibles (el badge de cada card).
+  const heroParallax = useParallax<HTMLDivElement>(0.3)
+  const nosotrosParallax = useParallax<HTMLImageElement>(-0.1)
+  const bandaParallax = useParallax<HTMLDivElement>(0.25)
+
   const desarrollos = data?.content ?? []
   const enPozo = ordenarPorDisponibilidad(desarrollos.filter((d) => d.estado === 'en-pozo'))
   const entregados = ordenarPorDisponibilidad(desarrollos.filter((d) => d.estado === 'entregado'))
 
+  // Fotos de apoyo: las del carrusel del hero (backoffice → Web) y, si faltan, portadas.
+  const portadas = desarrollos.map((d) => mediaUrl(d.imagenPortadaUrl)).filter((u): u is string => !!u)
+  const fotoNosotros = heroImages[1] ?? heroImages[0] ?? portadas[0]
+  const fotoBanda = portadas[portadas.length - 1] ?? heroImages[0]
+
+  const [revealNosotros, setRevealNosotros] = useState(false)
+  const nosotrosImgWrap = useRef<HTMLDivElement | null>(null)
+  useEffect(() => {
+    const el = nosotrosImgWrap.current
+    if (!el) return
+    const io = new IntersectionObserver(([e]) => e.isIntersecting && setRevealNosotros(true), { threshold: 0.2 })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
   return (
-    <>
+    <div className="rd">
       {/* HERO */}
-      <section className="hero">
-        <div className="hero-bg" />
-        <div className="hero-slider">
+      <section className="rd-hero">
+        <div className="rd-hero-bg" ref={heroParallax}>
           {heroImages.map((src, i) => (
             <div
               key={src}
-              className={`hero-slide ${i === heroSlideIndex ? 'active' : ''}`}
+              className={`rd-hero-slide ${i === heroSlideIndex ? 'active' : ''}`}
               style={heroSlideCargada(i) ? { backgroundImage: `url(${src})` } : undefined}
             />
           ))}
         </div>
-        <div className="hero-overlay-gradient" />
-        <div className="hero-ornament" />
-        <div className="hero-content">
-          <p className="hero-eyebrow">Desarrolladora Inmobiliaria y Constructora</p>
-          <h1 className="hero-title">
-            Un concepto
-            <br />
-            de vida{' '}
-            <span className="palabra-rotante">
-              <span className="word" key={palabra}>
-                {palabra}
+        <div className="rd-hero-sun">
+          <SolDecorativo />
+        </div>
+        <div className="rd-wrap rd-hero-in">
+          <p className="rd-eyebrow rd-hero-tag">Desarrolladora Inmobiliaria y Constructora</p>
+          <h1 className="rd-hero-title">
+            <span className="line">
+              <span>Un concepto</span>
+            </span>
+            <span className="line">
+              <span>
+                de vida{' '}
+                <span className="rd-rotator" aria-live="polite">
+                  {PALABRAS.map((p, i) => (
+                    <b key={p} className={i === palabraIdx ? 'on' : ''} aria-hidden={i !== palabraIdx}>
+                      {p}
+                    </b>
+                  ))}
+                </span>
               </span>
             </span>
           </h1>
-          <p className="hero-desc">
+          <p className="rd-hero-desc">
             Invertí en desarrollos premium en zonas estratégicas de CABA y Pinamar. Más de 25 años diseñando espacios donde la
             vida y el futuro se entrelazan.
           </p>
-          <div className="hero-actions">
-            <a href="#desarrollos" className="btn-primario">
-              Ver desarrollos
+          <div className="rd-hero-actions">
+            <a href="#desarrollos" className="rd-btn">
+              <span>Ver desarrollos</span>
+              <span className="rd-arrow">→</span>
             </a>
-            <a href="#contacto" className="btn-secundario">
-              Contacte con nosotros
+            <a href="#contacto" className="rd-btn ghost">
+              <span>Contacte con nosotros</span>
             </a>
           </div>
         </div>
-        <div className="hero-stats">
-          <MetricasDestacadas items={HERO_STATS} variant="columna" />
-        </div>
-        <div className="hero-scroll">
-          <span>Explorar</span>
-          <div className="scroll-line" />
+        <div className="rd-scroll-cue" aria-hidden="true">
+          Explorar
+          <i />
         </div>
       </section>
 
-      {/* SOBRE NOSOTROS */}
-      <Divisor numero="I" />
-      <section id="nosotros" className="nosotros">
-        <Reveal className="nosotros-texto">
-          <h2>
-            <small
-              style={{
-                fontSize: '0.85rem',
-                letterSpacing: '0.3em',
-                color: 'var(--dorado)',
-                textTransform: 'uppercase',
-                display: 'block',
-                marginBottom: '0.8rem',
-                fontStyle: 'normal',
-              }}
-            >
-              Sobre nosotros
-            </small>
-            Ubicaciones <em>estratégicas.</em>
-            <br />
-            Proyectos exclusivos.
-          </h2>
-          <p>
-            En <strong>Solares de Donato</strong>, cada espacio cuenta una historia, y desde hace <strong>25 años</strong>,
-            nuestra misión ha sido escribirlas con pasión y dedicación. Más que construir edificios, creamos hogares diseñados
-            para enriquecer vidas, combinando diseño, innovación y calidad en cada detalle.
-          </p>
-          <p>
-            Todo comenzó con un sueño: transformar la manera en que las personas experimentan su hogar. Desde entonces, hemos
-            desarrollado proyectos que reflejan funcionalidad, estética y un compromiso inquebrantable con la excelencia. Cada
-            ladrillo que colocamos es un paso hacia nuestra visión de construir entornos donde las familias crezcan y los
-            recuerdos más valiosos cobren vida.
-          </p>
-          <blockquote className="destacado">
-            "Acompañamos a cada cliente e inversor en cada etapa del camino, ofreciendo confianza, respaldo y un enfoque
-            humano. Porque entendemos que construir es mucho más que un proceso: es una oportunidad para inspirar y
-            transformar."
-          </blockquote>
-          <p>
-            En Solares de Donato, miramos al futuro con la misma pasión que nos trajo hasta aquí, comprometidos a seguir
-            creando espacios que trasciendan generaciones y dejen una huella positiva en la vida de las personas.
-          </p>
-        </Reveal>
-        <div className="nosotros-stats">
-          <MetricasDestacadas items={NOSOTROS_STATS} variant="columna" className="izquierda" />
+      {/* I. SOBRE NOSOTROS */}
+      <section id="nosotros" className="rd-about">
+        <div className="rd-wrap">
+          <div className="rd-about-grid">
+            <div ref={nosotrosImgWrap} className={`rd-about-img ${revealNosotros ? 'in' : ''}`}>
+              {fotoNosotros && <img ref={nosotrosParallax} src={fotoNosotros} alt="" loading="lazy" />}
+              <div className="rd-about-badge">
+                <strong>25</strong>
+                <small>años de empresa</small>
+              </div>
+            </div>
+            <div className="rd-about-text">
+              <Reveal>
+                <NumSeccion n="I" />
+                <p className="rd-eyebrow">Sobre nosotros</p>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <h2 className="rd-h2">
+                  Ubicaciones estratégicas. <em>Proyectos exclusivos.</em>
+                </h2>
+              </Reveal>
+              <Reveal as="p" delay={0.2}>
+                En <strong>Solares de Donato</strong>, cada espacio cuenta una historia, y desde hace <strong>25 años</strong>,
+                nuestra misión ha sido escribirlas con pasión y dedicación. Más que construir edificios, creamos hogares
+                diseñados para enriquecer vidas, combinando diseño, innovación y calidad en cada detalle.
+              </Reveal>
+              <Reveal as="p" delay={0.25}>
+                Todo comenzó con un sueño: transformar la manera en que las personas experimentan su hogar. Desde entonces,
+                hemos desarrollado proyectos que reflejan funcionalidad, estética y un compromiso inquebrantable con la
+                excelencia. Cada ladrillo que colocamos es un paso hacia nuestra visión de construir entornos donde las
+                familias crezcan y los recuerdos más valiosos cobren vida.
+              </Reveal>
+              <Reveal delay={0.3}>
+                <blockquote className="rd-quote">
+                  "Acompañamos a cada cliente e inversor en cada etapa del camino, ofreciendo confianza, respaldo y un enfoque
+                  humano. Porque entendemos que construir es mucho más que un proceso: es una oportunidad para inspirar y
+                  transformar."
+                </blockquote>
+              </Reveal>
+              <Reveal as="p" delay={0.35}>
+                En Solares de Donato, miramos al futuro con la misma pasión que nos trajo hasta aquí, comprometidos a seguir
+                creando espacios que trasciendan generaciones y dejen una huella positiva en la vida de las personas.
+              </Reveal>
+            </div>
+          </div>
+          <Reveal className="rd-stats">
+            <MetricasDestacadas items={NOSOTROS_STATS} variant="fila" />
+          </Reveal>
         </div>
       </section>
 
-      {/* DESARROLLOS */}
-      <Divisor numero="II" />
-      <section id="desarrollos" className="desarrollos">
-        <Reveal className="seccion-header">
-          <h2>
-            <small>Catálogo</small>
-            Nuestros <span>desarrollos</span>
-          </h2>
-          <a href="#contacto" className="link-ver">
-            Consultar disponibilidad →
-          </a>
-        </Reveal>
-
-        {!isLoading && (
-          <>
-            <CarruselPorEstado titulo="En pozo" items={enPozo} />
-            <CarruselPorEstado titulo="Entregados" items={entregados} />
-          </>
-        )}
-
-        <Reveal className="desarrollos-cta-bottom">
-          <p style={{ fontSize: '0.95rem', color: 'var(--gris-claro)', marginBottom: '1.5rem' }}>
-            Conocé nuestros desarrollos y encontrá el ideal para vos.
-          </p>
-          <a href="#contacto" className="btn-primario">
-            Ver desarrollos disponibles
-          </a>
-        </Reveal>
+      {/* II. CATÁLOGO */}
+      <section id="desarrollos" className="rd-dev-intro">
+        <div className="rd-wrap">
+          <div>
+            <Reveal>
+              <NumSeccion n="II" />
+              <p className="rd-eyebrow">Catálogo</p>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <h2 className="rd-h2">
+                Nuestros <em>desarrollos</em>
+              </h2>
+            </Reveal>
+          </div>
+          <Reveal delay={0.2}>
+            <a href="#contacto" className="rd-link">
+              Consultar disponibilidad →
+            </a>
+          </Reveal>
+        </div>
       </section>
 
-      {/* CTA QUICK FORM (estilo Briones) */}
-      <section className="cta-quick" id="ctaQuick">
-        <Reveal className="section-titulo-centrado">
-          <p className="titulo-centrado-eyebrow">Asesoramiento personalizado</p>
-          <h2 className="titulo-centrado">
-            Encontrá tu <em>propiedad ideal</em>
-          </h2>
-          <div className="titulo-centrado-linea" />
-        </Reveal>
-        <Reveal className="cta-quick-wrap">
-          <div className="cta-quick-left">
-            <p className="cta-quick-eyebrow">Encontrá tu próximo hogar</p>
-            <h2 className="cta-quick-title">
-              Nuestro staff de ventas te ayudará a encontrar lo que <em>mejor se adapte</em> a tu necesidad de vivienda, o
-              inversión.
-            </h2>
-            <p className="cta-quick-desc">
+      {!isLoading && (
+        <>
+          <EnPozo items={enPozo} />
+          <Entregados items={entregados} />
+        </>
+      )}
+
+      <div className="rd-cat-cta">
+        <div className="rd-wrap">
+          <Reveal as="p">Conocé nuestros desarrollos y encontrá el ideal para vos.</Reveal>
+          <Reveal delay={0.1}>
+            <a href="#ctaQuick" className="rd-btn">
+              <span>Ver desarrollos disponibles</span>
+              <span className="rd-arrow">→</span>
+            </a>
+          </Reveal>
+        </div>
+      </div>
+
+      {/* ENCONTRÁ TU PROPIEDAD IDEAL */}
+      <section className="rd-finder" id="ctaQuick">
+        <div className="rd-wrap rd-finder-grid">
+          <div>
+            <Reveal>
+              <p className="rd-eyebrow">Asesoramiento personalizado</p>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <h2 className="rd-h2">
+                Encontrá tu <em>propiedad ideal</em>
+              </h2>
+            </Reveal>
+            <Reveal delay={0.15}>
+              <h3 className="rd-finder-sub">Encontrá tu próximo hogar</h3>
+            </Reveal>
+            <Reveal as="p" className="rd-muted" delay={0.2}>
+              Nuestro staff de ventas te ayudará a encontrar lo que mejor se adapte a tu necesidad de vivienda, o inversión.
+            </Reveal>
+            <Reveal as="p" className="rd-muted" delay={0.25}>
               Contanos qué buscás y un asesor especializado te contactará dentro de las próximas 24 horas con las mejores
               opciones.
-            </p>
-            <MetricasDestacadas items={CTA_QUICK_STATS} variant="fila" />
+            </Reveal>
+            <Reveal className="rd-mini-stats" delay={0.3}>
+              <MetricasDestacadas items={CTA_QUICK_STATS} variant="fila" />
+            </Reveal>
           </div>
-          <QuickLeadForm />
-        </Reveal>
+          <Reveal className="rd-form-shell" delay={0.15}>
+            <QuickLeadForm />
+          </Reveal>
+        </div>
       </section>
 
-      {/* INVERTÍ CON NOSOTROS */}
-      <Divisor numero="III" />
-      <section id="invertir" className="invertir">
-        <Reveal className="invertir-intro">
-          <p className="eyebrow">Invertí con nosotros</p>
-          <h2>
-            Dos formas de <em>hacer crecer</em> tu capital
-          </h2>
-          <p>
-            Ofrecemos instrumentos diseñados para distintos perfiles de inversor: desde participaciones fraccionadas en
-            propiedades premium, hasta renta fija mensual sin preocupaciones. Ambos respaldados por activos inmobiliarios
-            reales.
-          </p>
-        </Reveal>
-        <Reveal className="instrumentos-grid">
-          <div className="instrumento">
-            <div className="instrumento-num">I</div>
-            <span className="instrumento-tag">Innovador</span>
-            <h3>
-              Tokenización <em>inmobiliaria</em>
-            </h3>
-            <p className="instrumento-desc">
-              La <strong>tokenización de inmuebles</strong> ha llegado al mercado argentino para revolucionar la manera de
-              invertir en propiedades. Este modelo innovador permite que más personas participen en desarrollos inmobiliarios
-              con <strong>montos accesibles</strong> y oportunidades diversificadas.
-            </p>
-            <div className="instrumento-features">
-              <p className="instrumento-features-titulo">Beneficios</p>
-              <ul className="features-list">
-                <li>
-                  <span className="feature-check">✓</span>
-                  <span>Acceso a desarrollos premium con tickets accesibles</span>
-                </li>
-                <li>
-                  <span className="feature-check">✓</span>
-                  <span>Participación fraccionada respaldada por inmuebles reales</span>
-                </li>
-                <li>
-                  <span className="feature-check">✓</span>
-                  <span>Diversificá tu inversión entre varios proyectos</span>
-                </li>
-                <li>
-                  <span className="feature-check">✓</span>
-                  <span>Mayor liquidez que la compra tradicional de propiedades</span>
-                </li>
-              </ul>
+      {/* III. INVERTÍ CON NOSOTROS */}
+      <section id="invertir" className="rd-invest">
+        <div className="rd-wrap">
+          <div className="rd-invest-head">
+            <div>
+              <Reveal>
+                <NumSeccion n="III" />
+                <p className="rd-eyebrow">Invertí con nosotros</p>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <h2 className="rd-h2">
+                  Dos formas de hacer <em>crecer tu capital</em>
+                </h2>
+              </Reveal>
             </div>
-            <a href="https://realestate.solaresdedonato.com.ar/" target="_blank" rel="noreferrer" className="instrumento-cta">
-              Ir a la plataforma →
-            </a>
+            <Reveal as="p" className="rd-muted" delay={0.2}>
+              Ofrecemos instrumentos diseñados para distintos perfiles de inversor: desde participaciones fraccionadas en
+              propiedades premium, hasta renta fija mensual sin preocupaciones. Ambos respaldados por activos inmobiliarios
+              reales.
+            </Reveal>
           </div>
-
-          <div className="instrumento">
-            <div className="instrumento-num">II</div>
-            <span className="instrumento-tag">Solares Deals</span>
-            <h3>
-              Renta <em>fija mensual</em>
-            </h3>
-            <p className="instrumento-desc">
-              <strong>Invertí y recibí renta fija sin preocupaciones.</strong> Comprá tu departamento y obtené ingresos
-              garantizados, sin ocuparte de nada. Nosotros gestionamos el alquiler y te aseguramos una{' '}
-              <strong>renta fija mensual</strong>, estés donde estés.
-            </p>
-            <div className="instrumento-features">
-              <p className="instrumento-features-titulo">Cómo funciona</p>
-              <ul className="features-list">
-                <li>
-                  <span className="feature-check">✓</span>
-                  <span>Renta mensual garantizada con contratos claros</span>
-                </li>
-                <li>
-                  <span className="feature-check">✓</span>
-                  <span>Administración integral incluida (inquilinos, mantenimiento)</span>
-                </li>
-                <li>
-                  <span className="feature-check">✓</span>
-                  <span>Ingresos pasivos sin trámites ni gastos imprevistos</span>
-                </li>
-                <li>
-                  <span className="feature-check">✓</span>
-                  <span>Respaldo real de la propiedad a tu nombre</span>
-                </li>
-              </ul>
-            </div>
-            <a href="#contacto" className="instrumento-cta">
-              Descubrí más →
-            </a>
+          <div className="rd-inv-grid">
+            {[
+              {
+                n: 'I',
+                tag: 'Innovador',
+                titulo: 'Tokenización inmobiliaria',
+                desc: 'La tokenización de inmuebles ha llegado al mercado argentino para revolucionar la manera de invertir en propiedades. Este modelo innovador permite que más personas participen en desarrollos inmobiliarios con montos accesibles y oportunidades diversificadas.',
+                listaTitulo: 'Beneficios',
+                lista: [
+                  'Acceso a desarrollos premium con tickets accesibles',
+                  'Participación fraccionada respaldada por inmuebles reales',
+                  'Diversificá tu inversión entre varios proyectos',
+                  'Mayor liquidez que la compra tradicional de propiedades',
+                ],
+                cta: { href: 'https://realestate.solaresdedonato.com.ar/', label: 'Ir a la plataforma →', externo: true },
+              },
+              {
+                n: 'II',
+                tag: 'Solares Deals',
+                titulo: 'Renta fija mensual',
+                desc: 'Invertí y recibí renta fija sin preocupaciones. Comprá tu departamento y obtené ingresos garantizados, sin ocuparte de nada. Nosotros gestionamos el alquiler y te aseguramos una renta fija mensual, estés donde estés.',
+                listaTitulo: 'Cómo funciona',
+                lista: [
+                  'Renta mensual garantizada con contratos claros',
+                  'Administración integral incluida (inquilinos, mantenimiento)',
+                  'Ingresos pasivos sin trámites ni gastos imprevistos',
+                  'Respaldo real de la propiedad a tu nombre',
+                ],
+                cta: { href: '#contacto', label: 'Descubrí más →', externo: false },
+              },
+            ].map((ins, i) => (
+              <Reveal key={ins.n} delay={i * 0.15}>
+                <article
+                  className="rd-inv-card"
+                  onMouseMove={(e) => {
+                    const r = e.currentTarget.getBoundingClientRect()
+                    e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`)
+                    e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`)
+                  }}
+                >
+                  <span className="rd-rn">{ins.n}</span>
+                  <p className="rd-eyebrow">{ins.tag}</p>
+                  <h3>{ins.titulo}</h3>
+                  <p className="rd-inv-desc">{ins.desc}</p>
+                  <p className="rd-checks-t">{ins.listaTitulo}</p>
+                  <ul className="rd-checks">
+                    {ins.lista.map((li) => (
+                      <li key={li}>{li}</li>
+                    ))}
+                  </ul>
+                  <a
+                    className="rd-link"
+                    href={ins.cta.href}
+                    {...(ins.cta.externo ? { target: '_blank', rel: 'noreferrer' } : {})}
+                  >
+                    {ins.cta.label}
+                  </a>
+                </article>
+              </Reveal>
+            ))}
           </div>
-        </Reveal>
+        </div>
       </section>
 
-      {/* AREA BROKER */}
-      <section id="brokers" className="area-broker">
-        <Reveal className="section-titulo-centrado">
-          <p className="titulo-centrado-eyebrow">Area Broker</p>
-          <h2 className="titulo-centrado">
-            Sumate a nuestra red de <em>brokers asociados</em>
-          </h2>
-          <div className="titulo-centrado-linea" />
-        </Reveal>
-        <div className="broker-wrap">
-          <Reveal className="broker-left">
-            <p className="broker-desc broker-desc-main">
+      {/* ÁREA BROKER */}
+      <section id="brokers" className="rd-brokers">
+        <div className="rd-wrap rd-brk-grid">
+          <div>
+            <Reveal>
+              <p className="rd-eyebrow">Area Broker</p>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <h2 className="rd-h2">
+                Sumate a nuestra red de <em>brokers asociados</em>
+              </h2>
+            </Reveal>
+            <Reveal as="p" className="rd-muted" delay={0.2}>
               Trabajamos con inmobiliarias y brokers independientes que comparten nuestro estándar de profesionalismo. Si
               tenés clientes interesados en nuestros desarrollos, esquemas de comisiones competitivos y acompañamiento
               integral en cada operación.
-            </p>
-            <div className="broker-beneficios">
-              <p className="broker-beneficios-titulo">Beneficios para brokers</p>
-              <ul className="broker-list">
-                {BROKER_BENEFICIOS.map((b) => (
-                  <li key={b.titulo}>
-                    <span className="broker-check">✓</span>
+            </Reveal>
+            <Reveal as="p" className="rd-checks-t rd-brk-t" delay={0.25}>
+              Beneficios para brokers
+            </Reveal>
+            <ul className="rd-brk-list">
+              {BROKER_BENEFICIOS.map((b, i) => (
+                <li key={b.titulo}>
+                  <Reveal className="rd-brk-item" delay={i * 0.1}>
+                    <span className="rd-brk-ic" aria-hidden="true">
+                      {b.icono}
+                    </span>
                     <div>
                       <strong>{b.titulo}</strong>
                       <span>{b.desc}</span>
                     </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
+                  </Reveal>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <Reveal className="rd-form-shell" delay={0.15}>
+            <BrokerForm />
           </Reveal>
-          <BrokerForm />
         </div>
       </section>
 
-      {/* CTA BAND */}
-      <section className="cta-band">
-        <Reveal>
-          <p className="eyebrow">¿Querés más información?</p>
-          <h2>
-            Tu próxima inversión
-            <br />
-            <em>te está esperando</em>
-          </h2>
-          <p>
+      {/* CTA CON PARALLAX */}
+      <section className="rd-band">
+        <div className="rd-band-bg" ref={bandaParallax} style={fotoBanda ? { backgroundImage: `url(${fotoBanda})` } : undefined} />
+        <div className="rd-wrap">
+          <Reveal>
+            <p className="rd-eyebrow">¿Querés más información?</p>
+          </Reveal>
+          <FraseIluminada />
+          <Reveal as="p" delay={0.1}>
             ¿Estás interesado en nuestros proyectos? Contactanos para obtener más información y resolver todas tus consultas.
             Nuestro equipo está listo para asesorarte y acompañarte en cada etapa de tu inversión inmobiliaria.
-          </p>
-          <div className="cta-doble">
-            <a href="#contacto" className="btn-primario">
-              Contacte con nosotros
+          </Reveal>
+          <Reveal className="rd-band-ctas" delay={0.2}>
+            <a href="#contacto" className="rd-btn">
+              <span>Contacte con nosotros</span>
             </a>
-            <a
-              href="https://api.whatsapp.com/send?phone=5491151407693&text=Hola,%20vengo%20de%20la%20web%20y%20quiero%20m%C3%A1s%20informaci%C3%B3n"
-              target="_blank"
-              rel="noreferrer"
-              className="btn-secundario"
-            >
-              WhatsApp directo
+            <a href={WHATSAPP_HREF} target="_blank" rel="noreferrer" className="rd-btn wa">
+              <span>WhatsApp directo</span>
             </a>
-          </div>
-        </Reveal>
+          </Reveal>
+        </div>
       </section>
 
-      {/* CONTACTO */}
-      <Divisor numero="IV" />
-      <section id="contacto" className="formulario-wrap">
-        <Reveal className="contacto-encabezado">
-          <h2 className="form-titulo">
-            Mantengamos el <em>contacto</em>
-          </h2>
-          <p className="form-desc">
-            Equipo de profesionales especialistas en cada rubro, que abarca desde el desarrollo, arquitectura, financiación,
-            construcción y postventa de emprendimientos inmobiliarios.
-          </p>
-        </Reveal>
-        <Reveal className="contacto-info">
-          <div className="contacto-directo">
-            <h4>Datos de contacto</h4>
-            <a className="contacto-item" href="https://api.whatsapp.com/send?phone=5491151407693" target="_blank" rel="noreferrer">
-              <span className="label">WhatsApp / Teléfono</span>
-              <span className="valor">+54 9 11 5140 7693</span>
-            </a>
-            <a className="contacto-item" href="mailto:general@solaresdedonato.com.ar">
-              <span className="label">Email</span>
-              <span className="valor">general@solaresdedonato.com.ar</span>
-            </a>
-            <div className="contacto-item">
-              <span className="label">Dirección</span>
-              <span className="valor">
-                Basualdo 455, C1440 DNA
-                <br />
-                Ciudad Autónoma de Buenos Aires
-              </span>
+      {/* IV. CONTACTO */}
+      <section id="contacto" className="rd-contact">
+        <div className="rd-wrap rd-contact-grid">
+          <div>
+            <Reveal>
+              <NumSeccion n="IV" />
+            </Reveal>
+            <Reveal delay={0.1}>
+              <h2 className="rd-h2">
+                Mantengamos el <em>contacto</em>
+              </h2>
+            </Reveal>
+            <Reveal as="p" className="rd-muted" delay={0.2}>
+              Equipo de profesionales especialistas en cada rubro, que abarca desde el desarrollo, arquitectura, financiación,
+              construcción y postventa de emprendimientos inmobiliarios.
+            </Reveal>
+            <div className="rd-c-data">
+              <Reveal as="p" className="rd-eyebrow">
+                Datos de contacto
+              </Reveal>
+              <Reveal delay={0.1}>
+                <a className="rd-c-item" href="https://api.whatsapp.com/send?phone=5491151407693" target="_blank" rel="noreferrer">
+                  <small>WhatsApp / Teléfono</small>
+                  <span>+54 9 11 5140 7693</span>
+                </a>
+              </Reveal>
+              <Reveal delay={0.2}>
+                <a className="rd-c-item" href="mailto:general@solaresdedonato.com.ar">
+                  <small>Email</small>
+                  <span>general@solaresdedonato.com.ar</span>
+                </a>
+              </Reveal>
+              <Reveal delay={0.3}>
+                <div className="rd-c-item">
+                  <small>Dirección</small>
+                  <span>
+                    Basualdo 455, C1440 DNA
+                    <br />
+                    Ciudad Autónoma de Buenos Aires
+                  </span>
+                </div>
+              </Reveal>
             </div>
           </div>
-        </Reveal>
-        <Reveal className="contacto-formulario">
-          <ContactoForm />
-        </Reveal>
+          <Reveal className="rd-form-shell" delay={0.15}>
+            <ContactoForm />
+          </Reveal>
+        </div>
       </section>
-    </>
+    </div>
   )
 }

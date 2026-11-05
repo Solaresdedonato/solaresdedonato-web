@@ -1,81 +1,108 @@
-import type { ReactNode } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useDesarrolloPorSlug } from '@/features/desarrollo/hooks/useDesarrollo'
-import {
-  CERCANIAS_CATEGORIAS,
-  DISPONIBILIDAD_LABELS,
-  ESTADO_LABELS,
-  type DesarrolloCercanias,
-} from '@/features/desarrollo/schemas/desarrollo.schema'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom'
+import { useDesarrolloPorSlug, useDesarrollosPublicados } from '@/features/desarrollo/hooks/useDesarrollo'
+import { DISPONIBILIDAD_LABELS, ESTADO_LABELS } from '@/features/desarrollo/schemas/desarrollo.schema'
 import { mediaUrl } from '@/shared/utils/mediaUrl'
 import { sinGuiones } from '@/shared/utils/sinGuiones'
-import { DesarrolloAccionesBotones } from '@/components/DesarrolloAccionesBotones'
-import { DesarrolloGaleria } from '@/components/DesarrolloGaleria'
+import { esVideoServidoPorApi, videoEmbedUrl } from '@/shared/utils/videoEmbedUrl'
+import { useOnScroll } from '@/shared/hooks/useScrollFx'
+import { ROUTES } from '@/shared/router/routes'
+import { DesarrolloLightbox } from '@/components/DesarrolloLightbox'
+import { CercaniasRadar } from '@/components/CercaniasRadar'
+import { guardarOrigenClic, romanoDe, separarEntrada, suavizar, tomarOrigenClic } from '@/shared/utils/desarrolloUi'
 import logoIcon from '@/assets/logo-icon.png'
 
-/** Mismo trazo que los íconos de los botones de acción (.btn-icono): línea fina dorada. */
-function IconoCercania({ children }: { children: ReactNode }) {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      {children}
-    </svg>
-  )
+const WHATSAPP_NUMBER = '5491151407693'
+
+/** Formas arquitectónicas del collage, en este orden: lámina, arco, círculo, vano, arco, píldora. */
+const FORMAS = ['slab', 'arch', 'circle', 'plain', 'arch', 'pill']
+
+/** Animación de entrada: un círculo que crece desde el punto donde se hizo clic en la
+ *  card. Si se entró directo por URL (sin clic previo) la ficha se muestra sin animar. */
+function useAperturaCircular() {
+  const [origen] = useState(tomarOrigenClic)
+  const [fase, setFase] = useState<'cerrada' | 'abriendo' | 'lista'>(origen ? 'cerrada' : 'lista')
+  useEffect(() => {
+    if (!origen) return
+    let id2 = 0
+    // El círculo se mide sobre toda la ficha (miles de px de alto): al terminar la
+    // animación se quita el recorte, si no taparía todo lo que queda más abajo.
+    let fin = 0
+    const id = requestAnimationFrame(() => {
+      id2 = requestAnimationFrame(() => {
+        setFase('abriendo')
+        fin = window.setTimeout(() => setFase('lista'), 1150)
+      })
+    })
+    return () => {
+      cancelAnimationFrame(id)
+      cancelAnimationFrame(id2)
+      clearTimeout(fin)
+    }
+  }, [origen])
+  // El origen se guarda en coordenadas de la pantalla; la ficha arranca en el tope
+  // de la página, así que coinciden con las del elemento.
+  const style = {
+    '--ox': origen ? `${origen[0]}px` : '50%',
+    '--oy': origen ? `${origen[1]}px` : '30%',
+  } as CSSProperties
+  return { clase: fase === 'cerrada' ? '' : fase === 'abriendo' ? 'open' : 'open lista', style }
 }
 
-// Los mismos motivos que tenían los emojis (🎓 🚉 🛒 ⛑), dibujados como íconos de línea.
-const CERCANIA_ICONS: Record<keyof DesarrolloCercanias, ReactNode> = {
-  educacion: (
-    <IconoCercania>
-      <path d="M21.42 10.92a1 1 0 0 0-.02-1.84L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.83l8.57 3.91a2 2 0 0 0 1.66 0z" />
-      <path d="M22 10v6" />
-      <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5" />
-    </IconoCercania>
-  ),
-  transporte: (
-    <IconoCercania>
-      <rect x="4" y="3" width="16" height="16" rx="2" />
-      <path d="M4 11h16M12 3v8M8 15h.01M16 15h.01M8 19l-2 3M16 19l2 3" />
-    </IconoCercania>
-  ),
-  comercios: (
-    <IconoCercania>
-      <circle cx="8" cy="21" r="1" />
-      <circle cx="19" cy="21" r="1" />
-      <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-    </IconoCercania>
-  ),
-  salud: (
-    <IconoCercania>
-      <path d="M4 9a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h4a1 1 0 0 1 1 1v4a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-4a1 1 0 0 1 1-1h4a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-4a1 1 0 0 1-1-1V4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4a1 1 0 0 1-1 1z" />
-    </IconoCercania>
-  ),
-}
-
-function plural(n: number, singular: string, pluralForm: string) {
-  return `${n} ${n === 1 ? singular : pluralForm}`
-}
-
+/** Se vuelve a montar al cambiar de desarrollo (key=slug), así cada ficha anima su apertura. */
 export function DesarrolloDetalle() {
   const { slug } = useParams<{ slug: string }>()
+  return <Ficha key={slug} slug={slug} />
+}
+
+function Ficha({ slug }: { slug: string | undefined }) {
   const navigate = useNavigate()
   const { data: desarrollo, isLoading } = useDesarrolloPorSlug(slug)
+  const { data: lista } = useDesarrollosPublicados()
+  const { clase: claseApertura, style: estiloApertura } = useAperturaCircular()
+  const [fotoAbierta, setFotoAbierta] = useState<number | null>(null)
+  const progresoRef = useRef<HTMLSpanElement | null>(null)
+  const collageRef = useRef<HTMLDivElement | null>(null)
+
+  useOnScroll(() => {
+    const el = progresoRef.current
+    if (!el) return
+    const max = document.documentElement.scrollHeight - window.innerHeight
+    el.style.transform = `scaleY(${max > 0 ? window.scrollY / max : 0})`
+  })
+
+  // Las fotos del collage suben a medida que entran en pantalla.
+  useEffect(() => {
+    const cont = collageRef.current
+    if (!cont) return
+    const io = new IntersectionObserver(
+      (es) =>
+        es.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('in')
+            io.unobserve(e.target)
+          }
+        }),
+      { threshold: 0.12 },
+    )
+    cont.querySelectorAll('.rd-shot').forEach((s) => io.observe(s))
+    return () => io.disconnect()
+  }, [desarrollo])
 
   if (isLoading) {
     return (
-      <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <span style={{ fontSize: '0.7rem', letterSpacing: '0.25em', textTransform: 'uppercase', color: '#666666' }}>
-          Cargando…
-        </span>
+      <div className="rd-loading">
+        <span>Cargando…</span>
       </div>
     )
   }
 
   if (!desarrollo) {
     return (
-      <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+      <div className="rd-loading">
         <div>
-          <p style={{ color: '#f5f0e8', marginBottom: '1rem' }}>No encontramos el desarrollo que buscás.</p>
-          <button type="button" className="pagina-dev-volver" onClick={() => navigate(-1)}>
+          <p>No encontramos el desarrollo que buscás.</p>
+          <button type="button" className="rd-link" onClick={() => navigate(-1)}>
             ← Volver
           </button>
         </div>
@@ -83,161 +110,229 @@ export function DesarrolloDetalle() {
     )
   }
 
-  // Sin zona/país, una direccion cargada como "solo calle y numero" es ambigua:
-  // esa misma calle puede existir en otra localidad y Google geocodifica cualquiera.
+  // Sin zona/país, una dirección "solo calle y número" es ambigua para Google.
   const mapsQuery = encodeURIComponent(`${desarrollo.direccion}, ${desarrollo.zona}, Argentina`)
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`
   const direccion = sinGuiones(desarrollo.direccion)
+  const nombre = sinGuiones(desarrollo.nombre, ' ')
 
-  // Solo los datos generales son obligatorios al crear un desarrollo: características y
-  // cercanías pueden venir vacías, y en ese caso no se dibuja su bloque.
-  const features = desarrollo.features.filter((f) => f.texto.trim())
-  const cercanias = CERCANIAS_CATEGORIAS.filter((cat) => desarrollo.cercanias[cat.key].length > 0)
-
-  // La portada del hero es la foto marcada como portada en el backoffice (el backend la
-  // copia a imagenPortadaUrl). Si todavía no marcaron ninguna, se usa la primera foto
-  // cargada para no dejar el hero vacío.
   const fotos = (desarrollo.galeria ?? []).filter((c) => c.tipo === 'foto' && c.archivoUrl)
   const videos = (desarrollo.galeria ?? []).filter((c) => c.tipo === 'video' && c.videoUrl)
   const portada = desarrollo.imagenPortadaUrl ?? fotos[0]?.archivoUrl ?? null
-
-  // La galería solo se dibuja si hay algo más para ver que la portada que ya está arriba.
-  const hayGaleria = videos.length > 0 || fotos.some((f) => f.archivoUrl !== portada)
+  // El collage muestra lo que no está ya en la portada.
+  const fotosCollage = fotos.map((f) => f.archivoUrl as string).filter((u) => u !== portada)
+  const hayGaleria = fotosCollage.length > 0 || videos.length > 0
   const resumenGaleria = [
-    fotos.length > 0 ? plural(fotos.length, 'foto', 'fotos') : null,
-    videos.length > 0 ? plural(videos.length, 'video', 'videos') : null,
+    fotos.length > 0 ? `${fotos.length} ${fotos.length === 1 ? 'foto' : 'fotos'}` : null,
+    videos.length > 0 ? `${videos.length} ${videos.length === 1 ? 'video' : 'videos'}` : null,
   ]
     .filter(Boolean)
     .join(' · ')
 
+  const { entrada, resto } = separarEntrada(desarrollo.descripcion)
+  const features = desarrollo.features.filter((f) => f.texto.trim())
+  const confort = features.find((f) => f.clave === 'confort')
+  const otrasFeatures = features.filter((f) => f !== confort)
+  const amenities = confort ? confort.texto.split(/\s*(?:,|\by\b)\s*/i).map(suavizar).filter(Boolean) : []
+
+  const urlDesarrollo = `${window.location.origin}/desarrollos/${desarrollo.slug}`
+  const whatsapp = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(
+    `Hola, quiero más información sobre ${desarrollo.nombre}. ${urlDesarrollo}`,
+  )}`
+  const enlaces = [
+    desarrollo.showroomVirtualUrl && { titulo: 'Showroom virtual', sub: 'Recorré la unidad en 360°', href: desarrollo.showroomVirtualUrl },
+    desarrollo.brochurePlanosUrl && { titulo: 'Brochure / Planos', sub: 'Descargar material comercial', href: desarrollo.brochurePlanosUrl },
+    desarrollo.avanceObraUrl && { titulo: 'Avance de obra', sub: 'Ver fotos actualizadas', href: desarrollo.avanceObraUrl },
+    { titulo: 'Cómo llegar', sub: 'Abrir en Google Maps', href: mapsUrl },
+  ].filter((e): e is { titulo: string; sub: string; href: string } => !!e)
+
+  const publicados = lista?.content ?? []
+  const idx = publicados.findIndex((d) => d.slug === desarrollo.slug)
+  const siguiente = publicados.length > 1 ? publicados[(idx + 1) % publicados.length] : null
+
   return (
-    // Sin topbar propio: el "Volver" ahora vive en el <nav> del sitio (ver Navbar.tsx),
-    // en el mismo lugar que ocupa el logo en el resto de las páginas — la portada queda
-    // full-bleed debajo del nav, igual que el hero de Home.
-    <div>
-      <div
-        className="pagina-dev-hero"
-        style={portada ? { backgroundImage: `url(${mediaUrl(portada)})` } : undefined}
-        role="img"
-        aria-label={`Portada de ${desarrollo.nombre}`}
-      />
+    <article className={`rd rd-ficha ${claseApertura}`} style={estiloApertura}>
+      <div className="rd-fx-prog" aria-hidden="true">
+        <span ref={progresoRef} />
+      </div>
 
-      <div className="pagina-dev-body">
-        <div className="pagina-dev-info">
-          <div className="modal-header-row">
-            <span className={`modal-badge badge-${desarrollo.estado}`}>{ESTADO_LABELS[desarrollo.estado]}</span>
-            <span className={`modal-badge badge-${desarrollo.disponibilidad}`}>
-              {DISPONIBILIDAD_LABELS[desarrollo.disponibilidad]}
-            </span>
-            <span className="modal-zona">{desarrollo.zona}</span>
-            <span className="pagina-dev-nombre">{sinGuiones(desarrollo.nombre, ' ')}</span>
+      {/* PORTADA */}
+      <header className="rd-cover">
+        <div
+          className="rd-cover-img"
+          style={portada ? { backgroundImage: `url(${mediaUrl(portada)})` } : undefined}
+          role="img"
+          aria-label={`Portada de ${desarrollo.nombre}`}
+        />
+        <div className="rd-cover-num" aria-hidden="true">
+          {romanoDe(desarrollo.nombre)}
+        </div>
+        <div className="rd-cover-in">
+          <div className="rd-tags">
+            <span className={`rd-tag badge-${desarrollo.estado}`}>{ESTADO_LABELS[desarrollo.estado]}</span>
+            <span className={`rd-tag badge-${desarrollo.disponibilidad}`}>{DISPONIBILIDAD_LABELS[desarrollo.disponibilidad]}</span>
+            {desarrollo.instrumentoRentaFija && <span className="rd-tag">Renta fija</span>}
+            {desarrollo.instrumentoTokenizacion && <span className="rd-tag">Tokenización</span>}
           </div>
-          {/* El título es la dirección: es lo que identifica al desarrollo para quien lo
-              busca. El nombre comercial queda como etiqueta chica en la fila de arriba. */}
-          <h1 className="modal-nombre pagina-dev-titulo">{direccion}</h1>
-          <p className="modal-descripcion">{desarrollo.descripcion}</p>
+          <p className="rd-cover-nombre">{nombre}</p>
+          {/* El título es la dirección: es lo que identifica al desarrollo para quien lo busca. */}
+          <h1 className="rd-cover-title">
+            <span>{direccion}</span>
+          </h1>
+          <p className="rd-cover-zona">{desarrollo.zona}</p>
+        </div>
+        <div className="rd-cover-down" aria-hidden="true">
+          Descubrí el proyecto
+        </div>
+      </header>
 
-          {hayGaleria && (
-            <section className="pagina-dev-galeria" aria-labelledby="pagina-dev-galeria-titulo">
-              <div className="pagina-dev-galeria-header">
-                <div>
-                  <p className="pagina-dev-galeria-eyebrow">Galería</p>
-                  <h2 className="pagina-dev-galeria-titulo" id="pagina-dev-galeria-titulo">
-                    Recorré el <em>desarrollo</em>
-                  </h2>
-                </div>
-                <p className="pagina-dev-galeria-resumen">{resumenGaleria}</p>
-              </div>
-              <DesarrolloGaleria
-                galeria={desarrollo.galeria}
-                imagenPortadaUrl={null}
-                nombre={desarrollo.nombre}
-                className="pagina-dev-galeria-visor"
-                ampliable
-                miniaturas
-              />
-            </section>
-          )}
-
-          {features.length > 0 && (
-            <div className="modal-features">
-              {features.map((f) => (
-                <div className="modal-feature" key={f.clave}>
-                  <p className="feature-titulo">{f.titulo}</p>
-                  <p className="feature-texto">{f.texto}</p>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {cercanias.length > 0 && (
-            <div className="pagina-cercanias">
-              <p className="cercanias-eyebrow">Cercanías</p>
-              <h3 className="cercanias-titulo">
-                Todo lo que tenés <em>a mano</em>
-              </h3>
-              <div className="cercanias-grid">
-                {cercanias.map((cat) => (
-                  <div className="cercania-cat" key={cat.key}>
-                    <div className="cercania-cat-header">
-                      <span className="cercania-icono">{CERCANIA_ICONS[cat.key]}</span>
-                      <span className="cercania-cat-titulo">{cat.titulo}</span>
-                    </div>
-                    <ul className="cercania-lista">
-                      {desarrollo.cercanias[cat.key].map((item) => (
-                        <li key={item}>{sinGuiones(item)}</li>
-                      ))}
-                    </ul>
+      {/* RELATO */}
+      <section className="rd-story">
+        <div>
+          <p className="rd-kicker">El proyecto</p>
+          <p className="rd-lead">{entrada}</p>
+        </div>
+        <div className="rd-body">
+          {resto.map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
+        </div>
+        {features.length > 0 && (
+          <div className="rd-amen">
+            {amenities.length > 0 && (
+              <>
+                <p className="rd-kicker">Amenities y confort</p>
+                <p className="rd-amen-list">
+                  {amenities.map((a, i) => (
+                    <span key={a}>
+                      {i > 0 && <i aria-hidden="true">✦</i>}
+                      <span>{a}</span>
+                    </span>
+                  ))}
+                </p>
+              </>
+            )}
+            {otrasFeatures.length > 0 && (
+              <div className="rd-facts">
+                {otrasFeatures.map((f) => (
+                  <div key={f.clave}>
+                    <small>{f.titulo}</small>
+                    <span>{suavizar(f.texto)}</span>
                   </div>
                 ))}
               </div>
+            )}
+          </div>
+        )}
+      </section>
+
+      {/* GALERÍA */}
+      {hayGaleria && (
+        <section className="rd-gal pagina-dev-galeria" aria-labelledby="rd-gal-titulo">
+          <div className="rd-gal-head">
+            <h2 className="rd-fx-h" id="rd-gal-titulo">
+              Recorré <em>el desarrollo</em>
+            </h2>
+            <p>{resumenGaleria}</p>
+          </div>
+          <div className="rd-collage" ref={collageRef}>
+            {fotosCollage.map((u, k) => (
+              <button
+                key={u}
+                type="button"
+                className={`rd-shot ${FORMAS[k % FORMAS.length]}`}
+                onClick={() => setFotoAbierta(k)}
+                aria-label={`Ampliar foto ${k + 1} de ${desarrollo.nombre}`}
+              >
+                <img src={mediaUrl(u)} alt="" loading="lazy" decoding="async" />
+                <span className="rd-shot-cap">Ampliar</span>
+              </button>
+            ))}
+          </div>
+          {videos.length > 0 && (
+            <div className="rd-videos">
+              {videos.map((v) => {
+                const url = v.videoUrl as string
+                return (
+                  <div className="rd-video" key={v.id}>
+                    {esVideoServidoPorApi(url) ? (
+                      <video src={mediaUrl(url)} controls preload="metadata" title={`Video de ${desarrollo.nombre}`} />
+                    ) : (
+                      <iframe
+                        src={videoEmbedUrl(url)}
+                        title={`Video de ${desarrollo.nombre}`}
+                        loading="lazy"
+                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                        allowFullScreen
+                      />
+                    )}
+                  </div>
+                )
+              })}
             </div>
           )}
+        </section>
+      )}
+      {fotoAbierta !== null && (
+        <DesarrolloLightbox
+          fotos={fotosCollage}
+          index={fotoAbierta}
+          nombre={desarrollo.nombre}
+          onIndexChange={setFotoAbierta}
+          onClose={() => setFotoAbierta(null)}
+        />
+      )}
 
-          <div className="modal-mapa">
-            <div className="mapa-header">
-              <div className="mapa-info">
-                <p className="mapa-eyebrow">Ubicación en el mapa</p>
-                <p className="mapa-direccion">{direccion}</p>
-              </div>
-              <a className="mapa-link" href={mapsUrl} target="_blank" rel="noreferrer">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
-                Cómo llegar
-              </a>
-            </div>
-            <div className="mapa-iframe-wrap">
-              {/* El embed no deja cambiar el pin de Google: el del logo va encima (ver
-                  .mapa-marcador) y el mapa queda fijo; el click lo abre en Google Maps. */}
-              <iframe
-                title={`Mapa de ${desarrollo.nombre}`}
-                src={`https://maps.google.com/maps?q=${mapsQuery}&output=embed&z=15&hl=es`}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                tabIndex={-1}
-                aria-hidden="true"
-              />
-              <a
-                className="mapa-overlay"
-                href={mapsUrl}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={`Ver ${direccion} en Google Maps`}
-              >
-                <span className="mapa-marcador" aria-hidden="true">
-                  <span className="mapa-marcador-logo">
-                    <img src={logoIcon} alt="" />
-                  </span>
-                </span>
-              </a>
-            </div>
-          </div>
+      {/* CERCANÍAS */}
+      <CercaniasRadar cercanias={desarrollo.cercanias} />
 
-          <DesarrolloAccionesBotones desarrollo={desarrollo} />
+      {/* UBICACIÓN Y MATERIAL */}
+      <section className="rd-place">
+        <div className="rd-map-arch">
+          {/* El embed no deja cambiar el pin de Google: el del logo va encima y el clic
+              abre la dirección en Google Maps. */}
+          <iframe
+            title={`Mapa de ${desarrollo.nombre}`}
+            src={`https://maps.google.com/maps?q=${mapsQuery}&output=embed&z=15&hl=es`}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            tabIndex={-1}
+            aria-hidden="true"
+          />
+          <a className="rd-map-overlay" href={mapsUrl} target="_blank" rel="noreferrer" aria-label={`Ver ${direccion} en Google Maps`}>
+            <span className="rd-map-pin" aria-hidden="true">
+              <img src={logoIcon} alt="" />
+            </span>
+          </a>
         </div>
-      </div>
-    </div>
+        <div>
+          <p className="rd-kicker">Ubicación en el mapa</p>
+          <p className="rd-addr-big">{direccion}</p>
+          <p className="rd-zone">{desarrollo.zona}</p>
+          <ul className="rd-links">
+            {enlaces.map((e) => (
+              <li key={e.titulo}>
+                <a href={e.href} target="_blank" rel="noreferrer">
+                  <b>{e.titulo}</b>
+                  <small>{e.sub} ↗</small>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {siguiente && siguiente.slug !== desarrollo.slug && (
+        <RouterLink to={ROUTES.desarrolloDetalle(siguiente.slug)} className="rd-next" onClick={guardarOrigenClic}>
+          <small>Siguiente desarrollo</small>
+          <strong>{sinGuiones(siguiente.nombre, ' ')}</strong>
+        </RouterLink>
+      )}
+
+      <a className="rd-fx-wa" href={whatsapp} target="_blank" rel="noreferrer">
+        <span>Solicitar información</span>
+        <i aria-hidden="true">→</i>
+      </a>
+    </article>
   )
 }
