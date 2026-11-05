@@ -103,10 +103,13 @@
 .rd-hero-sun { position: absolute; right: -12vw; top: 50%; width: min(70vw, 900px); aspect-ratio: 1; translate: 0 -50%; z-index: 1; opacity: 0.13; pointer-events: none; }
 .rd-hero-sun svg { width: 100%; height: 100%; animation: rd-spin 120s linear infinite; }
 @keyframes rd-spin { to { transform: rotate(360deg); } }
-.rd-hero-in { position: relative; z-index: 2; width: 100%; }
+/* La portada usa todo el ancho de la pantalla (no la columna de 1240px del resto). */
+.rd-hero-in.rd-wrap { position: relative; z-index: 2; width: 100%; max-width: none; padding: 0 6vw; }
 .rd-hero-tag { opacity: 0; animation: rd-fadeUp 1.2s var(--rd-ease) 0.4s forwards; }
-.rd-hero-title { font-size: clamp(50px, 8.6vw, 128px); line-height: 0.98; letter-spacing: -0.02em; margin: 28px 0 34px; font-weight: 300; }
-.rd-hero-title .line { display: block; overflow: hidden; padding-bottom: 0.08em; }
+.rd-hero-title { font-size: clamp(50px, 9.4vw, 172px); line-height: 0.98; letter-spacing: -0.02em; margin: 28px 0 34px; font-weight: 300; }
+/* overflow:hidden hace la animación de "subir desde la línea"; el padding inferior deja
+   lugar a los trazos descendentes (g, p, q) y el margen negativo compensa el espacio. */
+.rd-hero-title .line { display: block; overflow: hidden; padding: 0.04em 0.12em 0.24em 0; margin-bottom: -0.16em; }
 .rd-hero-title .line > span { display: inline-block; transform: translateY(110%); animation: rd-lineUp 1.3s var(--rd-ease) forwards; }
 .rd-hero-title .line:nth-child(1) > span { animation-delay: 0.55s; }
 .rd-hero-title .line:nth-child(2) > span { animation-delay: 0.72s; }
@@ -118,7 +121,7 @@
   transition: opacity 0.9s var(--rd-ease), transform 0.9s var(--rd-ease), filter 0.9s var(--rd-ease);
 }
 .rd-rotator b.on { opacity: 1; transform: none; filter: none; }
-.rd-hero-desc { max-width: 560px; font-size: 19px; color: rgba(245, 240, 232, 0.8); opacity: 0; animation: rd-fadeUp 1.2s var(--rd-ease) 1s forwards; }
+.rd-hero-desc { max-width: 620px; font-size: clamp(17px, 1.3vw, 21px); color: rgba(245, 240, 232, 0.8); opacity: 0; animation: rd-fadeUp 1.2s var(--rd-ease) 1s forwards; }
 .rd-hero-actions { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 44px; opacity: 0; animation: rd-fadeUp 1.2s var(--rd-ease) 1.2s forwards; }
 .rd-scroll-cue {
   position: absolute; left: 50%; bottom: 34px; translate: -50% 0; z-index: 2; display: flex; flex-direction: column;
@@ -312,7 +315,7 @@ a.rd-c-item:hover span { color: var(--dorado); }
 .rd-tag.badge-unidades-disponibles { color: #6fe0a3; }
 .rd-tag.badge-sin-unidades { color: #aaa; }
 .rd-cover-nombre { margin-top: 26px !important; font-size: clamp(18px, 1.6vw, 22px); letter-spacing: 0.12em; color: rgba(245, 240, 232, 0.8); }
-.rd-cover-title { font-size: clamp(52px, 9vw, 150px); line-height: 0.92; letter-spacing: -0.025em; margin: 8px 0 18px; overflow: hidden; }
+.rd-cover-title { font-size: clamp(52px, 9vw, 150px); line-height: 0.92; letter-spacing: -0.025em; margin: 8px 0 4px; overflow: hidden; padding: 0.04em 0.12em 0.2em 0; }
 .rd-cover-title span { display: inline-block; transform: translateY(105%); transition: transform 1.2s var(--rd-ease) 0.45s; }
 .rd-ficha.open .rd-cover-title span { transform: none; }
 .rd-cover-zona { display: flex; align-items: center; gap: 18px; font-size: 13px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--rd-gris); }
