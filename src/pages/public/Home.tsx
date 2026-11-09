@@ -30,7 +30,7 @@ const PALABRAS = [
 const HERO_STATS = [
   { to: 25, prefix: '+', label: 'Años de trayectoria' },
   { to: 40000, prefix: '+', miles: true, label: 'M² construidos en CABA' },
-  { to: 26, prefix: '+', label: 'Desarrollos' },
+  { to: 14, prefix: '+', label: 'Desarrollos' },
 ]
 
 const NOSOTROS_STATS = [
