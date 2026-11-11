@@ -1174,3 +1174,8 @@ nav .nav-cta:hover { background: var(--dorado); color: var(--negro); }
 .rd-sunrise { max-width: 460px; }
 .rd-sunrise-cielo { aspect-ratio: 2.05 / 1; }
 .rd-sunrise-sol { width: 42%; }
+/* Amanecer limpio: solo el sol y la línea, sin rayos, resplandor ni reflejos. */
+.rd-sunrise-sol, .rd-sunrise.salio .rd-sunrise-sol { filter: none; }
+.rd-sunrise-horizonte, .rd-sunrise.salio .rd-sunrise-horizonte { box-shadow: none; background: linear-gradient(90deg, transparent, var(--dorado) 15%, var(--dorado) 85%, transparent); }
+.rd-sunrise-resplandor, .rd-sunrise-haces, .rd-sunrise-reflejo { display: none; }
+.rd .rd-sunrise-marca { white-space: nowrap; letter-spacing: 0.24em; padding-left: 0.24em; margin-top: clamp(14px, 2.4vh, 26px); font-size: clamp(20px, calc(0.5vw + 1.5vh), 30px); }

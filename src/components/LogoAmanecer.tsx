@@ -4,9 +4,9 @@ import logoIcon from "@/assets/logo-icon.png";
 /**
  * El isologo como un amanecer ("Solares"): la línea dorada es el horizonte y el sol de la
  * marca empieza escondido debajo; cuando la sección entra en pantalla sale lentamente por
- * encima de la línea mientras el cielo se entibia (resplandor y haces de luz suaves) y el
- * horizonte se ilumina. Al final aparece el nombre. Se repite cada vez que se vuelve a la
- * sección. Nada gira. Con prefers-reduced-motion se muestra ya salido.
+ * encima de la línea. Al final aparece el nombre. Se repite cada vez que se vuelve a la
+ * sección. Nada gira; sin rayos ni resplandores, solo el sol y la línea.
+ * Con prefers-reduced-motion se muestra ya salido.
  */
 export function LogoAmanecer() {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -35,12 +35,9 @@ export function LogoAmanecer() {
   return (
     <div className={`rd-sunrise ${salio ? "salio" : ""}`} ref={ref}>
       <div className="rd-sunrise-cielo" aria-hidden="true">
-        <span className="rd-sunrise-resplandor" />
-        <span className="rd-sunrise-haces" />
         <img className="rd-sunrise-sol" src={logoIcon} alt="" />
       </div>
       <span className="rd-sunrise-horizonte" aria-hidden="true" />
-      <span className="rd-sunrise-reflejo" aria-hidden="true" />
       <p className="rd-sunrise-marca">Solares de Donato</p>
       <p className="rd-sunrise-bajada">
         Desarrolladora inmobiliaria y constructora
