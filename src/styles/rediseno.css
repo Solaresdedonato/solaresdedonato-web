@@ -660,3 +660,76 @@ nav.scrolled .logo-img { height: 65px; }
   nav .nav-cta { display: none; }
   nav .nav-logo, nav .pagina-dev-volver { position: relative; z-index: 102; }
 }
+
+/* ==========================================================================
+   Ajustes de la ronda 3
+   ========================================================================== */
+
+/* 1-2. "En pozo" como pila de tarjetas (sin contador ni números grandes). */
+.rd-stack { background: var(--negro); padding: 40px 0 120px; }
+.rd-stack-title { margin-bottom: 40px; }
+.rd-stack-list { --rd-stack-top: 130px; }
+.rd-stack-item {
+  position: sticky; top: calc(var(--rd-stack-top) + var(--i) * 24px); height: min(66vh, 600px);
+  margin-bottom: 18vh;
+}
+.rd-stack-item:last-child { margin-bottom: 0; }
+.rd-stack-item .rd-pozo-card {
+  width: 100%; height: 100%; flex: none; transform-origin: 50% 0; will-change: transform, filter;
+  box-shadow: 0 -30px 60px -20px rgba(0, 0, 0, 0.8); border: 1px solid rgba(234, 188, 123, 0.12);
+}
+.rd-stack-item .rd-pozo-card > img, .rd-stack-item .rd-pozo-card > .rd-ph { transform: none; }
+.rd-stack-item .rd-pozo-card:hover > img { transform: scale(1.03); }
+@media (max-width: 768px) {
+  .rd-stack-list { --rd-stack-top: 96px; }
+  .rd-stack-item { height: 68vh; margin-bottom: 14vh; }
+  .rd-stack-item .rd-pozo-info { padding: 26px 22px; flex-direction: column; align-items: flex-start; }
+}
+
+/* 3. Sin cursivas en ningún lado (los destacados quedan solo en dorado). */
+.rd *, .rd *::before, .rd *::first-letter, nav *, footer *, .rd-visor *, .rd-mm * { font-style: normal !important; }
+
+/* 4. Visor: cruz para cerrar. */
+.rd-visor-cerrar { border: 0; padding: 8px; color: var(--blanco-roto); line-height: 0; transition: color 0.2s, transform 0.3s; }
+.rd-visor-cerrar:hover { color: var(--dorado); transform: rotate(90deg); }
+
+/* 5. Desplegables sin marco dorado. */
+.rd-dd-panel ul { border: 0; }
+
+/* 6. Un solo negro de fondo en todo el sitio. */
+.rd-dev-intro, .rd-hscroll, .rd-entregados, .rd-cat-cta, .rd-invest, .rd-stack { background: var(--negro); }
+.rd-near { background: var(--negro); }
+footer { background: var(--negro); }
+
+/* 7. Al ir a una sección desde el menú, el contenido arranca justo debajo de la barra
+      (sin el aire de arriba) y las secciones son más compactas para entrar en pantalla. */
+.rd-about, .rd-invest, .rd-brokers, .rd-contact { padding: 90px 0; }
+.rd-dev-intro { padding-top: 90px; }
+#nosotros, #desarrollos, #invertir, #brokers, #contacto { scroll-margin-top: 30px; }
+.rd-invest-head { align-items: start; }
+.rd-invest .rd-h2, .rd-brokers .rd-h2, .rd-contact .rd-h2 { font-size: clamp(34px, 4.2vw, 60px); margin: 14px 0 18px; }
+.rd-inv-grid { margin-top: 36px; }
+.rd-inv-card { padding: 38px 40px; }
+.rd-inv-card h3 { font-size: 32px; margin: 10px 0 12px; }
+.rd-inv-desc { margin-bottom: 18px !important; }
+.rd-checks { margin-bottom: 24px; }
+.rd-checks li { padding: 9px 0 9px 34px; }
+.rd-checks li::before { top: 17px; }
+.rd-about-grid { gap: 70px; }
+.rd-about .rd-h2 { font-size: clamp(36px, 4.4vw, 62px); }
+.rd-stats { margin-top: 70px; }
+
+/* Más compacto para que "Invertí con nosotros" entre entera en pantallas de ~790px de alto. */
+.rd-num { display: inline-block; margin: 0 14px 0 0; font-size: 18px; vertical-align: middle; }
+.rd-invest-head { grid-template-columns: 1.35fr 1fr; gap: 50px; align-items: end; }
+.rd-invest .rd-h2 { font-size: clamp(32px, 3.4vw, 50px); margin-bottom: 0; }
+.rd-invest-head .rd-muted { margin-bottom: 0; font-size: 15.5px; }
+.rd-inv-grid { margin-top: 30px; }
+.rd-inv-card { padding: 30px 36px; }
+.rd-inv-desc { font-size: 15.5px; line-height: 1.6; }
+.rd-checks li { padding: 7px 0 7px 32px; font-size: 15px; }
+.rd-checks li::before { top: 14px; }
+.rd-checks { margin-bottom: 18px; }
+.rd-rn { font-size: 64px; top: 22px; right: 30px; }
+.rd-inv-grid { margin-top: 18px; }
+.rd-inv-card { padding: 26px 36px; }
