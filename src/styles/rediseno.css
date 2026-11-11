@@ -733,3 +733,51 @@ footer { background: var(--negro); }
 .rd-rn { font-size: 64px; top: 22px; right: 30px; }
 .rd-inv-grid { margin-top: 18px; }
 .rd-inv-card { padding: 26px 36px; }
+
+/* Brokers en una sola pantalla: texto + beneficios (2×2) a la izquierda y el formulario
+   a la derecha en 3 columnas. Solo cambia la disposición; campos y envío son los mismos. */
+.rd-brk-grid { grid-template-columns: 1fr 1.75fr; gap: 56px; align-items: start; }
+.rd-brokers .rd-h2 { font-size: clamp(30px, 3vw, 44px); }
+.rd-brokers .rd-muted { font-size: 15px; line-height: 1.6; }
+.rd-brk-t { margin-top: 22px !important; }
+.rd-brk-list { display: grid; grid-template-columns: 1fr 1fr; gap: 0 22px; margin-top: 6px; }
+.rd-brk-item { gap: 12px; padding: 14px 0; }
+.rd-brk-ic { width: 32px; height: 32px; font-size: 13px; }
+.rd-brk-item strong { font-size: 15.5px; margin-bottom: 2px; }
+.rd-brk-item span { font-size: 13.5px; line-height: 1.45; }
+
+.rd-brokers .broker-form { padding: 26px 30px; background: var(--negro-medio); }
+.rd-brokers .broker-form-header { margin-bottom: 18px; padding-bottom: 12px; }
+.rd-brokers .broker-form-header h3 { font-size: 1.35rem; margin-bottom: 2px; }
+.rd-brokers .broker-form form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px 16px; align-items: end; }
+.rd-brokers .broker-grupo { display: contents; }
+.rd-brokers .broker-form .campo { margin: 0; min-width: 0; }
+.rd-brokers .campo input, .rd-brokers .campo select, .rd-brokers .campo textarea { padding: 0.65rem 0.85rem; }
+.rd-brokers .campo-telefono { display: flex; min-width: 0; }
+.rd-brokers .campo-telefono > * { min-width: 0; }
+/* Orden: fila 1 nombre/email/teléfono · fila 2 inmobiliaria/matrícula/experiencia ·
+   fila 3 zona (2 col) + operaciones · fila 4 tipos (4 en línea) · fila 5 mensaje · fila 6 botón + legal */
+.rd-brokers .campo:has(#broker-nombre) { order: 1; }
+.rd-brokers .campo:has(#broker-email) { order: 2; }
+.rd-brokers .campo:has(#broker-telefono) { order: 3; }
+.rd-brokers .campo:has(#broker-inmobiliaria) { order: 4; }
+.rd-brokers .campo:has(#broker-matricula) { order: 5; }
+.rd-brokers .campo:has(#broker-experiencia) { order: 6; }
+.rd-brokers .campo:has(#broker-zona) { order: 7; grid-column: span 2; }
+.rd-brokers .campo:has(#broker-operaciones) { order: 8; }
+.rd-brokers .campo:has(.broker-checks) { order: 9; grid-column: 1 / -1; }
+.rd-brokers .campo:has(#broker-mensaje) { order: 10; grid-column: 1 / -1; }
+.rd-brokers .broker-form form > p:not(.broker-legal) { order: 11; grid-column: 1 / -1; }
+.rd-brokers .btn-broker { order: 12; margin: 0; padding: 1rem 1.2rem; align-self: center; }
+.rd-brokers .broker-legal { order: 13; grid-column: span 2; margin: 0; text-align: left; align-self: center; }
+.rd-brokers .broker-checks { grid-template-columns: repeat(4, auto); justify-content: start; gap: 0.5rem 1.6rem; margin-top: 0.2rem; }
+.rd-brokers .campo textarea { min-height: 58px; height: 58px; }
+@media (max-width: 1080px) {
+  .rd-brk-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .rd-brokers .broker-form form { grid-template-columns: 1fr; }
+  .rd-brokers .broker-form form > * { grid-column: 1 / -1 !important; }
+  .rd-brokers .broker-checks { grid-template-columns: 1fr 1fr; }
+  .rd-brk-list { grid-template-columns: 1fr; }
+}
