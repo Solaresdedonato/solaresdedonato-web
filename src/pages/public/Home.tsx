@@ -12,7 +12,8 @@ import type { Desarrollo } from "@/features/desarrollo/schemas/desarrollo.schema
 import { useHeroSlides } from "@/features/hero/hooks/useHeroSlides";
 import { useReveal } from "@/shared/hooks/useReveal";
 import { useOnScroll, useParallax } from "@/shared/hooks/useScrollFx";
-import { LogoInstitucional } from "@/components/LogoInstitucional";
+import { LogoAmanecer } from "@/components/LogoAmanecer";
+import { BotonExplorar } from "@/components/BotonExplorar";
 import { mediaUrl } from "@/shared/utils/mediaUrl";
 import { sinGuiones } from "@/shared/utils/sinGuiones";
 import { guardarOrigenClic, romanoDe } from "@/shared/utils/desarrolloUi";
@@ -89,10 +90,6 @@ function Reveal({
       {children}
     </Tag>
   );
-}
-
-function NumSeccion({ n }: { n: string }) {
-  return <span className="rd-num">{n}</span>;
 }
 
 const PALABRAS = [
@@ -351,10 +348,7 @@ export function Home() {
             </a>
           </div>
         </div>
-        <div className="rd-scroll-cue" aria-hidden="true">
-          Explorar
-          <i />
-        </div>
+        <BotonExplorar destino="#nosotros" />
       </section>
 
       {/* I. SOBRE NOSOTROS */}
@@ -363,7 +357,6 @@ export function Home() {
           {/* Título en una sola línea a todo el ancho; debajo, logo + cifras y el texto. */}
           <div className="rd-sec-head">
             <Reveal>
-              <NumSeccion n="I" />
               <p className="rd-eyebrow">Sobre nosotros</p>
             </Reveal>
             <h2 className="rd-h2">
@@ -372,7 +365,7 @@ export function Home() {
           </div>
           <div className="rd-about-grid">
             <div className="rd-about-logo">
-              <LogoInstitucional />
+              <LogoAmanecer />
               <div className="rd-stats">
                 <MetricasDestacadas items={NOSOTROS_STATS} variant="fila" />
               </div>
@@ -418,7 +411,6 @@ export function Home() {
         <div className="rd-wrap">
           <div>
             <Reveal>
-              <NumSeccion n="II" />
               <p className="rd-eyebrow">Catálogo</p>
             </Reveal>
             <Reveal delay={0.1}>
@@ -495,7 +487,6 @@ export function Home() {
           <div className="rd-invest-head">
             <div>
               <Reveal>
-                <NumSeccion n="III" />
                 <p className="rd-eyebrow">Invertí con nosotros</p>
               </Reveal>
               <Reveal delay={0.1}>
@@ -638,7 +629,6 @@ export function Home() {
         <div className="rd-wrap">
           <div className="rd-sec-head rd-sec-split">
             <div>
-              <NumSeccion n="IV" />
               <h2 className="rd-h2">
                 Mantengamos el <em>contacto</em>
               </h2>

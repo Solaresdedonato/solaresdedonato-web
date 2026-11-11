@@ -1043,3 +1043,62 @@ footer { background: var(--negro); }
 
 /* 4. Radar sin la luz que barre. */
 .rd-radar .sweep { display: none; }
+
+/* ==========================================================================
+   Ronda 7
+   ========================================================================== */
+
+/* Sin números romanos en las secciones. */
+.rd-num { display: none !important; }
+
+/* "Contacte con nosotros" de la barra: más grande y como botón. */
+nav { padding-left: 2.5rem; padding-right: 2.5rem; }
+nav.scrolled { padding-left: 2.5rem; padding-right: 2.5rem; }
+nav .nav-cta {
+  font-size: 15px; font-weight: 600; letter-spacing: 0.12em; padding: 0.85rem 1.5rem; white-space: nowrap;
+  border: 1px solid var(--dorado); color: var(--dorado); flex-shrink: 0;
+}
+nav .nav-cta:hover { background: var(--dorado); color: var(--negro); }
+@media (max-width: 1500px) { .nav-links { gap: 1.5rem; } .nav-links a, .rd-dd-btn { font-size: 15px; } nav .nav-cta { font-size: 14px; padding: 0.75rem 1.1rem; } }
+@media (max-width: 1250px) { .nav-links a, .rd-dd-btn { font-size: 13.5px; } .nav-links { gap: 1.1rem; } }
+
+/* "Explorar": botón circular grande, con imán y flecha animada. */
+.rd-explorar {
+  --mx: 0px; --my: 0px;
+  position: absolute; left: 50%; bottom: clamp(24px, 5vh, 56px); z-index: 3; display: flex; flex-direction: column; align-items: center;
+  gap: 14px; text-decoration: none; transform: translate(calc(-50% + var(--mx)), var(--my)); transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.rd-explorar-circulo {
+  position: relative; width: clamp(92px, 11vh, 124px); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center;
+  border: 1.5px solid var(--dorado); background: rgba(8, 8, 8, 0.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  transition: background 0.4s, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s;
+}
+.rd-explorar-pulso { position: absolute; inset: -1px; border-radius: 50%; border: 1px solid var(--dorado); animation: rd-pulsoExplorar 2.4s ease-out infinite; }
+@keyframes rd-pulsoExplorar { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(1.55); opacity: 0; } }
+.rd-explorar-flecha { width: 22%; height: auto; fill: none; stroke: var(--dorado); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; animation: rd-flechaExplorar 1.8s ease-in-out infinite; transition: stroke 0.3s; }
+@keyframes rd-flechaExplorar { 0%, 100% { transform: translateY(-14%); } 50% { transform: translateY(14%); } }
+.rd-explorar-txt { font-size: 15px; font-weight: 600; letter-spacing: 0.42em; text-transform: uppercase; color: var(--blanco-roto); padding-left: 0.42em; transition: color 0.3s; }
+.rd-explorar:hover .rd-explorar-circulo, .rd-explorar:focus-visible .rd-explorar-circulo { background: var(--dorado); transform: scale(1.08); box-shadow: 0 0 50px rgba(234, 188, 123, 0.45); }
+.rd-explorar:hover .rd-explorar-flecha, .rd-explorar:focus-visible .rd-explorar-flecha { stroke: var(--negro); }
+.rd-explorar:hover .rd-explorar-txt { color: var(--dorado); }
+.rd-explorar.cerca .rd-explorar-circulo { box-shadow: 0 0 36px rgba(234, 188, 123, 0.3); }
+.rd-explorar:focus-visible { outline: none; }
+@media (max-width: 760px) { .rd-explorar-circulo { width: 80px; } .rd-explorar-txt { font-size: 13px; } }
+@media (prefers-reduced-motion: reduce) { .rd-explorar-pulso, .rd-explorar-flecha { animation: none; } }
+
+/* Sobre nosotros: el sol de la marca sale detrás del horizonte. */
+.rd-amanecer { --sube: 0; width: 100%; max-width: 460px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.rd-amanecer-cielo { position: relative; width: 100%; aspect-ratio: 2 / 1; overflow: hidden; }
+.rd-amanecer-sol {
+  position: absolute; left: 50%; bottom: 0; width: 52%; height: auto;
+  transform: translate(-50%, calc(105% - var(--sube) * 92%));
+  filter: drop-shadow(0 0 30px rgba(234, 188, 123, 0.4));
+}
+.rd-amanecer-halo {
+  position: absolute; left: 50%; bottom: -60%; width: 150%; aspect-ratio: 1; transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(234, 188, 123, 0.28) 0%, rgba(234, 188, 123, 0.08) 35%, transparent 62%);
+  opacity: var(--sube);
+}
+.rd-amanecer-horizonte { display: block; width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--dorado) 18%, var(--dorado) 82%, transparent); }
+.rd .rd-amanecer-marca { margin: clamp(14px, 2.4vh, 26px) 0 6px; font-size: clamp(22px, calc(0.6vw + 1.6vh), 32px); font-weight: 400; letter-spacing: 0.32em; text-transform: uppercase; color: var(--blanco-roto); padding-left: 0.32em; }
+.rd .rd-amanecer-bajada { margin: 0; font-size: max(14px, calc(var(--rd-txt) * 0.74)); letter-spacing: 0.3em; text-transform: uppercase; color: var(--dorado); padding-left: 0.3em; }
