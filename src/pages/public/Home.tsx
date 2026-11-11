@@ -12,7 +12,7 @@ import type { Desarrollo } from "@/features/desarrollo/schemas/desarrollo.schema
 import { useHeroSlides } from "@/features/hero/hooks/useHeroSlides";
 import { useReveal } from "@/shared/hooks/useReveal";
 import { useOnScroll, useParallax } from "@/shared/hooks/useScrollFx";
-import logoIcon from "@/assets/logo-icon.png";
+import { LogoSolar } from "@/components/LogoSolar";
 import { mediaUrl } from "@/shared/utils/mediaUrl";
 import { sinGuiones } from "@/shared/utils/sinGuiones";
 import { guardarOrigenClic, romanoDe } from "@/shared/utils/desarrolloUi";
@@ -279,7 +279,6 @@ export function Home() {
   const heroSlideCargada = useSlidesCargadas(heroSlideIndex, heroImages.length);
 
   const heroParallax = useParallax<HTMLDivElement>(0.3);
-  const nosotrosParallax = useParallax<HTMLImageElement>(-0.1);
   const bandaParallax = useParallax<HTMLDivElement>(0.25);
 
   const desarrollos = data?.content ?? [];
@@ -294,24 +293,11 @@ export function Home() {
   const portadas = desarrollos
     .map((d) => mediaUrl(d.imagenPortadaUrl))
     .filter((u): u is string => !!u);
-  const fotoNosotros = heroImages[1] ?? heroImages[0] ?? portadas[0];
   // La banda final va pasando por las portadas de los desarrollos (o las del hero si faltan).
   const fotosBanda = portadas.length > 0 ? portadas : heroImages;
   const bandaIndex = useSlideshow(fotosBanda.length, 4500);
   const bandaCargada = useSlidesCargadas(bandaIndex, fotosBanda.length);
 
-  const [revealNosotros, setRevealNosotros] = useState(false);
-  const nosotrosImgWrap = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    const el = nosotrosImgWrap.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([e]) => e.isIntersecting && setRevealNosotros(true),
-      { threshold: 0.2 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
 
   return (
     <div className="rd">
@@ -330,12 +316,6 @@ export function Home() {
             />
           ))}
         </div>
-        <img
-          className="rd-hero-logo"
-          src={logoIcon}
-          alt=""
-          aria-hidden="true"
-        />
         <div className="rd-wrap rd-hero-in">
           <p className="rd-eyebrow rd-hero-tag">
             Desarrolladora Inmobiliaria y Constructora
@@ -382,22 +362,8 @@ export function Home() {
       <section id="nosotros" className="rd-about">
         <div className="rd-wrap">
           <div className="rd-about-grid">
-            <div
-              ref={nosotrosImgWrap}
-              className={`rd-about-img ${revealNosotros ? "in" : ""}`}
-            >
-              {fotoNosotros && (
-                <img
-                  ref={nosotrosParallax}
-                  src={fotoNosotros}
-                  alt=""
-                  loading="lazy"
-                />
-              )}
-              <div className="rd-about-badge">
-                <strong>25</strong>
-                <small>años de empresa</small>
-              </div>
+            <div className="rd-about-logo">
+              <LogoSolar />
             </div>
             <div className="rd-about-text">
               <Reveal>

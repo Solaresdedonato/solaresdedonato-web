@@ -800,3 +800,89 @@ footer { background: var(--negro); }
 .rd-c-data { margin-top: 22px; }
 .rd-c-item { padding: 12px 0; margin-top: 6px; }
 .rd-c-item span { font-size: 19px; }
+
+/* ==========================================================================
+   Ronda 4: logo vivo en Sobre nosotros + texto más grande y sin vacíos abajo
+   ========================================================================== */
+
+/* Sin el logo girando en la portada. */
+.rd-hero-logo { display: none; }
+
+/* Sol del isologo (Sobre nosotros). */
+.rd-about-logo { position: sticky; top: 130px; display: grid; place-items: center; }
+.rd-sol { position: relative; width: 100%; max-width: 540px; aspect-ratio: 1; margin: 0 auto; cursor: crosshair; }
+.rd-sol svg { width: 100%; height: 100%; overflow: visible; display: block; }
+.rd-sol-orbita { fill: none; stroke: rgba(234, 188, 123, 0.22); stroke-width: 0.6; }
+.rd-sol-orbita.fina { stroke: rgba(234, 188, 123, 0.35); stroke-dasharray: 1 4; }
+.rd-sol-texto { fill: rgba(234, 188, 123, 0.55); font-family: 'Titillium Web', sans-serif; font-size: 10.5px; letter-spacing: 4.2px; }
+.rd-sol-rayos line { stroke: var(--dorado); stroke-width: 1.1; stroke-linecap: round; opacity: 0; transition: opacity 0.3s; }
+.rd-sol-rayos line.largo { stroke-width: 1.8; }
+.rd-sol-logo {
+  position: absolute; left: 50%; top: 50%; width: 30%; translate: -50% -50%; pointer-events: none;
+  filter: drop-shadow(0 0 40px rgba(234, 188, 123, 0.45));
+}
+
+/* Un solo tamaño para todo el texto corrido (los grises incluidos), que crece con la pantalla. */
+.rd { --rd-txt: clamp(16px, calc(0.5vw + 1.2vh), 20px); }
+.rd .rd-muted, .rd .rd-about-text > p, .rd .rd-inv-desc, .rd .rd-checks li, .rd .rd-brk-item span,
+.rd .rd-near-list li, .rd .rd-body p, .rd .rd-band .rd-wrap > p, .rd .rd-hero-desc,
+.rd .rd-invest-head .rd-muted, .rd .rd-contact .rd-muted, .rd .rd-brokers .rd-muted, .rd .rd-ent-body p, .rd .rd-addr,
+.rd .broker-form-header p, .rd .rd-finder .rd-muted {
+  font-size: var(--rd-txt); line-height: 1.65;
+}
+.rd .rd-muted, .rd .rd-about-text > p, .rd .rd-inv-desc, .rd .rd-brk-item span, .rd .broker-form-header p { color: rgba(245, 240, 232, 0.82); }
+.rd .rd-checks li, .rd .rd-near-list li { color: rgba(245, 240, 232, 0.92); }
+/* Formularios: etiquetas y campos más legibles. */
+.rd .campo label, .rd .rd-c-item small, .rd .rd-checks-t, .rd .rd-eyebrow { font-size: calc(var(--rd-txt) * 0.68); }
+.rd .campo label { color: rgba(245, 240, 232, 0.72); letter-spacing: 0.16em; }
+.rd .campo input, .rd .campo select, .rd .campo textarea { font-size: calc(var(--rd-txt) * 0.92); }
+.rd .broker-check-item { font-size: calc(var(--rd-txt) * 0.85); }
+.rd .broker-legal, .rd .rd-legal, .rd .rd-contact .legal { font-size: calc(var(--rd-txt) * 0.72); color: rgba(245, 240, 232, 0.6); }
+.rd .rd-brk-item strong { font-size: calc(var(--rd-txt) * 1.02); }
+.rd .rd-c-item span { font-size: calc(var(--rd-txt) * 1.2); }
+
+/* Invertí, Contacto y Brokers: el contenido se centra en la pantalla (sin bloque negro
+   abajo) y títulos/tarjetas crecen con el alto disponible. */
+.rd-invest, .rd-contact, .rd-brokers { display: flex; flex-direction: column; justify-content: center; }
+.rd-invest > .rd-wrap, .rd-contact > .rd-wrap, .rd-brokers > .rd-wrap { width: 100%; }
+.rd-invest, .rd-contact, .rd-brokers { padding-top: 110px; padding-bottom: 30px; }
+.rd-invest .rd-h2, .rd-contact .rd-h2, .rd-brokers .rd-h2 { font-size: clamp(32px, calc(1.4vw + 2.6vh), 64px); }
+.rd-inv-grid { margin-top: clamp(18px, 3vh, 44px); }
+.rd-inv-card { padding: clamp(24px, 3.4vh, 46px) clamp(30px, 2.6vw, 50px); }
+.rd-inv-card h3 { font-size: clamp(28px, calc(1vw + 1.6vh), 40px); }
+.rd-checks li { padding: clamp(6px, 1vh, 12px) 0 clamp(6px, 1vh, 12px) 32px; }
+.rd-brk-item { padding: clamp(12px, 1.8vh, 22px) 0; }
+.rd-brokers .broker-form { padding: clamp(22px, 3vh, 40px) clamp(26px, 2.2vw, 40px); }
+.rd-brokers .broker-form form { gap: clamp(12px, 1.8vh, 22px) 16px; }
+.rd-brokers .campo textarea { min-height: clamp(56px, 8vh, 110px); height: clamp(56px, 8vh, 110px); }
+.rd-c-item { padding: clamp(12px, 1.8vh, 22px) 0; }
+.rd-contact .campo textarea { min-height: clamp(90px, 14vh, 180px); }
+
+@media (max-width: 1080px) {
+  .rd-about-logo { position: relative; top: 0; }
+  .rd-sol { max-width: 380px; }
+}
+/* Ajuste fino para que con el texto más grande sigan entrando en una pantalla. */
+.rd-brk-grid { grid-template-columns: 1.2fr 1.6fr; gap: 44px; }
+.rd-brk-item { padding: clamp(8px, 1.1vh, 16px) 0; }
+.rd .rd-brk-item span { line-height: 1.45; }
+.rd-brk-t { margin-top: clamp(12px, 2vh, 26px) !important; }
+.rd-brokers .rd-h2 { margin: 10px 0 12px; }
+.rd-inv-grid { margin-top: clamp(14px, 2.2vh, 36px); }
+.rd-checks li { padding: clamp(5px, 0.7vh, 10px) 0 clamp(5px, 0.7vh, 10px) 32px; }
+.rd-checks li::before { top: calc(50% - 7px); }
+.rd-checks { margin-bottom: clamp(12px, 2vh, 26px); }
+.rd-inv-desc { margin-bottom: clamp(12px, 1.8vh, 24px) !important; }
+.rd-brokers .broker-form { padding: clamp(18px, 2.4vh, 36px) clamp(26px, 2.2vw, 40px); }
+.rd-brokers .broker-form-header { margin-bottom: clamp(10px, 1.6vh, 20px); padding-bottom: clamp(8px, 1.2vh, 14px); }
+.rd-brokers .broker-form form { gap: clamp(10px, 1.3vh, 20px) 16px; }
+.rd-brokers .campo { gap: 0.3rem; }
+.rd-brokers .campo textarea { min-height: clamp(46px, 6.5vh, 100px); height: clamp(46px, 6.5vh, 100px); }
+.rd-brokers .btn-broker { padding: 0.85rem 1.2rem; }
+
+/* La palabra que cambia: todas las palabras apiladas en el mismo lugar (no en fila). */
+.rd-hero-title .line > .rd-rotator { display: inline-grid; transform: none; animation: none; }
+@media (max-width: 760px) {
+  .rd .rd-brokers .broker-checks { grid-template-columns: minmax(0, 1fr); }
+  .rd .rd-brokers .broker-form, .rd .rd-brokers .broker-form form, .rd .rd-brokers .campo { min-width: 0; max-width: 100%; }
+}
