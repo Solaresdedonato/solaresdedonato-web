@@ -17,8 +17,8 @@ import logoIcon from "@/assets/logo-icon.png";
 const LINKS_ANTES = [{ href: "#nosotros", label: "Sobre nosotros" }];
 const LINKS_DESPUES = [
   { href: "#invertir", label: "Invertí con nosotros" },
-  { href: "#brokers", label: "Brokers" },
   { href: "#contacto", label: "Contacto" },
+  { href: "#brokers", label: "Brokers" },
 ];
 
 /** Menú desplegable con los desarrollos de un estado; cada ítem abre su ficha. */

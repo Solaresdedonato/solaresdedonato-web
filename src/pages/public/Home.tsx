@@ -625,49 +625,6 @@ export function Home() {
         </div>
       </section>
 
-      {/* ÁREA BROKER */}
-      <section id="brokers" className="rd-brokers">
-        <div className="rd-wrap rd-brk-grid">
-          <div>
-            <Reveal>
-              <p className="rd-eyebrow">Area Broker</p>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <h2 className="rd-h2">
-                Sumate a nuestra red de <em>brokers asociados</em>
-              </h2>
-            </Reveal>
-            <Reveal as="p" className="rd-muted" delay={0.2}>
-              Trabajamos con inmobiliarias y brokers independientes que
-              comparten nuestro estándar de profesionalismo. Si tenés clientes
-              interesados en nuestros desarrollos, esquemas de comisiones
-              competitivos y acompañamiento integral en cada operación.
-            </Reveal>
-            <Reveal as="p" className="rd-checks-t rd-brk-t" delay={0.25}>
-              Beneficios para brokers
-            </Reveal>
-            <ul className="rd-brk-list">
-              {BROKER_BENEFICIOS.map((b, i) => (
-                <li key={b.titulo}>
-                  <Reveal className="rd-brk-item" delay={i * 0.1}>
-                    <span className="rd-brk-ic" aria-hidden="true">
-                      {b.icono}
-                    </span>
-                    <div>
-                      <strong>{b.titulo}</strong>
-                      <span>{b.desc}</span>
-                    </div>
-                  </Reveal>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <Reveal className="rd-form-shell" delay={0.15}>
-            <BrokerForm />
-          </Reveal>
-        </div>
-      </section>
-
       {/* CTA CON PARALLAX */}
       <section className="rd-band">
         <div className="rd-band-bg" ref={bandaParallax}>
@@ -765,6 +722,49 @@ export function Home() {
           </div>
           <Reveal className="rd-form-shell" delay={0.15}>
             <ContactoForm />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ÁREA BROKER */}
+      <section id="brokers" className="rd-brokers">
+        <div className="rd-wrap rd-brk-grid">
+          <div>
+            <Reveal>
+              <p className="rd-eyebrow">Area Broker</p>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <h2 className="rd-h2">
+                Sumate a nuestra red de <em>brokers asociados</em>
+              </h2>
+            </Reveal>
+            <Reveal as="p" className="rd-muted" delay={0.2}>
+              Trabajamos con inmobiliarias y brokers independientes que
+              comparten nuestro estándar de profesionalismo. Si tenés clientes
+              interesados en nuestros desarrollos, esquemas de comisiones
+              competitivos y acompañamiento integral en cada operación.
+            </Reveal>
+            <Reveal as="p" className="rd-checks-t rd-brk-t" delay={0.25}>
+              Beneficios para brokers
+            </Reveal>
+            <ul className="rd-brk-list">
+              {BROKER_BENEFICIOS.map((b, i) => (
+                <li key={b.titulo}>
+                  <Reveal className="rd-brk-item" delay={i * 0.1}>
+                    <span className="rd-brk-ic" aria-hidden="true">
+                      {b.icono}
+                    </span>
+                    <div>
+                      <strong>{b.titulo}</strong>
+                      <span>{b.desc}</span>
+                    </div>
+                  </Reveal>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <Reveal className="rd-form-shell" delay={0.15}>
+            <BrokerForm />
           </Reveal>
         </div>
       </section>

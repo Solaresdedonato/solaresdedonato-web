@@ -781,3 +781,22 @@ footer { background: var(--negro); }
   .rd-brokers .broker-checks { grid-template-columns: 1fr 1fr; }
   .rd-brk-list { grid-template-columns: 1fr; }
 }
+
+/* Cada sección del menú ocupa al menos una pantalla completa (debajo de la barra): al
+   llegar desde el menú se ve solo esa sección, sin la siguiente asomando cortada. Si el
+   contenido es más largo, sigue hacia abajo con normalidad. */
+#nosotros, #invertir, #contacto, #brokers { scroll-margin-top: 0; }
+.rd-about, .rd-invest, .rd-contact, .rd-brokers {
+  min-height: 100vh; min-height: 100svh;
+  padding-top: 120px; padding-bottom: 60px;
+}
+.rd-brokers { border-top: 1px solid var(--rd-linea); }
+@media (max-width: 900px) {
+  .rd-about, .rd-invest, .rd-contact, .rd-brokers { padding-top: 104px; }
+}
+/* Contacto: datos más compactos para que la sección entre en una pantalla. */
+.rd-contact .rd-h2 { font-size: clamp(32px, 3.4vw, 50px); }
+.rd-contact .rd-muted { font-size: 15.5px; line-height: 1.6; }
+.rd-c-data { margin-top: 22px; }
+.rd-c-item { padding: 12px 0; margin-top: 6px; }
+.rd-c-item span { font-size: 19px; }
