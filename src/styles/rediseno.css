@@ -1102,3 +1102,75 @@ nav .nav-cta:hover { background: var(--dorado); color: var(--negro); }
 .rd-amanecer-horizonte { display: block; width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--dorado) 18%, var(--dorado) 82%, transparent); }
 .rd .rd-amanecer-marca { margin: clamp(14px, 2.4vh, 26px) 0 6px; font-size: clamp(22px, calc(0.6vw + 1.6vh), 32px); font-weight: 400; letter-spacing: 0.32em; text-transform: uppercase; color: var(--blanco-roto); padding-left: 0.32em; }
 .rd .rd-amanecer-bajada { margin: 0; font-size: max(14px, calc(var(--rd-txt) * 0.74)); letter-spacing: 0.3em; text-transform: uppercase; color: var(--dorado); padding-left: 0.3em; }
+
+/* Logo saliendo de abajo de la línea (versión "baja"). */
+.rd-amanecer.baja { max-width: 480px; }
+.rd-amanecer.baja .rd-amanecer-horizonte { position: relative; z-index: 2; height: 1.5px; box-shadow: 0 0 18px rgba(234, 188, 123, 0.55); }
+.rd-amanecer-telon { position: relative; width: 100%; overflow: hidden; padding: clamp(18px, 3vh, 34px) 0 clamp(6px, 1vh, 12px); }
+.rd-amanecer-logo {
+  display: block; width: 100%; height: auto;
+  transform: translateY(calc((1 - var(--sube)) * -115%));
+  opacity: calc(0.15 + var(--sube) * 0.85);
+  filter: drop-shadow(0 10px 30px rgba(234, 188, 123, 0.18));
+}
+.rd-amanecer.baja .rd-amanecer-bajada { opacity: var(--sube); transform: translateY(calc((1 - var(--sube)) * -10px)); }
+
+/* ==========================================================================
+   Amanecer del logo (Sobre nosotros)
+   ========================================================================== */
+.rd-sunrise { width: 100%; max-width: 500px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.rd-sunrise-cielo { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; }
+/* Sol: arranca escondido debajo del horizonte y sube lento. */
+.rd-sunrise-sol {
+  position: absolute; left: 50%; bottom: 0; width: 46%; height: auto; z-index: 2;
+  transform: translate(-50%, 102%) scale(0.92);
+  filter: drop-shadow(0 0 0 rgba(234, 188, 123, 0));
+  transition: transform 3s cubic-bezier(0.22, 0.8, 0.25, 1), filter 3s ease;
+}
+.rd-sunrise.salio .rd-sunrise-sol { transform: translate(-50%, -14%) scale(1); filter: drop-shadow(0 0 34px rgba(234, 188, 123, 0.55)); }
+/* Cielo que se entibia. */
+.rd-sunrise-resplandor {
+  position: absolute; left: 50%; bottom: -70%; width: 170%; aspect-ratio: 1; transform: translateX(-50%) scale(0.6); z-index: 1;
+  background: radial-gradient(circle, rgba(242, 213, 160, 0.42) 0%, rgba(234, 188, 123, 0.16) 28%, rgba(184, 137, 90, 0.06) 45%, transparent 62%);
+  opacity: 0; transition: opacity 3.2s ease 0.2s, transform 3.4s cubic-bezier(0.22, 0.8, 0.25, 1);
+}
+.rd-sunrise.salio .rd-sunrise-resplandor { opacity: 1; transform: translateX(-50%) scale(1); }
+/* Haces de luz suaves desde el horizonte (quietos, solo aparecen). */
+.rd-sunrise-haces {
+  position: absolute; left: 50%; bottom: 0; width: 180%; aspect-ratio: 2 / 1; transform: translateX(-50%); z-index: 1;
+  background: repeating-conic-gradient(from -90deg at 50% 100%, rgba(242, 213, 160, 0.10) 0deg 3deg, transparent 3deg 12deg);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 100%, #000 0%, transparent 70%);
+  mask-image: radial-gradient(ellipse at 50% 100%, #000 0%, transparent 70%);
+  opacity: 0; transition: opacity 2.4s ease 1.2s;
+}
+.rd-sunrise.salio .rd-sunrise-haces { opacity: 1; }
+/* Horizonte que se ilumina y un reflejo tenue debajo. */
+.rd-sunrise-horizonte {
+  display: block; width: 100%; height: 1.5px; position: relative; z-index: 3;
+  background: linear-gradient(90deg, transparent, var(--dorado) 20%, var(--dorado-claro) 50%, var(--dorado) 80%, transparent);
+  box-shadow: 0 0 0 rgba(234, 188, 123, 0); transition: box-shadow 3s ease;
+}
+.rd-sunrise.salio .rd-sunrise-horizonte { box-shadow: 0 0 22px rgba(234, 188, 123, 0.7); }
+.rd-sunrise-reflejo {
+  display: block; width: 70%; height: clamp(14px, 2.4vh, 26px);
+  background: radial-gradient(ellipse at 50% 0%, rgba(234, 188, 123, 0.28), transparent 70%);
+  opacity: 0; transition: opacity 3s ease 0.6s;
+}
+.rd-sunrise.salio .rd-sunrise-reflejo { opacity: 1; }
+/* El nombre aparece al final. */
+.rd .rd-sunrise-marca {
+  margin: clamp(4px, 1vh, 10px) 0 6px; font-size: clamp(22px, calc(0.6vw + 1.6vh), 32px); font-weight: 400; letter-spacing: 0.32em;
+  text-transform: uppercase; color: var(--blanco-roto); padding-left: 0.32em;
+  opacity: 0; transform: translateY(8px); transition: opacity 1.2s ease 2.2s, transform 1.2s ease 2.2s;
+}
+.rd .rd-sunrise-bajada {
+  margin: 0; font-size: max(14px, calc(var(--rd-txt) * 0.74)); letter-spacing: 0.3em; text-transform: uppercase; color: var(--dorado); padding-left: 0.3em;
+  opacity: 0; transition: opacity 1.2s ease 2.6s;
+}
+.rd-sunrise.salio .rd-sunrise-marca, .rd-sunrise.salio .rd-sunrise-bajada { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .rd-sunrise *, .rd-sunrise .rd-sunrise-marca, .rd-sunrise .rd-sunrise-bajada { transition: none !important; }
+}
+.rd-sunrise { max-width: 460px; }
+.rd-sunrise-cielo { aspect-ratio: 2.05 / 1; }
+.rd-sunrise-sol { width: 42%; }

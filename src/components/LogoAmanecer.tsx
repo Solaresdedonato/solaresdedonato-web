@@ -1,39 +1,48 @@
-import { useRef } from "react";
-import { useOnScroll } from "@/shared/hooks/useScrollFx";
+import { useEffect, useRef, useState } from "react";
 import logoIcon from "@/assets/logo-icon.png";
 
 /**
- * El isologo como un amanecer ("Solares"): el sol de la marca sale por detrás de una
- * línea de horizonte dorada a medida que se scrollea por Sobre nosotros, y debajo del
- * horizonte va el nombre de la empresa. Sobrio e institucional; nada gira.
- * Con prefers-reduced-motion el sol aparece ya salido.
+ * El isologo como un amanecer ("Solares"): la línea dorada es el horizonte y el sol de la
+ * marca empieza escondido debajo; cuando la sección entra en pantalla sale lentamente por
+ * encima de la línea mientras el cielo se entibia (resplandor y haces de luz suaves) y el
+ * horizonte se ilumina. Al final aparece el nombre. Se repite cada vez que se vuelve a la
+ * sección. Nada gira. Con prefers-reduced-motion se muestra ya salido.
  */
 export function LogoAmanecer() {
   const ref = useRef<HTMLDivElement | null>(null);
+  const [salio, setSalio] = useState(false);
 
-  useOnScroll(() => {
+  useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    let p = 1;
-    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      const seccion = (el.closest("section") ?? el).getBoundingClientRect();
-      const h = window.innerHeight;
-      // 0 cuando la sección empieza a entrar por abajo; 1 cuando su título llega arriba.
-      p = Math.min(Math.max((h - seccion.top) / (h - 110), 0), 1);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const id = requestAnimationFrame(() => setSalio(true));
+      return () => cancelAnimationFrame(id);
     }
-    const suave = 1 - Math.pow(1 - p, 3);
-    el.style.setProperty("--sube", suave.toFixed(3));
-  });
+    const io = new IntersectionObserver(
+      ([e]) => {
+        // Sale cuando se ve buena parte; se "pone" de nuevo recién cuando quedó fuera de
+        // pantalla, así la próxima visita vuelve a amanecer.
+        if (e.intersectionRatio >= 0.45) setSalio(true);
+        else if (!e.isIntersecting) setSalio(false);
+      },
+      { threshold: [0, 0.45] },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   return (
-    <div className="rd-amanecer" ref={ref} aria-label="Solares de Donato">
-      <div className="rd-amanecer-cielo" aria-hidden="true">
-        <span className="rd-amanecer-halo" />
-        <img className="rd-amanecer-sol" src={logoIcon} alt="" />
+    <div className={`rd-sunrise ${salio ? "salio" : ""}`} ref={ref}>
+      <div className="rd-sunrise-cielo" aria-hidden="true">
+        <span className="rd-sunrise-resplandor" />
+        <span className="rd-sunrise-haces" />
+        <img className="rd-sunrise-sol" src={logoIcon} alt="" />
       </div>
-      <span className="rd-amanecer-horizonte" aria-hidden="true" />
-      <p className="rd-amanecer-marca">Solares de Donato</p>
-      <p className="rd-amanecer-bajada">
+      <span className="rd-sunrise-horizonte" aria-hidden="true" />
+      <span className="rd-sunrise-reflejo" aria-hidden="true" />
+      <p className="rd-sunrise-marca">Solares de Donato</p>
+      <p className="rd-sunrise-bajada">
         Desarrolladora inmobiliaria y constructora
       </p>
     </div>
