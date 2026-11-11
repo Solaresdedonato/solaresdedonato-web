@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { mediaUrl } from '@/shared/utils/mediaUrl'
+import { alFallarUsarOriginal, imagenOptima } from '@/shared/utils/imagenOptima'
 
 interface VisorFotosProps {
   fotos: string[]
@@ -50,7 +51,7 @@ export function VisorFotos({ fotos, index, nombre, onIndexChange, onClose }: Vis
     miniatura?.scrollIntoView?.({ block: 'nearest', inline: 'center', behavior: 'smooth' })
     if (!hayVarias) return
     for (const i of [prev, next]) {
-      const url = mediaUrl(fotos[i])
+      const url = imagenOptima(mediaUrl(fotos[i]), 2560)
       if (url) new Image().src = url
     }
   }, [fotos, index, hayVarias, prev, next])
@@ -82,7 +83,13 @@ export function VisorFotos({ fotos, index, nombre, onIndexChange, onClose }: Vis
       </button>
 
       <div className="rd-visor-escena">
-        <img key={index} className="rd-visor-img" src={mediaUrl(fotos[index])} alt={`Foto ${index + 1} de ${nombre}`} />
+        <img
+          key={index}
+          className="rd-visor-img"
+          src={imagenOptima(mediaUrl(fotos[index]), 2560)}
+          alt={`Foto ${index + 1} de ${nombre}`}
+          onError={alFallarUsarOriginal(mediaUrl(fotos[index]))}
+        />
         {hayVarias && (
           <>
             <button type="button" className="rd-visor-zona izq" onClick={() => onIndexChange(prev)} aria-label="Foto anterior" />
@@ -106,7 +113,7 @@ export function VisorFotos({ fotos, index, nombre, onIndexChange, onClose }: Vis
                 aria-label={`Ver foto ${i + 1}`}
                 aria-current={i === index}
               >
-                <img src={mediaUrl(f)} alt="" loading="lazy" />
+                <img src={imagenOptima(mediaUrl(f), 256)} alt="" loading="lazy" onError={alFallarUsarOriginal(mediaUrl(f))} />
               </button>
             ))}
           </div>

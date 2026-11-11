@@ -3,6 +3,7 @@ import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom'
 import { useDesarrolloPorSlug, useDesarrollosPublicados } from '@/features/desarrollo/hooks/useDesarrollo'
 import { ESTADO_LABELS } from '@/features/desarrollo/schemas/desarrollo.schema'
 import { mediaUrl } from '@/shared/utils/mediaUrl'
+import { alFallarUsarOriginal, imagenOptima, useImagenOptima } from '@/shared/utils/imagenOptima'
 import { sinGuiones } from '@/shared/utils/sinGuiones'
 import { esVideoServidoPorApi, videoEmbedUrl } from '@/shared/utils/videoEmbedUrl'
 import { useOnScroll } from '@/shared/hooks/useScrollFx'
@@ -16,6 +17,19 @@ const WHATSAPP_NUMBER = '5491151407693'
 
 /** Formas arquitectónicas del collage, en este orden: lámina, arco, círculo, vano, arco, píldora. */
 const FORMAS = ['slab', 'arch', 'circle', 'plain', 'arch', 'pill']
+
+/** Foto de portada de la ficha como fondo, optimizada a 2560px (o la original si falla). */
+function PortadaFondo({ url, nombre }: { url: string | undefined; nombre: string }) {
+  const fondo = useImagenOptima(url, 2560)
+  return (
+    <div
+      className="rd-cover-img"
+      style={fondo ? { backgroundImage: `url("${fondo}")` } : undefined}
+      role="img"
+      aria-label={`Portada de ${nombre}`}
+    />
+  )
+}
 
 /** Animación de entrada: un círculo que crece desde el punto donde se hizo clic en la
  *  card. Si se entró directo por URL (sin clic previo) la ficha se muestra sin animar. */
@@ -157,12 +171,7 @@ function Ficha({ slug }: { slug: string | undefined }) {
 
       {/* PORTADA */}
       <header className="rd-cover">
-        <div
-          className="rd-cover-img"
-          style={portada ? { backgroundImage: `url(${mediaUrl(portada)})` } : undefined}
-          role="img"
-          aria-label={`Portada de ${desarrollo.nombre}`}
-        />
+        <PortadaFondo url={mediaUrl(portada)} nombre={desarrollo.nombre} />
         <div className="rd-cover-num" aria-hidden="true">
           {romanoDe(desarrollo.nombre)}
         </div>
@@ -243,7 +252,19 @@ function Ficha({ slug }: { slug: string | undefined }) {
                 onClick={() => setFotoAbierta(k)}
                 aria-label={`Ampliar foto ${k + 1} de ${desarrollo.nombre}`}
               >
-                <img src={mediaUrl(u)} alt="" loading="lazy" decoding="async" />
+                <img
+                  src={imagenOptima(mediaUrl(u), 1080)}
+                  srcSet={
+                    imagenOptima(mediaUrl(u), 1080) !== mediaUrl(u)
+                      ? `${imagenOptima(mediaUrl(u), 640)} 640w, ${imagenOptima(mediaUrl(u), 1080)} 1080w, ${imagenOptima(mediaUrl(u), 1920)} 1920w`
+                      : undefined
+                  }
+                  sizes="(max-width: 900px) 92vw, 50vw"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  onError={alFallarUsarOriginal(mediaUrl(u))}
+                />
                 <span className="rd-shot-cap">Ampliar</span>
               </button>
             ))}

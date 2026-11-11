@@ -15,6 +15,11 @@ import { useOnScroll, useParallax } from "@/shared/hooks/useScrollFx";
 import { LogoAmanecer } from "@/components/LogoAmanecer";
 import { BotonExplorar } from "@/components/BotonExplorar";
 import { mediaUrl } from "@/shared/utils/mediaUrl";
+import {
+  alFallarUsarOriginal,
+  imagenOptima,
+  useImagenOptima,
+} from "@/shared/utils/imagenOptima";
 import { sinGuiones } from "@/shared/utils/sinGuiones";
 import { guardarOrigenClic, romanoDe } from "@/shared/utils/desarrolloUi";
 import { useSlidesCargadas } from "@/shared/hooks/useSlidesCargadas";
@@ -132,18 +137,47 @@ function useSlideshow(total: number, ms = 5000) {
   return total > 0 ? index % total : 0;
 }
 
+/** Diapositiva de fondo (hero y banda): foto optimizada a 1920px, o la original si falla. */
+function FondoSlide({
+  src,
+  className,
+  cargar,
+}: {
+  src: string;
+  className: string;
+  cargar: boolean;
+}) {
+  const url = useImagenOptima(cargar ? src : undefined, 1920);
+  return (
+    <div
+      className={className}
+      style={url ? { backgroundImage: `url("${url}")` } : undefined}
+    />
+  );
+}
+
 function Portada({ d, className = "" }: { d: Desarrollo; className?: string }) {
   const src = mediaUrl(d.imagenPortadaUrl);
-  if (src)
+  if (src) {
+    // Versión achicada al tamaño en pantalla (la original pesa hasta ~20MB).
+    const optima = imagenOptima(src, 1080);
+    const srcSet =
+      optima !== src
+        ? `${imagenOptima(src, 640)} 640w, ${optima} 1080w, ${imagenOptima(src, 1920)} 1920w`
+        : undefined;
     return (
       <img
         className={className}
-        src={src}
+        src={optima}
+        srcSet={srcSet}
+        sizes="(max-width: 768px) 92vw, (max-width: 1200px) 60vw, 1100px"
         alt=""
         loading="lazy"
         decoding="async"
+        onError={alFallarUsarOriginal(src)}
       />
     );
+  }
   return (
     <div className={`rd-ph ${className}`}>
       <span>{romanoDe(d.nombre) || "SD"}</span>
@@ -180,7 +214,8 @@ function EnPozo({ items }: { items: Desarrollo[] }) {
         tapada += Math.min(Math.max(p, 0), 1);
       }
       card.style.transform = `perspective(1600px) rotateX(${(tapada * 9).toFixed(2)}deg) scale(${(1 - tapada * 0.07).toFixed(3)})`;
-      card.style.filter = `brightness(${(1 - Math.min(tapada, 1) * 0.55).toFixed(2)})`;
+      // Oscurecer con una capa (opacidad) y no con filter: brightness, que es caro por frame.
+      card.style.setProperty("--osc", (Math.min(tapada, 1) * 0.55).toFixed(2));
     });
   });
   if (items.length === 0) return null;
@@ -301,14 +336,11 @@ export function Home() {
       <section className="rd-hero">
         <div className="rd-hero-bg" ref={heroParallax}>
           {heroImages.map((src, i) => (
-            <div
+            <FondoSlide
               key={src}
+              src={src}
+              cargar={heroSlideCargada(i)}
               className={`rd-hero-slide ${i === heroSlideIndex ? "active" : ""}`}
-              style={
-                heroSlideCargada(i)
-                  ? { backgroundImage: `url(${src})` }
-                  : undefined
-              }
             />
           ))}
         </div>
@@ -586,12 +618,11 @@ export function Home() {
       <section className="rd-band">
         <div className="rd-band-bg" ref={bandaParallax}>
           {fotosBanda.map((src, i) => (
-            <div
+            <FondoSlide
               key={src}
+              src={src}
+              cargar={bandaCargada(i)}
               className={`rd-band-slide ${i === bandaIndex ? "active" : ""}`}
-              style={
-                bandaCargada(i) ? { backgroundImage: `url(${src})` } : undefined
-              }
             />
           ))}
         </div>

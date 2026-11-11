@@ -1179,3 +1179,17 @@ nav .nav-cta:hover { background: var(--dorado); color: var(--negro); }
 .rd-sunrise-horizonte, .rd-sunrise.salio .rd-sunrise-horizonte { box-shadow: none; background: linear-gradient(90deg, transparent, var(--dorado) 15%, var(--dorado) 85%, transparent); }
 .rd-sunrise-resplandor, .rd-sunrise-haces, .rd-sunrise-reflejo { display: none; }
 .rd .rd-sunrise-marca { white-space: nowrap; letter-spacing: 0.24em; padding-left: 0.24em; margin-top: clamp(14px, 2.4vh, 26px); font-size: clamp(20px, calc(0.5vw + 1.5vh), 30px); }
+
+/* ==========================================================================
+   Fluidez
+   ========================================================================== */
+/* Pila "En pozo": la tarjeta de atrás se oscurece con una capa (barato), no con filter. */
+.rd-stack-item .rd-pozo-card { --osc: 0; will-change: transform; }
+.rd-stack-item .rd-pozo-card::before { content: ""; position: absolute; inset: 0; z-index: 3; background: #000; opacity: var(--osc); pointer-events: none; }
+/* Sin desenfoque de fondo en etiquetas y botones repetidos (muy costoso al scrollear). */
+.rd-chip, .rd-explorar-circulo { backdrop-filter: none; -webkit-backdrop-filter: none; }
+.rd-chip { background: rgba(8, 8, 8, 0.72); }
+/* Solo lo que se mueve con el scroll avisa al navegador; el resto no reserva capas. */
+.rd-about-img img, .rd-cover-img { will-change: auto; }
+/* Las imágenes no se agrandan durante 7s cuando no son la diapositiva activa. */
+.rd-hero-slide:not(.active) { transition: opacity 1.6s ease; }
