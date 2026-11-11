@@ -996,3 +996,50 @@ footer { background: var(--negro); }
   .rd-brokers .rd-sec-head { margin-bottom: 12px; }
   .rd-brk-list.rd-brk-fila { margin-bottom: 14px; }
 }
+
+/* ==========================================================================
+   Ronda 6
+   ========================================================================== */
+
+/* 1. "(podés elegir más de uno)" en blanco. */
+.rd .hint-multi { color: var(--blanco-roto); letter-spacing: 0.04em; text-transform: none; }
+
+/* 2. Placa institucional del logo (Sobre nosotros). */
+.rd-placa-escena { width: 100%; max-width: 520px; perspective: 1200px; }
+.rd-placa {
+  --rx: 0deg; --ry: 0deg; --gx: 50%; --gy: 30%;
+  position: relative; display: flex; flex-direction: column; align-items: center; text-align: center;
+  padding: clamp(28px, 5vh, 56px) clamp(26px, 3vw, 48px);
+  background: linear-gradient(160deg, #141210 0%, #0b0b0b 60%);
+  border: 1px solid rgba(234, 188, 123, 0.35);
+  box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.9), inset 0 0 0 6px #0b0b0b, inset 0 0 0 7px rgba(234, 188, 123, 0.18);
+  transform: rotateX(var(--rx)) rotateY(var(--ry)); transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s;
+  overflow: hidden; cursor: default;
+}
+.rd-placa.activa { transition: transform 0.12s linear; box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.95), inset 0 0 0 6px #0b0b0b, inset 0 0 0 7px rgba(234, 188, 123, 0.3); }
+.rd-placa-logo { width: 100%; max-width: 380px; height: auto; transform: translateZ(30px); }
+.rd-placa-linea { display: block; width: 64px; height: 1px; background: var(--dorado); margin: clamp(16px, 2.6vh, 28px) 0 clamp(10px, 1.6vh, 16px); }
+.rd .rd-placa-bajada { font-size: max(14px, calc(var(--rd-txt) * 0.78)); letter-spacing: 0.32em; text-transform: uppercase; color: var(--dorado); margin: 0; }
+.rd .rd-placa-sub { font-size: max(14px, calc(var(--rd-txt) * 0.78)); letter-spacing: 0.14em; color: rgba(245, 240, 232, 0.75); margin: 8px 0 0; }
+.rd-placa-esq { position: absolute; width: 18px; height: 18px; border-color: var(--dorado); border-style: solid; opacity: 0.8; }
+.rd-placa-esq.tl { top: 14px; left: 14px; border-width: 1px 0 0 1px; }
+.rd-placa-esq.tr { top: 14px; right: 14px; border-width: 1px 1px 0 0; }
+.rd-placa-esq.bl { bottom: 14px; left: 14px; border-width: 0 0 1px 1px; }
+.rd-placa-esq.br { bottom: 14px; right: 14px; border-width: 0 1px 1px 0; }
+.rd-placa-brillo {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 0.5s;
+  background: radial-gradient(circle at var(--gx) var(--gy), rgba(242, 213, 160, 0.16), transparent 45%);
+}
+.rd-placa.activa .rd-placa-brillo { opacity: 1; }
+@media (max-width: 1080px) { .rd-placa-escena { max-width: 440px; margin: 0 auto; } }
+
+/* 3. Ficha: el texto del proyecto ocupa todo el ancho (fluye en 2 columnas). */
+.rd-story { grid-template-columns: 4fr 8fr; gap: 5vw; padding-left: max(6vw, calc((100vw - 1520px) / 2)); padding-right: max(6vw, calc((100vw - 1520px) / 2)); }
+.rd-body { columns: 2 320px; column-gap: 56px; }
+.rd-body p { break-inside: auto; }
+.rd .rd-body p { font-size: var(--rd-txt); }
+@media (max-width: 900px) { .rd-story { grid-template-columns: 1fr; } }
+
+/* 4. Radar sin la luz que barre. */
+.rd-radar .sweep { display: none; }

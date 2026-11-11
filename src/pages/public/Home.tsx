@@ -12,7 +12,7 @@ import type { Desarrollo } from "@/features/desarrollo/schemas/desarrollo.schema
 import { useHeroSlides } from "@/features/hero/hooks/useHeroSlides";
 import { useReveal } from "@/shared/hooks/useReveal";
 import { useOnScroll, useParallax } from "@/shared/hooks/useScrollFx";
-import { LogoSolar } from "@/components/LogoSolar";
+import { LogoInstitucional } from "@/components/LogoInstitucional";
 import { mediaUrl } from "@/shared/utils/mediaUrl";
 import { sinGuiones } from "@/shared/utils/sinGuiones";
 import { guardarOrigenClic, romanoDe } from "@/shared/utils/desarrolloUi";
@@ -372,7 +372,7 @@ export function Home() {
           </div>
           <div className="rd-about-grid">
             <div className="rd-about-logo">
-              <LogoSolar />
+              <LogoInstitucional />
               <div className="rd-stats">
                 <MetricasDestacadas items={NOSOTROS_STATS} variant="fila" />
               </div>
