@@ -298,7 +298,6 @@ export function Home() {
   const bandaIndex = useSlideshow(fotosBanda.length, 4500);
   const bandaCargada = useSlidesCargadas(bandaIndex, fotosBanda.length);
 
-
   return (
     <div className="rd">
       {/* HERO */}
@@ -361,20 +360,24 @@ export function Home() {
       {/* I. SOBRE NOSOTROS */}
       <section id="nosotros" className="rd-about">
         <div className="rd-wrap">
+          {/* Título en una sola línea a todo el ancho; debajo, logo + cifras y el texto. */}
+          <div className="rd-sec-head">
+            <Reveal>
+              <NumSeccion n="I" />
+              <p className="rd-eyebrow">Sobre nosotros</p>
+            </Reveal>
+            <h2 className="rd-h2">
+              Ubicaciones estratégicas. <em>Proyectos exclusivos.</em>
+            </h2>
+          </div>
           <div className="rd-about-grid">
             <div className="rd-about-logo">
               <LogoSolar />
+              <div className="rd-stats">
+                <MetricasDestacadas items={NOSOTROS_STATS} variant="fila" />
+              </div>
             </div>
             <div className="rd-about-text">
-              <Reveal>
-                <NumSeccion n="I" />
-                <p className="rd-eyebrow">Sobre nosotros</p>
-              </Reveal>
-              <Reveal delay={0.1}>
-                <h2 className="rd-h2">
-                  Ubicaciones estratégicas. <em>Proyectos exclusivos.</em>
-                </h2>
-              </Reveal>
               <Reveal as="p" delay={0.2}>
                 En <strong>Solares de Donato</strong>, cada espacio cuenta una
                 historia, y desde hace <strong>25 años</strong>, nuestra misión
@@ -407,9 +410,6 @@ export function Home() {
               </Reveal>
             </div>
           </div>
-          <Reveal className="rd-stats">
-            <MetricasDestacadas items={NOSOTROS_STATS} variant="fila" />
-          </Reveal>
         </div>
       </section>
 
@@ -633,105 +633,86 @@ export function Home() {
         </div>
       </section>
 
-      {/* IV. CONTACTO */}
-      <section id="contacto" className="rd-contact">
-        <div className="rd-wrap rd-contact-grid">
-          <div>
-            <Reveal>
+      {/* IV. CONTACTO — en horizontal: título e intro arriba, datos en fila y el formulario a lo ancho */}
+      <section id="contacto" className="rd-contact rd-horiz">
+        <div className="rd-wrap">
+          <div className="rd-sec-head rd-sec-split">
+            <div>
               <NumSeccion n="IV" />
-            </Reveal>
-            <Reveal delay={0.1}>
               <h2 className="rd-h2">
                 Mantengamos el <em>contacto</em>
               </h2>
-            </Reveal>
-            <Reveal as="p" className="rd-muted" delay={0.2}>
+            </div>
+            <p className="rd-muted">
               Equipo de profesionales especialistas en cada rubro, que abarca
               desde el desarrollo, arquitectura, financiación, construcción y
               postventa de emprendimientos inmobiliarios.
-            </Reveal>
-            <div className="rd-c-data">
-              <Reveal as="p" className="rd-eyebrow">
-                Datos de contacto
-              </Reveal>
-              <Reveal delay={0.1}>
-                <a
-                  className="rd-c-item"
-                  href="https://api.whatsapp.com/send?phone=5491151407693"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <small>WhatsApp / Teléfono</small>
-                  <span>+54 9 11 5140 7693</span>
-                </a>
-              </Reveal>
-              <Reveal delay={0.2}>
-                <a
-                  className="rd-c-item"
-                  href="mailto:general@solaresdedonato.com.ar"
-                >
-                  <small>Email</small>
-                  <span>general@solaresdedonato.com.ar</span>
-                </a>
-              </Reveal>
-              <Reveal delay={0.3}>
-                <div className="rd-c-item">
-                  <small>Dirección</small>
-                  <span>
-                    Basualdo 455, C1440 DNA
-                    <br />
-                    Ciudad Autónoma de Buenos Aires
-                  </span>
-                </div>
-              </Reveal>
+            </p>
+          </div>
+          <div className="rd-c-row">
+            <a
+              className="rd-c-item"
+              href="https://api.whatsapp.com/send?phone=5491151407693"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <small>WhatsApp / Teléfono</small>
+              <span>+54 9 11 5140 7693</span>
+            </a>
+            <a
+              className="rd-c-item"
+              href="mailto:general@solaresdedonato.com.ar"
+            >
+              <small>Email</small>
+              <span>general@solaresdedonato.com.ar</span>
+            </a>
+            <div className="rd-c-item">
+              <small>Dirección</small>
+              <span>
+                Basualdo 455, C1440 DNA, Ciudad Autónoma de Buenos Aires
+              </span>
             </div>
           </div>
-          <Reveal className="rd-form-shell" delay={0.15}>
+          <div className="rd-form-shell rd-form-ancho">
             <ContactoForm />
-          </Reveal>
+          </div>
         </div>
       </section>
 
-      {/* ÁREA BROKER */}
-      <section id="brokers" className="rd-brokers">
-        <div className="rd-wrap rd-brk-grid">
-          <div>
-            <Reveal>
+      {/* ÁREA BROKER — en horizontal: título e intro arriba, beneficios en fila y el formulario a lo ancho */}
+      <section id="brokers" className="rd-brokers rd-horiz">
+        <div className="rd-wrap">
+          <div className="rd-sec-head rd-sec-split">
+            <div>
               <p className="rd-eyebrow">Area Broker</p>
-            </Reveal>
-            <Reveal delay={0.1}>
               <h2 className="rd-h2">
                 Sumate a nuestra red de <em>brokers asociados</em>
               </h2>
-            </Reveal>
-            <Reveal as="p" className="rd-muted" delay={0.2}>
+            </div>
+            <p className="rd-muted">
               Trabajamos con inmobiliarias y brokers independientes que
               comparten nuestro estándar de profesionalismo. Si tenés clientes
               interesados en nuestros desarrollos, esquemas de comisiones
               competitivos y acompañamiento integral en cada operación.
-            </Reveal>
-            <Reveal as="p" className="rd-checks-t rd-brk-t" delay={0.25}>
-              Beneficios para brokers
-            </Reveal>
-            <ul className="rd-brk-list">
-              {BROKER_BENEFICIOS.map((b, i) => (
-                <li key={b.titulo}>
-                  <Reveal className="rd-brk-item" delay={i * 0.1}>
-                    <span className="rd-brk-ic" aria-hidden="true">
-                      {b.icono}
-                    </span>
-                    <div>
-                      <strong>{b.titulo}</strong>
-                      <span>{b.desc}</span>
-                    </div>
-                  </Reveal>
-                </li>
-              ))}
-            </ul>
+            </p>
           </div>
-          <Reveal className="rd-form-shell" delay={0.15}>
+          <p className="rd-checks-t rd-brk-t">Beneficios para brokers</p>
+          <ul className="rd-brk-list rd-brk-fila">
+            {BROKER_BENEFICIOS.map((b) => (
+              <li key={b.titulo} className="rd-brk-item">
+                <span className="rd-brk-ic" aria-hidden="true">
+                  {b.icono}
+                </span>
+                <div>
+                  <strong>{b.titulo}</strong>
+                  <span>{b.desc}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="rd-form-shell rd-form-ancho">
             <BrokerForm />
-          </Reveal>
+          </div>
         </div>
       </section>
     </div>

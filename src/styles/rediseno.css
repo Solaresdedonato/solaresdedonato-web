@@ -886,3 +886,113 @@ footer { background: var(--negro); }
   .rd .rd-brokers .broker-checks { grid-template-columns: minmax(0, 1fr); }
   .rd .rd-brokers .broker-form, .rd .rd-brokers .broker-form form, .rd .rd-brokers .campo { min-width: 0; max-width: 100%; }
 }
+
+/* ==========================================================================
+   Ronda 5: aprovechar los costados, letra grande (público 50+) y cada sección
+   del menú en una pantalla, en disposición horizontal
+   ========================================================================== */
+
+/* Más ancho: el contenido usa los márgenes negros de los costados. */
+.rd-wrap { max-width: min(1520px, 90vw); }
+
+/* Letra base más grande; ninguna etiqueta por debajo de ~14px. */
+.rd { --rd-txt: clamp(18px, calc(0.55vw + 1.3vh), 22px); }
+.rd .campo label, .rd .rd-c-item small, .rd .rd-checks-t, .rd .rd-eyebrow,
+.rd .quick-q-label, .rd .metrica-label { font-size: max(14px, calc(var(--rd-txt) * 0.72)); }
+.rd .broker-legal, .rd .quick-legal, .rd .hint-multi { font-size: max(14px, calc(var(--rd-txt) * 0.74)); }
+.rd .campo input, .rd .campo select, .rd .campo textarea, .rd .quick-input, .rd .radio-text, .rd .quick-check {
+  font-size: max(16px, calc(var(--rd-txt) * 0.92));
+}
+.rd .btn-form, .rd .btn-broker, .rd .btn-quick { font-size: max(14px, calc(var(--rd-txt) * 0.74)); }
+
+/* Secciones del menú (y "Encontrá tu propiedad"): una pantalla cada una, contenido centrado. */
+.rd-about, .rd-finder, .rd-invest, .rd-contact, .rd-brokers {
+  min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center;
+  padding-top: 104px; padding-bottom: 24px;
+}
+.rd-about > .rd-wrap, .rd-finder > .rd-wrap { width: 100%; }
+#ctaQuick { scroll-margin-top: 0; }
+
+/* Encabezado horizontal de sección. */
+.rd-sec-head { margin-bottom: clamp(16px, 3vh, 40px); }
+.rd-sec-head .rd-h2 { margin: 8px 0 0; }
+.rd-sec-split { display: grid; grid-template-columns: 1.15fr 1fr; gap: 60px; align-items: end; }
+.rd-sec-split .rd-muted { margin: 0; }
+.rd-horiz .rd-h2, .rd-about .rd-sec-head .rd-h2 { font-size: clamp(34px, calc(1.2vw + 2.8vh), 64px); line-height: 1.05; }
+
+/* Sobre nosotros: título arriba; logo + cifras a la izquierda; texto a la derecha. */
+.rd-about-grid { grid-template-columns: 0.85fr 1.15fr; gap: clamp(40px, 4vw, 80px); align-items: center; }
+.rd-about-logo { position: static; display: flex; flex-direction: column; align-items: center; gap: clamp(14px, 2.5vh, 30px); }
+.rd-sol { max-width: min(380px, 40vh); }
+.rd .rd-about .rd-stats { margin: 0; width: 100%; }
+.rd .rd-about .rd-stats .metricas { grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--rd-linea); }
+.rd .rd-about .rd-stats .metrica { padding: 14px 10px 0; border-right: 1px solid var(--rd-linea); }
+.rd .rd-about .rd-stats .metrica:last-child { border-right: 0; }
+.rd .rd-about .metrica-numero { font-size: clamp(28px, calc(0.9vw + 2vh), 44px); }
+.rd .rd-about-text > p { margin-bottom: clamp(10px, 1.6vh, 22px); }
+.rd-quote { font-size: calc(var(--rd-txt) * 1.12) !important; margin: clamp(12px, 2vh, 28px) 0 !important; padding: 2px 0 2px 24px; }
+
+/* Encontrá tu propiedad: más ancho y centrado. */
+.rd-finder-grid { gap: clamp(40px, 5vw, 100px); align-items: center; }
+
+/* Contacto: datos en fila + formulario a lo ancho (4 columnas). */
+.rd-c-row { display: grid; grid-template-columns: 1fr 1.2fr 1.6fr; gap: 0 40px; margin-bottom: clamp(16px, 3vh, 36px); }
+.rd-c-row .rd-c-item { margin: 0; border-top: 1px solid var(--rd-linea); padding: clamp(10px, 1.6vh, 18px) 0 0; }
+.rd-form-ancho { background: var(--negro-medio); padding: clamp(20px, 3vh, 36px) clamp(22px, 2.4vw, 44px); border-top: 2px solid var(--dorado); }
+.rd-contact .form-contacto { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(12px, 2vh, 22px) 18px; align-items: end; }
+.rd-contact .form-contacto .input-grupo { display: contents; }
+.rd-contact .form-contacto .campo { margin: 0; min-width: 0; }
+.rd-contact .campo:has(#contacto-proyecto) { grid-column: span 2; }
+.rd-contact .campo:has(#contacto-mensaje) { grid-column: span 2; }
+.rd-contact .campo textarea { min-height: 0; height: calc(max(16px, calc(var(--rd-txt) * 0.92)) * 1.6 + 1.3rem); resize: none; }
+.rd-contact .form-contacto > p { grid-column: 1 / -1; }
+.rd-contact .btn-form { grid-column: 1 / -1; margin: 0; padding: 1rem; }
+
+/* Brokers: beneficios en fila + formulario a lo ancho (4 columnas). */
+.rd-brk-t { margin: 0 0 6px !important; }
+.rd-brk-list.rd-brk-fila { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0 32px; margin: 0 0 clamp(14px, 2.6vh, 32px); padding: 0; list-style: none; }
+.rd-brk-fila .rd-brk-item { border-top: 1px solid var(--rd-linea); padding: clamp(10px, 1.4vh, 16px) 0 0; }
+.rd-brokers .broker-form { padding: 0; background: none; }
+.rd-brokers .broker-form::before { display: none; }
+.rd-brokers .broker-form-header { display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap; border: 0; padding: 0; margin-bottom: clamp(10px, 1.8vh, 20px); }
+.rd-brokers .broker-form-header h3 { margin: 0; font-size: calc(var(--rd-txt) * 1.25); }
+.rd-brokers .broker-form form { grid-template-columns: repeat(4, 1fr); gap: clamp(10px, 1.8vh, 20px) 18px; }
+.rd-brokers .campo:has(#broker-zona) { grid-column: span 1; }
+.rd-brokers .campo:has(.broker-checks) { grid-column: span 2; }
+.rd-brokers .campo:has(#broker-mensaje) { grid-column: span 2; }
+.rd-brokers .broker-checks { grid-template-columns: repeat(2, auto); gap: 0.4rem 1.6rem; }
+.rd-brokers .campo textarea { min-height: 0; height: calc(max(16px, calc(var(--rd-txt) * 0.92)) * 1.6 + 1.3rem); resize: none; }
+.rd-brokers .btn-broker { grid-column: span 1; padding: 0.95rem 1rem; }
+.rd-brokers .broker-legal { grid-column: span 3; }
+
+@media (max-width: 1080px) {
+  .rd-sec-split, .rd-about-grid { grid-template-columns: 1fr; gap: 24px; }
+  .rd-c-row, .rd-brk-list.rd-brk-fila { grid-template-columns: 1fr 1fr; gap: 16px 28px; }
+  .rd-contact .form-contacto, .rd-brokers .broker-form form { grid-template-columns: 1fr 1fr; }
+  .rd-brokers .broker-legal { grid-column: 1 / -1; }
+  .rd-about, .rd-finder, .rd-invest, .rd-contact, .rd-brokers { min-height: 0; }
+}
+@media (max-width: 760px) {
+  .rd-wrap { max-width: none; }
+  .rd-c-row, .rd-brk-list.rd-brk-fila, .rd-contact .form-contacto, .rd-brokers .broker-form form { grid-template-columns: minmax(0, 1fr); }
+  .rd-contact .form-contacto > *, .rd-brokers .broker-form form > * { grid-column: 1 / -1 !important; }
+  .rd .rd-about .rd-stats .metricas { grid-template-columns: 1fr 1fr; }
+  .rd .rd-about .rd-stats .metrica:nth-child(2) { border-right: 0; }
+}
+/* Brokers: botón en la misma fila que tipos de operación y mensaje; legal debajo en una línea. */
+.rd-brokers .campo:has(#broker-mensaje) { grid-column: span 1; }
+.rd-brokers .btn-broker { grid-column: span 1; align-self: end; height: calc(max(16px, calc(var(--rd-txt) * 0.92)) * 1.6 + 1.3rem); padding: 0 1rem; }
+.rd-brokers .broker-legal { grid-column: 1 / -1; margin-top: -4px; }
+.rd-brokers .rd-h2 { font-size: clamp(32px, calc(1vw + 2.4vh), 56px); }
+.rd-brk-fila .rd-brk-item { display: block; }
+.rd-brk-fila .rd-brk-ic { float: left; margin: 2px 12px 0 0; }
+.rd-brk-fila .rd-brk-item strong { display: block; line-height: 1.3; margin-bottom: 4px; min-height: 0; }
+.rd .rd-brk-fila .rd-brk-item span:not(.rd-brk-ic) { display: block; clear: both; line-height: 1.45; }
+@media (max-width: 1080px) { .rd-brokers .campo:has(#broker-mensaje), .rd-brokers .btn-broker { grid-column: span 1; } }
+.rd-brokers .rd-sec-split { grid-template-columns: 1fr 1.25fr; }
+.rd-brokers .rd-brk-t { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (max-width: 1080px) { .rd-brokers .rd-sec-split { grid-template-columns: 1fr; } }
+@media (max-height: 810px) {
+  .rd-brokers .rd-sec-head { margin-bottom: 12px; }
+  .rd-brk-list.rd-brk-fila { margin-bottom: 14px; }
+}
