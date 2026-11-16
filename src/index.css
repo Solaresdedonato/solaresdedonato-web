@@ -1,6 +1,7 @@
 @import './styles/variables.css';
 @import './styles/original-landing.css';
 @import './styles/galeria.css';
+@import './styles/rediseno.css';
 
 * {
   box-sizing: border-box;
