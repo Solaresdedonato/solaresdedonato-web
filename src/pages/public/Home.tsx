@@ -21,7 +21,7 @@ import {
   useImagenOptima,
 } from "@/shared/utils/imagenOptima";
 import { sinGuiones } from "@/shared/utils/sinGuiones";
-import { guardarOrigenClic, romanoDe } from "@/shared/utils/desarrolloUi";
+import { guardarOrigenClic } from "@/shared/utils/desarrolloUi";
 import { useSlidesCargadas } from "@/shared/hooks/useSlidesCargadas";
 import { ROUTES } from "@/shared/router/routes";
 import { MetricasDestacadas } from "@/components/MetricasDestacadas";
@@ -178,11 +178,7 @@ function Portada({ d, className = "" }: { d: Desarrollo; className?: string }) {
       />
     );
   }
-  return (
-    <div className={`rd-ph ${className}`}>
-      <span>{romanoDe(d.nombre) || "SD"}</span>
-    </div>
-  );
+  return <div className={`rd-ph ${className}`} />;
 }
 
 /**
@@ -588,7 +584,6 @@ export function Home() {
                     );
                   }}
                 >
-                  <span className="rd-rn">{ins.n}</span>
                   <p className="rd-eyebrow">{ins.tag}</p>
                   <h3>{ins.titulo}</h3>
                   <p className="rd-inv-desc">{ins.desc}</p>

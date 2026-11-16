@@ -10,7 +10,7 @@ import { useOnScroll } from '@/shared/hooks/useScrollFx'
 import { ROUTES } from '@/shared/router/routes'
 import { VisorFotos } from '@/components/VisorFotos'
 import { CercaniasRadar } from '@/components/CercaniasRadar'
-import { guardarOrigenClic, romanoDe, separarEntrada, suavizar, tomarOrigenClic } from '@/shared/utils/desarrolloUi'
+import { guardarOrigenClic, separarEntrada, suavizar, tomarOrigenClic } from '@/shared/utils/desarrolloUi'
 import logoIcon from '@/assets/logo-icon.png'
 
 const WHATSAPP_NUMBER = '5491151407693'
@@ -172,9 +172,6 @@ function Ficha({ slug }: { slug: string | undefined }) {
       {/* PORTADA */}
       <header className="rd-cover">
         <PortadaFondo url={mediaUrl(portada)} nombre={desarrollo.nombre} />
-        <div className="rd-cover-num" aria-hidden="true">
-          {romanoDe(desarrollo.nombre)}
-        </div>
         <div className="rd-cover-in">
           <img className="rd-cover-logo" src={logoIcon} alt="" aria-hidden="true" />
           <div className="rd-tags">
