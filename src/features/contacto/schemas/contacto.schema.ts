@@ -12,10 +12,10 @@ export interface ConsultaContacto {
 }
 
 export const PROYECTOS_INTERES = [
-  'Pinamar Norte, Blvd. Ameghino 349',
-  'Julián Álvarez 1129, Palermo',
-  'Tokenización inmobiliaria',
-  'Renta fija (Solares Deals)',
+  'En pozo',
+  'Entregado',
+  'Tokenización',
+  'Renta fija',
   'Asesoramiento general',
 ] as const
 
