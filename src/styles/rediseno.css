@@ -1194,5 +1194,6 @@ nav .nav-cta:hover { background: var(--dorado); color: var(--negro); }
 /* Las imágenes no se agrandan durante 7s cuando no son la diapositiva activa. */
 .rd-hero-slide:not(.active) { transition: opacity 1.6s ease; }
 
-/* "Entregado" sobre la foto: sin borde, con fondo negro para que se lea sobre cualquier foto. */
-.rd-ent-media .rd-chip { background: #000; border: none; }
+/* Títulos "En pozo" y "Entregados" centrados. */
+.rd-grp-title { text-align: center; }
+.rd-grp-head { justify-content: center; }
