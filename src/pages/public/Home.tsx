@@ -33,7 +33,7 @@ const NOSOTROS_STATS = [
   { to: 25, prefix: "+", label: "Años de empresa" },
   { to: 40000, prefix: "+", miles: true, label: "M² construidos" },
   { to: 400, prefix: "+", label: "Unidades vendidas" },
-  { to: 14, suffix: "", label: "Desarrollos realizados" },
+  { to: 14, suffix: "", label: "Desarrollos" },
 ];
 
 const CTA_QUICK_STATS = [
