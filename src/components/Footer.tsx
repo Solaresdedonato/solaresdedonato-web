@@ -1,7 +1,6 @@
 import { ROUTES } from '@/shared/router/routes'
 import logo from '@/assets/logo.png'
-
-const WHATSAPP_NUMBER = '5491151407693'
+import { WHATSAPP_URL } from '@/shared/utils/whatsapp'
 
 function IconInstagram() {
   return (
@@ -98,7 +97,7 @@ export function Footer() {
           <h5>Contacto</h5>
           <a
             className="footer-contacto"
-            href={`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}`}
+            href={WHATSAPP_URL}
             target="_blank"
             rel="noreferrer"
           >

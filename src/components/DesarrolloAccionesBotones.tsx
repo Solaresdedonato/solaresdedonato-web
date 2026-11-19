@@ -1,6 +1,5 @@
 import type { Desarrollo } from '@/features/desarrollo/schemas/desarrollo.schema'
-
-const WHATSAPP_NUMBER = '5491151407693'
+import { WHATSAPP_URL } from '@/shared/utils/whatsapp'
 
 interface DesarrolloAccionesBotonesProps {
   desarrollo: Pick<
@@ -16,11 +15,6 @@ interface DesarrolloAccionesBotonesProps {
  * con un mensaje que incluye el desarrollo y su URL.
  */
 export function DesarrolloAccionesBotones({ desarrollo }: DesarrolloAccionesBotonesProps) {
-  const urlDesarrollo = `${window.location.origin}/desarrollos/${desarrollo.slug}`
-  const mensajeAsesor = encodeURIComponent(
-    `Hola, quiero más información sobre ${desarrollo.nombre}. ${urlDesarrollo}`,
-  )
-
   return (
     <div className="modal-botones">
       {desarrollo.showroomVirtualUrl && (
@@ -70,7 +64,7 @@ export function DesarrolloAccionesBotones({ desarrollo }: DesarrolloAccionesBoto
       )}
 
       <a
-        href={`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${mensajeAsesor}`}
+        href={WHATSAPP_URL}
         target="_blank"
         rel="noreferrer"
         className="modal-btn modal-btn-primary"
