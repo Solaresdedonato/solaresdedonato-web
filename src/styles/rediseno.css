@@ -1201,3 +1201,21 @@ nav .nav-cta:hover { background: var(--dorado); color: var(--negro); }
 /* "Invertí con nosotros": encabezado alineado igual que Área Broker (título a la izquierda, texto a la derecha). */
 .rd-invest-head { grid-template-columns: 1fr 1.25fr; gap: 60px; align-items: end; }
 @media (max-width: 1080px) { .rd-invest-head { grid-template-columns: 1fr; gap: 24px; } }
+
+/* "Invertí con nosotros" entra entera en pantallas de laptop: título en una línea y tarjetas más compactas. */
+@media (min-width: 1081px) {
+  .rd .rd-invest .rd-invest-head .rd-h2 { font-size: clamp(28px, 2vw, 44px); }
+}
+.rd-inv-grid { margin-top: 22px; }
+.rd .rd-inv-card { padding: 24px 40px; }
+.rd .rd-checks { margin-bottom: 16px; }
+.rd .rd-checks li { padding: 6px 0 6px 34px; }
+.rd .rd-checks li::before { top: 13px; }
+.rd .rd-inv-desc { margin-bottom: 12px !important; }
+@media (max-height: 820px) {
+  .rd .rd-inv-desc { line-height: 1.5; }
+  .rd .rd-checks li { padding: 4px 0 4px 34px; }
+  .rd .rd-checks li::before { top: 11px; }
+  .rd .rd-inv-card { padding: 20px 36px; }
+  .rd-inv-grid { margin-top: 16px; }
+}
