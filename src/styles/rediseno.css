@@ -1194,5 +1194,5 @@ nav .nav-cta:hover { background: var(--dorado); color: var(--negro); }
 /* Las imágenes no se agrandan durante 7s cuando no son la diapositiva activa. */
 .rd-hero-slide:not(.active) { transition: opacity 1.6s ease; }
 
-/* "Entregado" sobre la foto: solo la palabra, sin recuadro ni fondo. La sombra la hace legible sobre cielos claros. */
-.rd-ent-media .rd-chip { background: none; border: none; padding: 0; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 12px rgba(0, 0, 0, 0.6); }
+/* "Entregado" sobre la foto: sin borde, con fondo negro para que se lea sobre cualquier foto. */
+.rd-ent-media .rd-chip { background: #000; border: none; }
