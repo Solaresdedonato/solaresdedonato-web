@@ -1197,3 +1197,7 @@ nav .nav-cta:hover { background: var(--dorado); color: var(--negro); }
 /* Títulos "En pozo" y "Entregados" centrados. */
 .rd-grp-title { text-align: center; }
 .rd-grp-head { justify-content: center; }
+
+/* "Invertí con nosotros": encabezado alineado igual que Área Broker (título a la izquierda, texto a la derecha). */
+.rd-invest-head { grid-template-columns: 1fr 1.25fr; gap: 60px; align-items: end; }
+@media (max-width: 1080px) { .rd-invest-head { grid-template-columns: 1fr; gap: 24px; } }
