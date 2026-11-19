@@ -3,7 +3,7 @@ import { ISO_PAIS_DEFAULT, telefonoConCodigo, type IsoPais } from '@/shared/util
 import { CodigoPaisSelect } from './CodigoPaisSelect'
 
 const AMBIENTES = ['1', '2', '3', '4'] as const
-const ZONAS = ['Palermo', 'Villa Luro', 'Pinamar'] as const
+const ZONAS = ['Palermo', 'Villa Luro', 'Pinamar', 'Devoto'] as const
 
 const WHATSAPP_NUMBER = '5491151407693'
 
