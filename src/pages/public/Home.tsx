@@ -24,6 +24,7 @@ import { sinGuiones } from "@/shared/utils/sinGuiones";
 import { guardarOrigenClic } from "@/shared/utils/desarrolloUi";
 import { useSlidesCargadas } from "@/shared/hooks/useSlidesCargadas";
 import { ROUTES } from "@/shared/router/routes";
+import { WHATSAPP_URL } from "@/shared/utils/whatsapp";
 import { MetricasDestacadas } from "@/components/MetricasDestacadas";
 import { QuickLeadForm } from "@/components/QuickLeadForm";
 import { ContactoForm } from "@/features/contacto/components/ContactoForm";
@@ -65,8 +66,7 @@ const BROKER_BENEFICIOS = [
   },
 ];
 
-const WHATSAPP_HREF =
-  "https://api.whatsapp.com/send?phone=5491151407693&text=Hola,%20vengo%20de%20la%20web%20y%20quiero%20m%C3%A1s%20informaci%C3%B3n";
+const WHATSAPP_HREF = WHATSAPP_URL;
 
 /**
  * Contenedor de bloque. Los textos NO se animan (criterio de diseño: solo se mueven las
@@ -665,7 +665,7 @@ export function Home() {
           <div className="rd-c-row">
             <a
               className="rd-c-item"
-              href="https://api.whatsapp.com/send?phone=5491151407693"
+              href={WHATSAPP_HREF}
               target="_blank"
               rel="noreferrer"
             >

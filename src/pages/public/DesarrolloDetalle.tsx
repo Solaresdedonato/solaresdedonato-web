@@ -12,8 +12,7 @@ import { VisorFotos } from '@/components/VisorFotos'
 import { CercaniasRadar } from '@/components/CercaniasRadar'
 import { guardarOrigenClic, separarEntrada, suavizar, tomarOrigenClic } from '@/shared/utils/desarrolloUi'
 import logoIcon from '@/assets/logo-icon.png'
-
-const WHATSAPP_NUMBER = '5491151407693'
+import { WHATSAPP_URL } from '@/shared/utils/whatsapp'
 
 /** Formas arquitectónicas del collage, en este orden: lámina, arco, círculo, vano, arco, píldora. */
 const FORMAS = ['slab', 'arch', 'circle', 'plain', 'arch', 'pill']
@@ -149,10 +148,7 @@ function Ficha({ slug }: { slug: string | undefined }) {
   const otrasFeatures = features.filter((f) => f !== confort)
   const amenities = confort ? confort.texto.split(/\s*(?:,|\by\b)\s*/i).map(suavizar).filter(Boolean) : []
 
-  const urlDesarrollo = `${window.location.origin}/desarrollos/${desarrollo.slug}`
-  const whatsapp = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(
-    `Hola, quiero más información sobre ${desarrollo.nombre}. ${urlDesarrollo}`,
-  )}`
+  const whatsapp = WHATSAPP_URL
   const enlaces = [
     desarrollo.showroomVirtualUrl && { titulo: 'Showroom virtual', sub: 'Recorré la unidad en 360°', href: desarrollo.showroomVirtualUrl },
     desarrollo.brochurePlanosUrl && { titulo: 'Brochure / Planos', sub: 'Descargar material comercial', href: desarrollo.brochurePlanosUrl },

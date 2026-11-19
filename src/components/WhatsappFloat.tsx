@@ -1,3 +1,5 @@
+import { WHATSAPP_URL } from '@/shared/utils/whatsapp'
+
 function IconWhatsapp() {
   return (
     <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -9,7 +11,7 @@ function IconWhatsapp() {
 export function WhatsappFloat() {
   return (
     <a
-      href="https://api.whatsapp.com/send?phone=5491151407693&text=Hola,%20vengo%20de%20la%20web%20y%20quiero%20m%C3%A1s%20informaci%C3%B3n"
+      href={WHATSAPP_URL}
       className="whatsapp-float"
       target="_blank"
       rel="noreferrer"
