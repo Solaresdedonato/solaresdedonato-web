@@ -1193,3 +1193,7 @@ nav .nav-cta:hover { background: var(--dorado); color: var(--negro); }
 .rd-about-img img, .rd-cover-img { will-change: auto; }
 /* Las imágenes no se agrandan durante 7s cuando no son la diapositiva activa. */
 .rd-hero-slide:not(.active) { transition: opacity 1.6s ease; }
+
+/* Títulos "En pozo" y "Entregados" centrados. */
+.rd-grp-title { text-align: center; }
+.rd-grp-head { justify-content: center; }
