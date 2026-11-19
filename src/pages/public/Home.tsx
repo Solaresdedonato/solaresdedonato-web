@@ -273,9 +273,6 @@ function Entregados({ items }: { items: Desarrollo[] }) {
               >
                 <div className="rd-ent-media">
                   <Portada d={d} />
-                  <div className="rd-chips">
-                    <span className="rd-chip">Entregado</span>
-                  </div>
                 </div>
                 <div className="rd-ent-body">
                   <div>
