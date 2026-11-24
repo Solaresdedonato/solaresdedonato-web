@@ -17,6 +17,53 @@ import { WHATSAPP_URL } from '@/shared/utils/whatsapp'
 /** Formas arquitectónicas del collage, en este orden: lámina, arco, círculo, vano, arco, píldora. */
 const FORMAS = ['slab', 'arch', 'circle', 'plain', 'arch', 'pill']
 
+const entre = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v))
+
+/** Lugares anchos del collage (lámina, vano, píldora); los otros (arcos y círculo) son angostos. */
+const LUGAR_ANCHO = [true, false, false, true, false, true]
+
+/**
+ * Reparte las fotos: las verticales van a los lugares angostos (arcos) y las horizontales a los
+ * anchos. Solo reordena cuando ya se conocen todas las proporciones, para no mover fotos a la vista.
+ */
+function ordenarParaCollage(urls: string[], proporciones: Record<string, number>): string[] {
+  if (urls.some((u) => !proporciones[u])) return urls
+  const verticales = urls.filter((u) => proporciones[u] < 0.9)
+  const horizontales = urls.filter((u) => proporciones[u] >= 0.9)
+  return urls.map((_, k) => {
+    const ancho = LUGAR_ANCHO[k % LUGAR_ANCHO.length]
+    const elegida = ancho ? horizontales.shift() ?? verticales.shift() : verticales.shift() ?? horizontales.shift()
+    return elegida as string
+  })
+}
+
+/**
+ * Marco de cada foto del collage. La posición y el ritmo los da el lugar (k), pero la forma y la
+ * proporción se ajustan a la foto real: casi todas son horizontales, y meterlas en un arco vertical
+ * o en un círculo recortaba más de la mitad de la imagen. Así el recorte queda chico y la foto se lee.
+ * `r` = ancho / alto de la foto (undefined mientras no se conoce: se usa el marco original).
+ */
+function marcoDeFoto(k: number, r: number | undefined, total: number): { forma: string; ratio?: number } {
+  const base = FORMAS[k % FORMAS.length]
+  if (!r) return { forma: base }
+  if (total === 1) return { forma: 'plain', ratio: entre(r, 1.2, 2) }
+  // Vertical: arco en un lugar angosto; si cae en uno ancho (no había otro lugar), vano casi cuadrado.
+  if (r < 0.9) return LUGAR_ANCHO[k % LUGAR_ANCHO.length] ? { forma: 'plain', ratio: entre(r, 0.95, 1.2) } : { forma: 'arch', ratio: entre(r, 0.55, 0.9) }
+  if (r < 1.15) return base === 'circle' || base === 'arch' ? { forma: 'circle', ratio: 1 } : { forma: 'plain', ratio: r }
+  switch (base) {
+    case 'slab':
+      return { forma: 'slab', ratio: entre(r, 1.3, 1.8) }
+    case 'arch':
+      return { forma: 'arch-soft', ratio: entre(r, 1.2, 1.5) }
+    case 'circle':
+      return { forma: 'oval', ratio: entre(r, 1.2, 1.5) }
+    case 'pill':
+      return r >= 1.45 ? { forma: 'pill', ratio: entre(r, 1.6, 2) } : { forma: 'plain', ratio: r }
+    default:
+      return { forma: 'plain', ratio: entre(r, 1.3, 1.8) }
+  }
+}
+
 /** Foto de portada de la ficha como fondo, optimizada a 2560px (o la original si falla). */
 function PortadaFondo({ url, nombre }: { url: string | undefined; nombre: string }) {
   const fondo = useImagenOptima(url, 2560)
@@ -76,6 +123,13 @@ function Ficha({ slug }: { slug: string | undefined }) {
   const [fotoAbierta, setFotoAbierta] = useState<number | null>(null)
   const progresoRef = useRef<HTMLSpanElement | null>(null)
   const collageRef = useRef<HTMLDivElement | null>(null)
+  // Proporción real (ancho / alto) de cada foto del collage, para elegirle el marco.
+  const [proporciones, setProporciones] = useState<Record<string, number>>({})
+  const anotarProporcion = (u: string, img: HTMLImageElement) => {
+    if (!img.naturalWidth || !img.naturalHeight) return
+    const r = img.naturalWidth / img.naturalHeight
+    setProporciones((prev) => (prev[u] ? prev : { ...prev, [u]: r }))
+  }
 
   useOnScroll(() => {
     const el = progresoRef.current
@@ -92,7 +146,8 @@ function Ficha({ slug }: { slug: string | undefined }) {
       (es) =>
         es.forEach((e) => {
           if (e.isIntersecting) {
-            e.target.classList.add('in')
+            // Atributo (no clase): React reescribe className cuando cambia el marco y borraría 'in'.
+            e.target.setAttribute('data-in', '')
             io.unobserve(e.target)
           }
         }),
@@ -100,6 +155,28 @@ function Ficha({ slug }: { slug: string | undefined }) {
     )
     cont.querySelectorAll('.rd-shot').forEach((s) => io.observe(s))
     return () => io.disconnect()
+  }, [desarrollo])
+
+  // Se miden las fotos del collage apenas abre la ficha (versión chica), así cuando el usuario
+  // llega a la galería cada foto ya tiene su marco y no hay saltos.
+  useEffect(() => {
+    if (!desarrollo) return
+    const portadaUrl = desarrollo.imagenPortadaUrl
+    const urls = (desarrollo.galeria ?? [])
+      .filter((c) => c.tipo === 'foto' && c.archivoUrl && c.archivoUrl !== portadaUrl)
+      .map((c) => c.archivoUrl as string)
+    let vivo = true
+    urls.forEach((u) => {
+      const img = new Image()
+      img.onload = () => {
+        if (vivo) anotarProporcion(u, img)
+      }
+      const src = imagenOptima(mediaUrl(u), 640) ?? mediaUrl(u)
+      if (src) img.src = src
+    })
+    return () => {
+      vivo = false
+    }
   }, [desarrollo])
 
   if (isLoading) {
@@ -133,7 +210,10 @@ function Ficha({ slug }: { slug: string | undefined }) {
   const videos = (desarrollo.galeria ?? []).filter((c) => c.tipo === 'video' && c.videoUrl)
   const portada = desarrollo.imagenPortadaUrl ?? fotos[0]?.archivoUrl ?? null
   // El collage muestra lo que no está ya en la portada.
-  const fotosCollage = fotos.map((f) => f.archivoUrl as string).filter((u) => u !== portada)
+  const fotosCollage = ordenarParaCollage(
+    fotos.map((f) => f.archivoUrl as string).filter((u) => u !== portada),
+    proporciones,
+  )
   const hayGaleria = fotosCollage.length > 0 || videos.length > 0
   const resumenGaleria = [
     fotos.length > 0 ? `${fotos.length} ${fotos.length === 1 ? 'foto' : 'fotos'}` : null,
@@ -237,15 +317,19 @@ function Ficha({ slug }: { slug: string | undefined }) {
             <p>{resumenGaleria}</p>
           </div>
           <div className="rd-collage" ref={collageRef}>
-            {fotosCollage.map((u, k) => (
+            {fotosCollage.map((u, k) => {
+              const marco = marcoDeFoto(k, proporciones[u], fotosCollage.length)
+              return (
               <button
                 key={u}
                 type="button"
-                className={`rd-shot ${FORMAS[k % FORMAS.length]}`}
+                className={`rd-shot ${marco.forma}`}
+                style={marco.ratio ? { aspectRatio: String(marco.ratio) } : undefined}
                 onClick={() => setFotoAbierta(k)}
                 aria-label={`Ampliar foto ${k + 1} de ${desarrollo.nombre}`}
               >
                 <img
+                  onLoad={(e) => anotarProporcion(u, e.currentTarget)}
                   src={imagenOptima(mediaUrl(u), 1080)}
                   srcSet={
                     imagenOptima(mediaUrl(u), 1080) !== mediaUrl(u)
@@ -260,7 +344,8 @@ function Ficha({ slug }: { slug: string | undefined }) {
                 />
                 <span className="rd-shot-cap">Ampliar</span>
               </button>
-            ))}
+              )
+            })}
           </div>
           {videos.length > 0 && (
             <div className="rd-videos">
