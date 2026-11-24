@@ -182,14 +182,11 @@ function Ficha({ slug }: { slug: string | undefined }) {
             {amenities.length > 0 && (
               <>
                 <p className="rd-kicker">Amenities y confort</p>
-                <p className="rd-amen-list">
-                  {amenities.map((a, i) => (
-                    <span key={a}>
-                      {i > 0 && <i aria-hidden="true">✦</i>}
-                      <span>{a}</span>
-                    </span>
+                <ul className="rd-amen-list">
+                  {amenities.map((a) => (
+                    <li key={a}>{a}</li>
                   ))}
-                </p>
+                </ul>
               </>
             )}
             {otrasFeatures.length > 0 && (
