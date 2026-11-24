@@ -1239,3 +1239,16 @@ nav .nav-cta:hover { background: var(--dorado); color: var(--negro); }
 .rd-inv-card { cursor: pointer; }
 .rd-inv-card .rd-link::after { content: ''; position: absolute; inset: 0; z-index: 1; }
 .rd-inv-card:hover .rd-link { gap: 18px; }
+
+/* Tokenización: "Próximamente" (todavía sin plataforma abierta al público). */
+.rd-inv-card.rd-inv-prox { cursor: default; }
+.rd-inv-card.rd-inv-prox:hover { transform: none; border-color: var(--rd-linea); }
+.rd-prox-badge {
+  position: absolute; top: clamp(18px, 2.6vh, 30px); right: clamp(18px, 2vw, 34px); z-index: 2;
+  font-size: calc(var(--rd-txt) * 0.62); letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--negro); background: var(--dorado); padding: 6px 12px 5px;
+}
+.rd-prox-cta {
+  display: inline-block; font-size: 12.5px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: rgba(245, 240, 232, 0.55); border-bottom: 1px solid var(--rd-linea); padding: 0 0 6px;
+}
