@@ -1213,18 +1213,19 @@ nav .nav-cta:hover { background: var(--dorado); color: var(--negro); }
 .rd .rd-checks li::before { top: 13px; }
 .rd .rd-inv-desc { margin-bottom: 12px !important; }
 /* Pantallas de poca altura (laptops, o Windows con escala 125%): las secciones que se abren
-   desde el menú se achican en proporción para entrar enteras debajo de la barra. */
+   desde el menú se achican apenas para entrar enteras debajo de la barra, pero siguen ocupando
+   todo el ancho (el ancho se compensa con el mismo factor), así la letra no queda chica. */
 @media (min-width: 1081px) and (max-height: 960px) {
-  .rd-about > .rd-wrap, .rd-finder > .rd-wrap, .rd-invest > .rd-wrap, .rd-contact > .rd-wrap, .rd-brokers > .rd-wrap { zoom: 0.87; }
+  .rd-about > .rd-wrap, .rd-finder > .rd-wrap, .rd-invest > .rd-wrap, .rd-contact > .rd-wrap, .rd-brokers > .rd-wrap { zoom: 0.95; width: calc(min(1520px, 94vw) / 0.95); max-width: none; }
 }
 @media (min-width: 1081px) and (max-height: 800px) {
-  .rd-about > .rd-wrap, .rd-finder > .rd-wrap, .rd-invest > .rd-wrap, .rd-contact > .rd-wrap, .rd-brokers > .rd-wrap { zoom: 0.77; }
+  .rd-about > .rd-wrap, .rd-finder > .rd-wrap, .rd-invest > .rd-wrap, .rd-contact > .rd-wrap, .rd-brokers > .rd-wrap { zoom: 0.9; width: calc(min(1520px, 94vw) / 0.9); max-width: none; }
 }
 @media (min-width: 1081px) and (max-height: 720px) {
-  .rd-about > .rd-wrap, .rd-finder > .rd-wrap, .rd-invest > .rd-wrap, .rd-contact > .rd-wrap, .rd-brokers > .rd-wrap { zoom: 0.67; }
+  .rd-about > .rd-wrap, .rd-finder > .rd-wrap, .rd-invest > .rd-wrap, .rd-contact > .rd-wrap, .rd-brokers > .rd-wrap { zoom: 0.87; width: calc(min(1520px, 94vw) / 0.87); max-width: none; }
 }
 @media (min-width: 1081px) and (max-height: 640px) {
-  .rd-about > .rd-wrap, .rd-finder > .rd-wrap, .rd-invest > .rd-wrap, .rd-contact > .rd-wrap, .rd-brokers > .rd-wrap { zoom: 0.6; }
+  .rd-about > .rd-wrap, .rd-finder > .rd-wrap, .rd-invest > .rd-wrap, .rd-contact > .rd-wrap, .rd-brokers > .rd-wrap { zoom: 0.8; width: calc(min(1520px, 94vw) / 0.8); max-width: none; }
 }
 @media (max-height: 820px) {
   .rd .rd-inv-desc { line-height: 1.5; }
