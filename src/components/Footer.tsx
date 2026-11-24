@@ -85,9 +85,7 @@ export function Footer() {
 
         <div className="footer-col">
           <h5>Invertir</h5>
-          <a href="https://realestate.solaresdedonato.com.ar/" target="_blank" rel="noreferrer">
-            Tokenización
-          </a>
+          <a href={`${ROUTES.home}#invertir`}>Tokenización (próximamente)</a>
           <a href={`${ROUTES.home}#invertir`}>Renta Fija</a>
           <a href={`${ROUTES.home}#desarrollos`}>Desarrollos</a>
           <a href={`${ROUTES.home}#brokers`}>Area Broker</a>
