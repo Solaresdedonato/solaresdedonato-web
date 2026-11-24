@@ -541,11 +541,9 @@ export function Home() {
                   "Diversificá tu inversión entre varios proyectos",
                   "Mayor liquidez que la compra tradicional de propiedades",
                 ],
-                cta: {
-                  href: "https://realestate.solaresdedonato.com.ar/",
-                  label: "Ir a la plataforma →",
-                  externo: true,
-                },
+                // La plataforma de tokenización todavía no está abierta al público.
+                proximamente: true,
+                cta: null,
               },
               {
                 n: "II",
@@ -559,6 +557,7 @@ export function Home() {
                   "Ingresos pasivos sin trámites ni gastos imprevistos",
                   "Respaldo real de la propiedad a tu nombre",
                 ],
+                proximamente: false,
                 cta: {
                   href: "#contacto",
                   label: "Descubrí más →",
@@ -568,7 +567,7 @@ export function Home() {
             ].map((ins, i) => (
               <Reveal key={ins.n} delay={i * 0.15}>
                 <article
-                  className="rd-inv-card"
+                  className={`rd-inv-card${ins.proximamente ? " rd-inv-prox" : ""}`}
                   onMouseMove={(e) => {
                     const r = e.currentTarget.getBoundingClientRect();
                     e.currentTarget.style.setProperty(
@@ -581,6 +580,9 @@ export function Home() {
                     );
                   }}
                 >
+                  {ins.proximamente && (
+                    <span className="rd-prox-badge">Próximamente</span>
+                  )}
                   <p className="rd-eyebrow">{ins.tag}</p>
                   <h3>{ins.titulo}</h3>
                   <p className="rd-inv-desc">{ins.desc}</p>
@@ -590,15 +592,19 @@ export function Home() {
                       <li key={li}>{li}</li>
                     ))}
                   </ul>
-                  <a
-                    className="rd-link"
-                    href={ins.cta.href}
-                    {...(ins.cta.externo
-                      ? { target: "_blank", rel: "noreferrer" }
-                      : {})}
-                  >
-                    {ins.cta.label}
-                  </a>
+                  {ins.cta ? (
+                    <a
+                      className="rd-link"
+                      href={ins.cta.href}
+                      {...(ins.cta.externo
+                        ? { target: "_blank", rel: "noreferrer" }
+                        : {})}
+                    >
+                      {ins.cta.label}
+                    </a>
+                  ) : (
+                    <span className="rd-prox-cta">Próximamente</span>
+                  )}
                 </article>
               </Reveal>
             ))}
