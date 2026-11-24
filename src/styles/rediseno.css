@@ -1294,3 +1294,29 @@ nav .nav-cta:hover { background: var(--dorado); color: var(--negro); }
   .rd-car-flecha.next { right: 8px; }
   .rd-car-mini { width: 84px; }
 }
+
+/* Ficha · "El proyecto": el párrafo principal va siempre arriba, a todo el ancho; debajo, los otros dos. */
+.rd-story { grid-template-columns: 1fr; gap: clamp(28px, 5vh, 56px); }
+.rd-story .rd-lead { position: static; max-width: 1100px; }
+.rd-story .rd-amen { margin-top: clamp(16px, 3vh, 40px); }
+
+/* Ficha · Amenities y confort: lista numerada, sobria, en columnas. */
+.rd .rd-amen-list {
+  list-style: none; margin: 0; padding: 0; counter-reset: amen;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); column-gap: 48px;
+  font-size: clamp(17px, 1.3vw, 21px); line-height: 1.35;
+}
+.rd .rd-amen-list li {
+  counter-increment: amen; display: flex; align-items: baseline; gap: 18px;
+  padding: 16px 0; border-top: 1px solid var(--rd-linea); color: var(--blanco-roto); font-weight: 300; letter-spacing: 0.02em;
+}
+.rd .rd-amen-list li::before {
+  content: counter(amen, decimal-leading-zero); flex: 0 0 auto;
+  font-size: 11px; letter-spacing: 0.22em; color: var(--dorado);
+}
+
+/* Portada · botón "Explorar": círculo a la mitad del tamaño. */
+.rd-explorar-circulo { width: clamp(46px, 5.5vh, 62px); border-width: 1px; }
+.rd-explorar-flecha { width: 26%; }
+.rd-explorar { gap: 10px; }
+@media (max-width: 760px) { .rd-explorar-circulo { width: 40px; } }
