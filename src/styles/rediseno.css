@@ -350,7 +350,7 @@ a.rd-c-item:hover span { color: var(--dorado); }
   position: relative; cursor: zoom-in; background: #111; border: 0; padding: 0; display: block; overflow: hidden; opacity: 0;
   transform: translateY(80px); transition: opacity 1.2s var(--rd-ease), transform 1.2s var(--rd-ease);
 }
-.rd-shot.in, .rd-shot[data-in] { opacity: 1; transform: none; }
+.rd-shot.in { opacity: 1; transform: none; }
 .rd-shot img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s var(--rd-ease); }
 .rd-shot:hover img { transform: scale(1.06); }
 .rd-shot::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(8, 8, 8, 0.6), transparent 45%); opacity: 0; transition: opacity 0.5s; pointer-events: none; }
@@ -1253,6 +1253,44 @@ nav .nav-cta:hover { background: var(--dorado); color: var(--negro); }
   color: rgba(245, 240, 232, 0.55); border-bottom: 1px solid var(--rd-linea); padding: 0 0 6px;
 }
 
-/* Collage de la ficha: marcos que se adaptan a fotos horizontales (ver marcoDeFoto). */
-.rd-shot.arch-soft { border-radius: 50% 50% 0 0 / 34% 34% 0 0; }
-.rd-shot.oval { border-radius: 50%; }
+/* Ficha: carrusel de fotos (una grande, entera, con flechas, contador y miniaturas). */
+.rd-carrusel { outline: none; --car-ancho: min(100%, calc(78vh * 16 / 9)); }
+.rd-car-stage {
+  position: relative; width: var(--car-ancho); aspect-ratio: 16 / 9; margin: 0 auto; overflow: hidden;
+  background: #0d0d0d; border: 1px solid var(--rd-linea);
+}
+.rd-car-slide {
+  position: absolute; inset: 0; border: 0; padding: 0; background: none; cursor: zoom-in;
+  opacity: 0; pointer-events: none; transition: opacity 0.6s var(--rd-ease);
+}
+.rd-car-slide.activa { opacity: 1; pointer-events: auto; }
+.rd-car-slide img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.rd-car-flecha {
+  position: absolute; top: 50%; translate: 0 -50%; z-index: 2; width: 54px; height: 54px; border-radius: 50%;
+  border: 1px solid var(--dorado-borde); background: rgba(10, 10, 10, 0.55); color: var(--dorado);
+  font-size: 20px; line-height: 1; cursor: pointer; backdrop-filter: blur(4px); transition: background 0.3s, color 0.3s;
+}
+.rd-car-flecha:hover, .rd-car-flecha:focus-visible { background: var(--dorado); color: var(--negro); }
+.rd-car-flecha.prev { left: 18px; }
+.rd-car-flecha.next { right: 18px; }
+.rd-car-contador {
+  position: absolute; right: 18px; bottom: 14px; z-index: 2; padding: 6px 10px; background: rgba(10, 10, 10, 0.6);
+  font-size: 12px; letter-spacing: 0.24em; color: var(--blanco-roto);
+}
+.rd-car-tira {
+  display: flex; gap: 10px; width: var(--car-ancho); margin: 14px auto 0; padding-bottom: 6px;
+  overflow-x: auto; scrollbar-width: thin; scrollbar-color: var(--dorado-borde) transparent;
+}
+.rd-car-mini {
+  flex: 0 0 auto; width: 120px; aspect-ratio: 3 / 2; padding: 0; background: #111; cursor: pointer;
+  border: 1px solid transparent; opacity: 0.5; transition: opacity 0.3s, border-color 0.3s;
+}
+.rd-car-mini:hover, .rd-car-mini.activa { opacity: 1; }
+.rd-car-mini.activa { border-color: var(--dorado); }
+.rd-car-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (max-width: 760px) {
+  .rd-car-flecha { width: 40px; height: 40px; font-size: 16px; }
+  .rd-car-flecha.prev { left: 8px; }
+  .rd-car-flecha.next { right: 8px; }
+  .rd-car-mini { width: 84px; }
+}
