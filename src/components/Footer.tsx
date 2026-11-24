@@ -1,3 +1,4 @@
+import { useLocation, useNavigate } from 'react-router-dom'
 import { ROUTES } from '@/shared/router/routes'
 import logo from '@/assets/logo.png'
 import { WHATSAPP_URL } from '@/shared/utils/whatsapp'
@@ -53,6 +54,16 @@ function IconUbicacion() {
 }
 
 export function Footer() {
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
+  // "Inicio" siempre lleva al principio de la web (sin recargar, así no se restaura el scroll anterior).
+  const irAlInicio = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    if (pathname !== ROUTES.home) navigate(ROUTES.home)
+    else if (window.location.hash) window.history.replaceState(null, '', ROUTES.home)
+    window.scrollTo({ top: 0, behavior: pathname === ROUTES.home ? 'smooth' : 'auto' })
+  }
+
   return (
     <footer>
       <div className="footer-grid">
@@ -77,7 +88,9 @@ export function Footer() {
 
         <div className="footer-col">
           <h5>Menú</h5>
-          <a href={ROUTES.home}>Inicio</a>
+          <a href={ROUTES.home} onClick={irAlInicio}>
+            Inicio
+          </a>
           <a href={`${ROUTES.home}#nosotros`}>Quiénes Somos</a>
           <a href={`${ROUTES.home}#desarrollos`}>Nuestros desarrollos</a>
           <a href={`${ROUTES.home}#contacto`}>Contacto</a>
