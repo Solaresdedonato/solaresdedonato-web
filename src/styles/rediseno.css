@@ -1234,3 +1234,8 @@ nav .nav-cta:hover { background: var(--dorado); color: var(--negro); }
   .rd .rd-inv-card { padding: 20px 36px; }
   .rd-inv-grid { margin-top: 16px; }
 }
+
+/* "Invertí con nosotros": toda la tarjeta es clickeable (lleva al mismo vínculo que su botón). */
+.rd-inv-card { cursor: pointer; }
+.rd-inv-card .rd-link::after { content: ''; position: absolute; inset: 0; z-index: 1; }
+.rd-inv-card:hover .rd-link { gap: 18px; }
