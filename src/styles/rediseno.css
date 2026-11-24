@@ -350,7 +350,7 @@ a.rd-c-item:hover span { color: var(--dorado); }
   position: relative; cursor: zoom-in; background: #111; border: 0; padding: 0; display: block; overflow: hidden; opacity: 0;
   transform: translateY(80px); transition: opacity 1.2s var(--rd-ease), transform 1.2s var(--rd-ease);
 }
-.rd-shot.in { opacity: 1; transform: none; }
+.rd-shot.in, .rd-shot[data-in] { opacity: 1; transform: none; }
 .rd-shot img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s var(--rd-ease); }
 .rd-shot:hover img { transform: scale(1.06); }
 .rd-shot::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(8, 8, 8, 0.6), transparent 45%); opacity: 0; transition: opacity 0.5s; pointer-events: none; }
@@ -1252,3 +1252,7 @@ nav .nav-cta:hover { background: var(--dorado); color: var(--negro); }
   display: inline-block; font-size: 12.5px; letter-spacing: 0.24em; text-transform: uppercase;
   color: rgba(245, 240, 232, 0.55); border-bottom: 1px solid var(--rd-linea); padding: 0 0 6px;
 }
+
+/* Collage de la ficha: marcos que se adaptan a fotos horizontales (ver marcoDeFoto). */
+.rd-shot.arch-soft { border-radius: 50% 50% 0 0 / 34% 34% 0 0; }
+.rd-shot.oval { border-radius: 50%; }
