@@ -1333,3 +1333,13 @@ nav .nav-cta:hover { background: var(--dorado); color: var(--negro); }
     linear-gradient(180deg, var(--negro) 0%, rgba(8, 8, 8, 0) 24%, rgba(8, 8, 8, 0) 76%, var(--negro) 100%),
     radial-gradient(ellipse at center, rgba(8, 8, 8, 0.6), rgba(8, 8, 8, 0.92));
 }
+
+/* Banda "Tu próxima inversión": el título se escribe letra por letra al bajar (TituloEscrito). */
+.rd-escribe-c { opacity: 0; transition: opacity 0.12s linear; }
+.rd-escribe-c.on { opacity: 1; }
+.rd-escribe-c.ult { position: relative; }
+.rd-escribe-c.ult::after {
+  content: ''; position: absolute; right: -0.06em; top: 0.14em; width: 2px; height: 0.82em;
+  background: var(--dorado); animation: rd-cursorEscribe 0.9s steps(1) infinite;
+}
+@keyframes rd-cursorEscribe { 50% { opacity: 0; } }
