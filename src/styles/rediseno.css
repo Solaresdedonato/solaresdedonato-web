@@ -1320,3 +1320,16 @@ nav .nav-cta:hover { background: var(--dorado); color: var(--negro); }
 .rd-explorar-flecha { width: 26%; }
 .rd-explorar { gap: 10px; }
 @media (max-width: 760px) { .rd-explorar-circulo { width: 40px; } }
+
+/* Fotos de fondo que se funden con el negro de la página, arriba y abajo (sin cortes duros). */
+.rd-hero::before {
+  background:
+    linear-gradient(90deg, rgba(8, 8, 8, 0.92) 0%, rgba(8, 8, 8, 0.6) 50%, rgba(8, 8, 8, 0.25) 100%),
+    linear-gradient(180deg, rgba(8, 8, 8, 0.75) 0%, rgba(8, 8, 8, 0) 22%),
+    linear-gradient(0deg, var(--negro) 0%, rgba(8, 8, 8, 0.85) 12%, rgba(8, 8, 8, 0.4) 30%, rgba(8, 8, 8, 0) 50%);
+}
+.rd-band::after {
+  background:
+    linear-gradient(180deg, var(--negro) 0%, rgba(8, 8, 8, 0) 24%, rgba(8, 8, 8, 0) 76%, var(--negro) 100%),
+    radial-gradient(ellipse at center, rgba(8, 8, 8, 0.6), rgba(8, 8, 8, 0.92));
+}
