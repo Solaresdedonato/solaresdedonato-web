@@ -27,6 +27,7 @@ import { ROUTES } from "@/shared/router/routes";
 import { WHATSAPP_URL } from "@/shared/utils/whatsapp";
 import { MetricasDestacadas } from "@/components/MetricasDestacadas";
 import { QuickLeadForm } from "@/components/QuickLeadForm";
+import { TituloEscrito } from "@/components/TituloEscrito";
 import { ContactoForm } from "@/features/contacto/components/ContactoForm";
 import { BrokerForm } from "@/features/broker/components/BrokerForm";
 
@@ -628,9 +629,13 @@ export function Home() {
           <Reveal>
             <p className="rd-eyebrow">¿Querés más información?</p>
           </Reveal>
-          <h2 className="rd-band-title">
-            Tu próxima inversión <em>te está esperando</em>
-          </h2>
+          <TituloEscrito
+            className="rd-band-title"
+            tramos={[
+              { texto: "Tu próxima inversión " },
+              { texto: "te está esperando", destacado: true },
+            ]}
+          />
           <Reveal as="p" delay={0.1}>
             ¿Estás interesado en nuestros proyectos? Contactanos para obtener
             más información y resolver todas tus consultas. Nuestro equipo está
